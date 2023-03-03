@@ -13,7 +13,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-salt.txt
+RCRPlanner/salt.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
