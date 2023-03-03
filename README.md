@@ -5,9 +5,12 @@ You can view upcomming races for your favorite content in iRacing.
 
 Also you can plan your purchases for the running season. 
 
+### Building information
+
+If you want to build it on your own please modify RCRPlanner/salt.txt
 
 
-##Software licensing
+## Software licensing
 
 This project uses, among other things, software licensed under the Apache 2.0 license. This software is included in source code and may be used and redistributed under the terms of this license.
 
@@ -20,7 +23,7 @@ The following list contains the software used under the Apache 2.0 license in th
 If you have any questions about licensing, please contact the project team.
 
 
-##Copyright notice
+## Copyright notice
 
 This project uses, among other things, content licensed under the Creative Commons Attribution 4.0 International license ("CC BY 4.0"). This content is included in the project and may be used and distributed under the terms of this license.
 
@@ -33,3 +36,4 @@ Translated with www.DeepL.com/Translator (free version)
 alarm.wav (renamed from 446142__justinvoke__race-start.wav) [freesound.org](https://freesound.org/s/446142/)
 
 Each of these contents is marked in the project with the following notice: "© [author] under CC BY 4.0 license". If you have questions about licensing or would like to use the content in any other way, please contact the corresponding author.
+
