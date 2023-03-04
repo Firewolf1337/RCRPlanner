@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 
 namespace RCRPlanner
@@ -35,7 +37,6 @@ namespace RCRPlanner
         string iracingTacksAssets = "https://members-ng.iracing.com/data/track/assets";
 
         string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
-        // serie stats for races (event type 5) ->  https://members-ng.iracing.com/data/results/search_series?season_year=2022&season_quarter=4&series_id=112&race_week_num=10&event_types=5 
 
         private CookieContainer cookie = new CookieContainer();
         public HttpClientHandler handler = new HttpClientHandler();
@@ -120,7 +121,7 @@ namespace RCRPlanner
             {
                 responseObject = JsonSerializer.Deserialize<memberInfo.Root>(contents);
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -158,7 +159,7 @@ namespace RCRPlanner
             {
                 responseObject = (JsonSerializer.Deserialize<Dictionary<string, carAssets>>(contents)).Values.ToList();
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -187,7 +188,7 @@ namespace RCRPlanner
             {
                 responseObject = (JsonSerializer.Deserialize<Dictionary<string, seriesAssets>>(contents)).Values.ToList();
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -235,7 +236,7 @@ namespace RCRPlanner
             {
                 responseObject = (JsonSerializer.Deserialize<Dictionary<string, trackAssets.Root>>(contents)).Values.ToList();
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -295,6 +296,47 @@ namespace RCRPlanner
                 download = downloader.DownloadString(url);
             }
             return download;
+        }
+
+        public async Task<githubLatestRelease.Root> getGithubLastRelease(string url, string version)
+        {
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("RCRPlanner");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github.v3+json");
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var contents = await response.Content.ReadAsStringAsync();
+            var responseObject = JsonSerializer.Deserialize<githubLatestRelease.Root>(contents);
+            if (version != responseObject.tag_name)
+            {
+                using (HttpResponseMessage zipResponse = await client.GetAsync(responseObject.zipball_url))
+                {
+                    if (zipResponse.IsSuccessStatusCode)
+                    {
+                        string path = System.Windows.Forms.Application.StartupPath;
+                        string tempDir = Path.Combine(path, Guid.NewGuid().ToString());
+                        string fileName = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath);
+                        string pid = Process.GetCurrentProcess().Id.ToString();
+                        Directory.CreateDirectory(tempDir);
+
+                        Stream zipStream = await zipResponse.Content.ReadAsStreamAsync();
+                        ZipArchive zipfile = new ZipArchive(zipStream, ZipArchiveMode.Read);
+                        try
+                        {
+                            zipfile.ExtractToDirectory(tempDir);
+                        }
+                        catch { }
+                        if (File.Exists(tempDir + "\\RCRUpdater.exe"))
+                        {
+                            File.Delete(System.Windows.Forms.Application.StartupPath + "\\RCRUpdater.exe");
+                            File.Move(tempDir + "\\RCRUpdater.exe", System.Windows.Forms.Application.StartupPath + "\\RCRUpdater.exe");
+                        }
+
+                        Process.Start("RCRUpdater.exe", "\"" + path + "\" \"" + fileName + "\" \"" + pid + "\" \"" + tempDir + "\"");
+                    }
+                }
+            }
+
+            return responseObject;
         }
     }
 }

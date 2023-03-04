@@ -29,6 +29,7 @@ using System.Timers;
 using System.Media;
 using System.Windows.Controls.Primitives;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 
 namespace RCRPlanner
@@ -63,7 +64,9 @@ namespace RCRPlanner
         int iRatingStatUserIrating = -1;
         System.Timers.Timer alarmTimer = new System.Timers.Timer();
 
-
+        static Version version = Assembly.GetExecutingAssembly().GetName().Version;
+        static DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+        string displayableVersion = $"{version} ({buildDate})";
 
         string favSeriesfile = @"\favouriteSeries.xml";
         string favCarsfile = @"\favouriteCars.xml";
@@ -139,15 +142,12 @@ namespace RCRPlanner
             bwPresetLoader.RunWorkerCompleted += worker_RunWorkerCompleted;
             bwPresetLoader.ProgressChanged += worker_ProgressChanged;
             bwPresetLoader.RunWorkerAsync();
-            //generateRaceView();
-            //switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridRaces }, false);
-            //activeGrid = "gridRaces";
             btnLoadRaces_Click(null, null);
-            helper.createHashes();
 
             alarmTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             alarmTimer.Interval = 10000;
             alarmTimer.Enabled = true;
+            lblVersion.Content = displayableVersion;
 
         }
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -203,7 +203,18 @@ namespace RCRPlanner
         private async void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             bool filemissing = false;
-            
+            if (!Directory.Exists(exePath+tracksLogo))
+            {
+                Directory.CreateDirectory(exePath+tracksLogo);
+            }
+            if (!Directory.Exists(exePath+carLogos))
+            {
+                Directory.CreateDirectory(exePath+carLogos);
+            }
+            if (!Directory.Exists(exePath+seriesLogos))
+            {
+                Directory.CreateDirectory(exePath+seriesLogos);
+            }
             bwProgress _bwProgress = new bwProgress() { StatusText = "Init"};
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
 
@@ -418,7 +429,7 @@ namespace RCRPlanner
                     _bwProgress.StatusText = "Done";
                     bwPresetLoader.ReportProgress(100, _bwProgress);
                 }
-                catch (Exception ex) { }
+                catch{ }
             }
             reloadData = false;
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -1294,7 +1305,11 @@ namespace RCRPlanner
                         lblDetails2.Content = "Horsepower:";
                         tbDetail1.Text = ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).Weight.ToString();
                         lblDetails1.Content = "Weight:";
-                        imDetailImage.Source = new BitmapImage(((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarImage);
+                        try
+                        {
+                            imDetailImage.Source = new BitmapImage(((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarImage);
+                        }
+                        catch { imDetailImage.Source = null; }
                         break;
                     case "gridTracksLayout":
                         if (selectedTrack == -1 || selectedTrack != ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((DataGrid)sender).SelectedItem).PackageID)
@@ -1327,7 +1342,11 @@ namespace RCRPlanner
                         lblDetails1.Content = "Lenght:";
                         tbDetail4.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Created.ToString();
                         lblDetails4.Content = "Created:";
-                        imDetailImage.Source = new BitmapImage(((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).TrackImage);
+                        try
+                        {
+                            imDetailImage.Source = new BitmapImage(((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).TrackImage);
+                        }
+                        catch { imDetailImage.Source = null; }
                         break;
                     case "gridTracksinSerie":
                         if (true)
@@ -1336,8 +1355,11 @@ namespace RCRPlanner
                             DataGridDetailsPresenter presenter = FindVisualChild<DataGridDetailsPresenter>(row);
                             DataTemplate template = presenter.ContentTemplate;
                             Image Trackimage = (Image)template.FindName("imRaceTrack", presenter);
-                            Trackimage.Source = new BitmapImage(((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).TrackImage);
-                            
+                            try
+                            {
+                                Trackimage.Source = new BitmapImage(((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).TrackImage);
+                            }
+                            catch { Trackimage.Source = null; }
                         }
                         break;
                     case "gridSeriesTrack":
@@ -1347,7 +1369,11 @@ namespace RCRPlanner
                             DataGridDetailsPresenter presenter = FindVisualChild<DataGridDetailsPresenter>(row);
                             DataTemplate template = presenter.ContentTemplate;
                             Image Trackimage = (Image)template.FindName("imRaceTrack", presenter);
-                            Trackimage.Source = new BitmapImage(((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).TrackImage);
+                            try
+                            {
+                                Trackimage.Source = new BitmapImage(((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).TrackImage);
+                            }
+                            catch { Trackimage.Source = null;}
                         }
                         break;
 
@@ -1376,7 +1402,7 @@ namespace RCRPlanner
             parent?.RaiseEvent(wheelArgs);
         }
 
-        private async void btnLoadCars_Click(object sender, RoutedEventArgs e)
+        private void btnLoadCars_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridCars";
             btnMenu1.Visibility = Visibility.Hidden;
@@ -1492,7 +1518,7 @@ namespace RCRPlanner
             generateRaceView();
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridRaces }, false);
         }
-        private async void btnPartStats_Click(object sender, RoutedEventArgs e)
+        private void btnPartStats_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridPartStat";
             dpMenu2.Visibility = Visibility.Visible;
@@ -1751,9 +1777,9 @@ namespace RCRPlanner
             Properties.Settings.Default.filter = @defaultfilter;
             Properties.Settings.Default.Save();
         }
-        private void btnProfileUpdate_Click(object sender, RoutedEventArgs e)
+        private async void btnProfileUpdate_Click(object sender, RoutedEventArgs e)
         {
-            helper.update();
+            await fData.getGithubLastRelease(Properties.Settings.Default.updateURL.ToString(), version.ToString());
         }
         private void gridAutoStartRemove_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -1835,7 +1861,7 @@ namespace RCRPlanner
                                 btnMenu1.IsEnabled = true;
 
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 btnMenu1.Content = "Get stat";
                                 btnMenu1.IsEnabled = true;
@@ -1866,7 +1892,7 @@ namespace RCRPlanner
                                 btnMenu1.Content = "Get stat";
                                 btnMenu1.IsEnabled = true;
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 btnMenu1.Content = "Get stat";
                                 btnMenu1.IsEnabled = true;

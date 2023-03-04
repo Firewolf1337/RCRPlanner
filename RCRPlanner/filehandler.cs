@@ -15,9 +15,7 @@ namespace RCRPlanner
 {
     class filehandler
     {
-        //string seriesLogos = @"\static\series\";
         string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
-        //string carLogos = @"\static\cars\";
         string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
 
 
@@ -28,7 +26,6 @@ namespace RCRPlanner
         {
             List<seriesAssets> seriesAssetsList = new List<seriesAssets>();
             Dictionary<string, string> datafiles = new Dictionary<string, string>();
-
 
             //Load base series information
 
@@ -46,7 +43,7 @@ namespace RCRPlanner
                     seriesAssetsList = await fData.getSeriesAssets();
                     helper.SerializeObject<List<seriesAssets>>(seriesAssetsList, file);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
             foreach (var logo in seriesAssetsList)
             {
@@ -77,7 +74,7 @@ namespace RCRPlanner
                     seriesSeasonList = await fData.getSeriesSeason();
                     helper.SerializeObject<List<seriesSeason.Root>>(seriesSeasonList, file);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
             return seriesSeasonList;
         }
@@ -101,7 +98,7 @@ namespace RCRPlanner
                     seriesList = await fData.getSeries();
                     helper.SerializeObject<List<series.Root>>(seriesList, file);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
             return seriesList;
         }
@@ -146,7 +143,7 @@ namespace RCRPlanner
                     carsList = await fData.getCars();
                     helper.SerializeObject<List<cars.Root>>(carsList, file);
                 }
-                catch (Exception ex) { }
+                catch{ }
             }
             return carsList;
         }
@@ -165,7 +162,7 @@ namespace RCRPlanner
                     carsAssetsList = await fData.getCarsAssets();
                     helper.SerializeObject<List<carAssets>>(carsAssetsList, file);
                 }
-                catch (Exception ex) { }
+                catch{ }
             }
             foreach (var logo in carsAssetsList)
             {
@@ -185,7 +182,7 @@ namespace RCRPlanner
                     {
                         await fData.getImage(iracingCarImages[2] + logo.folder + "/" + logo.small_image, file);
                     }
-                    catch (Exception ex) { }
+                    catch { }
                 }
             }
             return carsAssetsList;
@@ -205,7 +202,7 @@ namespace RCRPlanner
                     carClassList = await fData.getCarClass();
                     helper.SerializeObject<List<carClass.Root>>(carClassList, file);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
             return carClassList;
         }
@@ -251,7 +248,7 @@ namespace RCRPlanner
                     tracksList = await fData.getTracks();
                     helper.SerializeObject<List<tracks.Root>>(tracksList, file);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
             return tracksList;
         }
@@ -270,14 +267,14 @@ namespace RCRPlanner
                     trackAssetsList = await fData.getTracksAssets();
                     helper.SerializeObject<List<trackAssets.Root>>(trackAssetsList, file);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
 
             return trackAssetsList;
         }
         public async void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
         {
-            foreach(var track in tracks)
+            foreach (var track in tracks)
             {
                 string trackfile = track.track_id + ".html";
                 string trackpic = track.track_id + ".png";

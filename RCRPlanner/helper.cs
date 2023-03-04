@@ -33,7 +33,7 @@ namespace RCRPlanner
                 System.Data.DataRowView rowView = (System.Data.DataRowView)dgc.DataContext;
                 input = (string)rowView.Row.ItemArray[dgc.Column.DisplayIndex].ToString();
             }
-            catch (InvalidCastException e)
+            catch
             {
                 return DependencyProperty.UnsetValue;
             }
@@ -102,63 +102,7 @@ namespace RCRPlanner
             byte[] encryptedData = ProtectedData.Protect(Encoding.Unicode.GetBytes(ToInsecureString(input)), entropy, DataProtectionScope.CurrentUser);
             return Convert.ToBase64String(encryptedData);
         }
-        public static void createHashes()
-        {
-            List<string> solutionFiles = new List<string>{
-                "Microsoft.Bcl.AsyncInterfaces.dll",
-                "Microsoft.Bcl.AsyncInterfaces.xml",
-                "RCRPlanner.exe",
-                "RCRPlanner.exe.config",
-                "RCRPlanner.pdb",
-                "System.Buffers.dll",
-                "System.Buffers.xml",
-                "System.Memory.dll",
-                "System.Memory.xml",
-                "System.Net.Http.Json.dll",
-                "System.Net.Http.Json.xml",
-                "System.Numerics.Vectors.dll",
-                "System.Numerics.Vectors.xml",
-                "System.Runtime.CompilerServices.Unsafe.dll",
-                "System.Runtime.CompilerServices.Unsafe.xml",
-                "System.Text.Encodings.Web.dll",
-                "System.Text.Encodings.Web.xml",
-                "System.Text.Json.dll",
-                "System.Text.Json.xml",
-                "System.Threading.Tasks.Extensions.dll",
-                "System.Threading.Tasks.Extensions.xml",
-                "System.ValueTuple.dll",
-                "System.ValueTuple.xml",
-                "RCRUpdater.exe",
-                "XamlRadialProgressBar.DotNet.dll",
-            };
-            List<fileInfo> fileInfos = new List<fileInfo>();
-            foreach(var file in solutionFiles)
-            {
-                try
-                {
-                    fileInfo fileinfo = new fileInfo { FileHash = CalculateMD5(file), FileName = file };
-                    fileInfos.Add(fileinfo);
-                }
-                catch { }
-            }
-            SerializeObject<List<fileInfo>>(fileInfos , System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + "\\hashes.xml");
-            if(File.Exists(System.Windows.Forms.Application.StartupPath + "\\new_RCRUpdater.exe"))
-            {
-                File.Delete(System.Windows.Forms.Application.StartupPath + "\\RCRUpdater.exe");
-                File.Move(System.Windows.Forms.Application.StartupPath + "\\new_RCRUpdater.exe", System.Windows.Forms.Application.StartupPath + "\\RCRUpdater.exe");
-            }
-        }
-        static string CalculateMD5(string filename)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(filename))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-                }
-            }
-        }
+
         public static SecureString DecryptString(string encryptedData)
         {
             try
@@ -213,14 +157,6 @@ namespace RCRPlanner
         {
             return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
         }
-        public static void update()
-        {
-            string path = System.Windows.Forms.Application.StartupPath;
-            string fileName = Path.GetFileName(System.Windows.Forms.Application.ExecutablePath);
-            string pid = Process.GetCurrentProcess().Id.ToString();
-            string URL = Properties.Settings.Default.updateURL;
-            Process.Start("RCRUpdater.exe", "\"" + path + "\" \"" + fileName  + "\" \"" + pid + "\" \"" + URL + "\"");
-        } 
         public static System.Windows.Media.Color getNegative(string color)
         {
             System.Windows.Media.Color negative = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color);
@@ -244,9 +180,8 @@ namespace RCRPlanner
                     xmlDocument.Save(fileName);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                //Log exception here
             }
         }
 
@@ -274,9 +209,8 @@ namespace RCRPlanner
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                //Log exception here
             }
 
             return objectOut;
