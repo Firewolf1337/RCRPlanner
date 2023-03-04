@@ -308,7 +308,7 @@ namespace RCRPlanner
             var responseObject = JsonSerializer.Deserialize<githubLatestRelease.Root>(contents);
             if (version != responseObject.tag_name)
             {
-                using (HttpResponseMessage zipResponse = await client.GetAsync(responseObject.zipball_url))
+                using (HttpResponseMessage zipResponse = await client.GetAsync(responseObject.assets[0].browser_download_url))
                 {
                     if (zipResponse.IsSuccessStatusCode)
                     {
