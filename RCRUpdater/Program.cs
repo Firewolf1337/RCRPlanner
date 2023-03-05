@@ -16,6 +16,15 @@ namespace RCRUpdater
             processID = args[2].ToString();
 
             tempDir = args[3].ToString();
+
+            if(!updatePath.EndsWith(@"\"))
+            {
+                updatePath += @"\";
+            }
+            if (!tempDir.EndsWith(@"\"))
+            {
+                tempDir += @"\";
+            }
             try
             {
                 Process.GetProcessById(Convert.ToInt32(processID)).Kill();
