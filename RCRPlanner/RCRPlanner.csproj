@@ -218,9 +218,9 @@
     <Content Include="alarm.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="oddCarImages.xml">
+    <None Include="oddCarImages.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </None>
     <EmbeddedResource Include="salt.txt" />
   </ItemGroup>
   <ItemGroup>
