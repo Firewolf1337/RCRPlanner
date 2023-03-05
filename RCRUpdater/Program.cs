@@ -27,7 +27,9 @@ namespace RCRUpdater
             }
             try
             {
-                Process.GetProcessById(Convert.ToInt32(processID)).Kill();
+                Process pro = Process.GetProcessById(Convert.ToInt32(processID));
+                pro.Kill();
+                pro.WaitForExit(5000);
             }
             catch { }
 
@@ -35,8 +37,12 @@ namespace RCRUpdater
             foreach(var file in Directory.GetFiles(tempDir))
             {
                 string filename = Path.GetFileName(file);
-                File.Delete(updatePath + filename);
-                File.Move(file, updatePath + filename);
+                try
+                {
+                    File.Delete(updatePath + filename);
+                    File.Move(file, updatePath + filename);
+                }
+                catch (Exception ex) { Console.WriteLine(ex.Message); }
             }
             try
             {
