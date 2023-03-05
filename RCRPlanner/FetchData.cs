@@ -50,6 +50,7 @@ namespace RCRPlanner
         }
         public async Task<int> Login_API(byte[] Email, byte[] Password, bool forcelogin)
         {
+            HttpResponseMessage response;
             foreach (Cookie cookie in cookie.GetCookies(new Uri("https://iracing.com")))
             {
                 if (cookie.Name == "authtoken_members" && cookie.Expires > DateTime.Now.AddMinutes(10) && forcelogin == false)
@@ -61,13 +62,14 @@ namespace RCRPlanner
             {
                 handler.CookieContainer = cookie;
                 client = new HttpClient(handler);
+                string loginHash = EncryptPW(Email, Password);
+                string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
+                var content = new StringContent(postBody, Encoding.UTF8, "application/json");
+
+                response = await client.PostAsync(iracingAuthUrl, content);
             }
 
-            string loginHash = EncryptPW(Email, Password);
-            string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
-            var content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync(iracingAuthUrl, content);
             response = await client.GetAsync(iracingDataDoc);
 
             return Convert.ToInt32(response.StatusCode);

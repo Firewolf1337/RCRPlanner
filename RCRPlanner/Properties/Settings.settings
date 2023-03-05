@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="username" Type="System.String" Scope="User">
-      <Value Profile="(Default)">""</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="password" Type="System.String" Scope="User">
-      <Value Profile="(Default)">""</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="filter" Type="System.String" Scope="User">
       <Value Profile="(Default)">""</Value>
@@ -14,11 +14,14 @@
     <Setting Name="minimized" Type="System.String" Scope="User">
       <Value Profile="(Default)">false</Value>
     </Setting>
-    <Setting Name="updateURL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://ravencreekracing.de/rcrplanner/</Value>
-    </Setting>
     <Setting Name="defaultTimer" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="updateURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://api.github.com/repos/Firewolf1337/RCRPlanner/releases/latest</Value>
+    </Setting>
+    <Setting Name="UpdateSettings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -130,7 +130,13 @@ namespace RCRPlanner
         public MainWindow()
         {
             this.InitializeComponent();
-            if(Properties.Settings.Default.minimized == "true")
+            if (Properties.Settings.Default.UpdateSettings)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpdateSettings = false;
+                Properties.Settings.Default.Save();
+            }
+            if (Properties.Settings.Default.minimized == "true")
             {
                 this.WindowState = WindowState.Minimized;
                 this.cbStartMinimized.IsChecked = true;
@@ -330,19 +336,18 @@ namespace RCRPlanner
             {
                 _bwProgress.StatusText = "Fetching data from iRacion API due to missing files.";
                 bwPresetLoader.ReportProgress(20, _bwProgress);
-                if (savelogin)
+                if (savelogin && password.Length != 0)
                 {
                     _bwProgress.StatusText = "Credentials present. Conneting to API...";
                     bwPresetLoader.ReportProgress(25, _bwProgress);
-                    Task<int> status = fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),true);
+                    var status = fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),false);
                     status.Wait();
-                    lastLoginResult = status.Result;
-                    if (lastLoginResult == 401)
+                    if (status.Result == 401)
                     {
                         move_grid(gridLogin, "bottom", -250, moveAnimationDuration);
                         mre.WaitOne();
                     }
-                    if (lastLoginResult >= 200 && 210 >= lastLoginResult)
+                    if (status.Result >= 200 && 210 >= status.Result)
                     {
                         Task<memberInfo.Root> getUser = fData.getMemberInfo();
                         getUser.Wait();
@@ -413,8 +418,12 @@ namespace RCRPlanner
                 fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
                 try
                 {
-                    _bwProgress.StatusText = "Loading views.";
-                    bwPresetLoader.ReportProgress(70, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        _bwProgress.StatusText = "Loading views.";
+                        bwPresetLoader.ReportProgress(70, _bwProgress);
+                    }));
+                    
                 }
                 catch { }
                 createDgData();
@@ -426,8 +435,12 @@ namespace RCRPlanner
                 }));
                 try
                 {
-                    _bwProgress.StatusText = "Done";
-                    bwPresetLoader.ReportProgress(100, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        _bwProgress.StatusText = "Done";
+                        bwPresetLoader.ReportProgress(100, _bwProgress);
+                    }));
+                    
                 }
                 catch{ }
             }
@@ -541,10 +554,13 @@ namespace RCRPlanner
             int position;
             if (gridProfile.Height != 300)
             {
-                if (savelogin && await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),false) == 200)
+                if (password == null || password.Length == 0)
                 {
-                    User = await fData.getMemberInfo();
-                    helper.SerializeObject<memberInfo.Root>(User, userfile);
+                    if (savelogin && await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
+                    {
+                        User = await fData.getMemberInfo();
+                        helper.SerializeObject<memberInfo.Root>(User, userfile);
+                    }
                 }
                 string roadClass = User.licenses.road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro","P");
                 string ovalClass = User.licenses.oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
@@ -668,10 +684,9 @@ namespace RCRPlanner
                     password = tbLoginPasword.SecurePassword;
                 }
             }
-            Task<int> status = fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),true);
-            status.Wait();
-            lastLoginResult = status.Result;
-            if (lastLoginResult >= 200 && 210 >= lastLoginResult)
+            var status = await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),true);
+
+            if (status >= 200 && 210 >= status)
             {
                 User = await fData.getMemberInfo();
                 helper.SerializeObject<memberInfo.Root>(User, userfile);
@@ -1767,6 +1782,7 @@ namespace RCRPlanner
             }
             Properties.Settings.Default.filter = String.Join(";", filter);
             Properties.Settings.Default.Save();
+            Properties.Settings.Default.Reload();
             filterRaces();
         }
 
