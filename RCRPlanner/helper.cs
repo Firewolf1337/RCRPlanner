@@ -209,7 +209,7 @@ namespace RCRPlanner
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
             }
 

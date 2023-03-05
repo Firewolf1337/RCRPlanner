@@ -95,6 +95,9 @@
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System.Net.Http.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.Json.6.0.0\lib\net461\System.Net.Http.Json.dll</HintPath>
       <Private>True</Private>
@@ -151,6 +154,7 @@
     <Compile Include="dgObjects.cs" />
     <Compile Include="filehandler.cs" />
     <Compile Include="githubLatestRelease.cs" />
+    <Compile Include="oddCarImages.cs" />
     <Compile Include="searchSerieResults.cs" />
     <Compile Include="searchSeries.cs" />
     <Compile Include="seasonDriverStandings.cs" />
@@ -214,6 +218,9 @@
     <Content Include="alarm.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="oddCarImages.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <EmbeddedResource Include="salt.txt" />
   </ItemGroup>
   <ItemGroup>

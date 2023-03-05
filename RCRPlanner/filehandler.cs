@@ -149,6 +149,8 @@ namespace RCRPlanner
         }
         public async Task<List<carAssets>> getCarAssetsList(string filestring, string imagefolder, bool reload) {
             List<carAssets> carsAssetsList = new List<carAssets>();
+            List<oddCarImages> oddCarImgs = new List<oddCarImages>();
+            oddCarImgs = helper.DeSerializeObject<List<oddCarImages>>(@"oddCarImages.xml");
             //Load asset series information and fetching logos
             string file = exePath + filestring;
             if (File.Exists(file) && !reload)
@@ -171,7 +173,14 @@ namespace RCRPlanner
                 {
                     try
                     {
-                        await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file);
+                        if (oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id) != null)
+                        {
+                            await fData.getImage(oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id).imageUrl, file);
+                        }
+                        else
+                        {
+                            await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file);
+                        }
                     }
                     catch { }
                 }
