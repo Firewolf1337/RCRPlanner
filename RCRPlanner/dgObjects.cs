@@ -29,6 +29,7 @@ namespace RCRPlanner
             public List<carsDataGrid> Cars { get; set; }
             public string OwnCars { get; set; }
             public int OwnTracks { get; set; }
+            public string ForumLink { get; set; }
         }
 
         public class carsDataGrid
@@ -47,6 +48,7 @@ namespace RCRPlanner
             public int PackageID { get; set; }
             public int Series_Participations { get; set; }
             public string Favourite { get; set; }
+            public string ForumLink { get; set; }
         }
 
         public class tracksDataGrid

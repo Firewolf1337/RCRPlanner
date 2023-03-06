@@ -418,12 +418,8 @@ namespace RCRPlanner
                 fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
                 try
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        _bwProgress.StatusText = "Loading views.";
-                        bwPresetLoader.ReportProgress(70, _bwProgress);
-                    }));
-                    
+                    _bwProgress.StatusText = "Loading views.";
+                    bwPresetLoader.ReportProgress(70, _bwProgress);
                 }
                 catch { }
                 createDgData();
@@ -435,12 +431,9 @@ namespace RCRPlanner
                 }));
                 try
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        _bwProgress.StatusText = "Done";
-                        bwPresetLoader.ReportProgress(100, _bwProgress);
-                    }));
-                    
+
+                    _bwProgress.StatusText = "Done";
+                    bwPresetLoader.ReportProgress(100, _bwProgress);
                 }
                 catch{ }
             }
@@ -764,7 +757,8 @@ namespace RCRPlanner
             dgSeriesList.Clear();
             dgSeriesList = (from series in seriesList
                             join asset in seriesAssetsList on series.series_id equals asset.series_id
-                            join season in seriesSeasonList on series.series_id equals season.series_id
+                            join season in seriesSeasonList on series.series_id equals season.series_id into _ssL
+                            from alls in _ssL.DefaultIfEmpty()
                             join fav in favoutireSeries on series.series_id equals fav.series_id into ser
                             from allseries in ser.DefaultIfEmpty()
                             select new dgObjects.seriesDataGrid()
@@ -777,9 +771,10 @@ namespace RCRPlanner
                                 License = ((new List<series.AllowedLicense>(series.allowed_licenses)[0]).group_name).Replace("Class ", "").Replace("ookie", "") + " " + (new List<series.AllowedLicense>(series.allowed_licenses)[0].min_license_level - ((new List<series.AllowedLicense>(series.allowed_licenses)[0]).license_group - 1) * 4).ToString("0.00"),
                                 Eligible = series.eligible == true ? checksymbol : "",
                                 Favourite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
-                                Official = season.official == true ? checksymbol : unchecksymbol,
-                                Fixed = season.fixed_setup == true ? checksymbol : unchecksymbol,
-                                Season = season,
+                                Official = alls?.official == true ? checksymbol : unchecksymbol,
+                                Fixed = alls?.fixed_setup == true ? checksymbol : unchecksymbol,
+                                Season = alls != null ? alls : new seriesSeason.Root(),
+                                ForumLink = series.forum_url,
                             }).ToList<dgObjects.seriesDataGrid>();
            foreach(var serie in dgSeriesList)
             {
@@ -855,12 +850,13 @@ namespace RCRPlanner
                 carsDataGridObject.Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern);
                 carsDataGridObject.Series = seriesDataGridsList;
                 carsDataGridObject.Series_Participations = seriesDataGridsList.Count;
-                dgCarsList.Add(carsDataGridObject);
-                dgCarsList.Sort((x, y) => x.CarName.CompareTo(y.CarName));
+                carsDataGridObject.ForumLink = car.forum_url;
+                dgCarsList.Add(carsDataGridObject);  
             }
-            foreach(var serie in dgSeriesList)
+            dgCarsList.Sort((x, y) => x.CarName.CompareTo(y.CarName));
+            foreach (var serie in dgSeriesList)
             {
-                var cars = dgCarsList.FindAll(c => c.Series.Any(s => s.SerieId == serie.SerieId));
+                var cars = dgCarsList.FindAll(c => c.Series.Any(s => s != null ?  s.SerieId == serie.SerieId : false));
                 if (serie.Cars == null)
                 {
                     serie.Cars = cars;
@@ -881,7 +877,7 @@ namespace RCRPlanner
                 List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
                 foreach (var tracksinseries in tracksInSeries)
                 {
-                    if (tracksinseries.track_id == track.track_id && !seriesDataGridsList.Any(s => s.SerieId == tracksinseries.series_id))
+                    if (tracksinseries.track_id == track.track_id && !seriesDataGridsList.Any(s => s != null? s.SerieId == tracksinseries.series_id: false))
                     {
 
                         var seriesDataGridsObject = (from serie in dgSeriesList
@@ -900,9 +896,9 @@ namespace RCRPlanner
                                                      }).FirstOrDefault();
                         seriesDataGridsList.Add(seriesDataGridsObject);
                     }
-                    else if (tracksinseries.track_id == track.track_id && seriesDataGridsList.Any(s => s.SerieId == tracksinseries.series_id))
+                    else if (tracksinseries.track_id == track.track_id && seriesDataGridsList.Any(s => s != null ? s.SerieId == tracksinseries.series_id : false))
                     {
-                        var _trackObj = seriesDataGridsList.FirstOrDefault(t => t.SerieId == tracksinseries.series_id);
+                        var _trackObj = seriesDataGridsList.FirstOrDefault(t => t != null ? t.SerieId == tracksinseries.series_id : false);
                         if (_trackObj != null)
                         {
                             _trackObj.Weeks += ", " + tracksinseries.week;
@@ -1058,7 +1054,7 @@ namespace RCRPlanner
                         nextseason = season;
                     }
                 }
-                if (tracksinserie[0].SeasonSchedule.race_time_descriptors[0].repeating)
+                if (tracksinserie.Count() > 0 && tracksinserie[0].SeasonSchedule.race_time_descriptors[0].repeating)
                 {
                     int index = tracksinserie[lastseason.week - 1].SeasonSchedule.race_time_descriptors[0].day_offset.Count();
                     daysoffset = tracksinserie[lastseason.week - 1].SeasonSchedule.race_time_descriptors[0].day_offset[index - 1];
@@ -1080,7 +1076,7 @@ namespace RCRPlanner
                 }
                 else
                 {
-                    if (Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
+                    if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
                     {
                         actualweekofserie = lastseason;
                     }
@@ -1093,9 +1089,17 @@ namespace RCRPlanner
                         actualweekofserie = lastseason;
                         over = true;
                     }
-                    var nextrace = actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times.FirstOrDefault(s => s >= actualtime);
-                    firstracetime = nextrace;
-                    repeattimes = actualweekofserie.SeasonSchedule.race_time_descriptors[0].repeat_minutes;
+                    if (actualweekofserie.SeasonSchedule != null)
+                    {
+                        var nextrace = actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times.FirstOrDefault(s => s >= actualtime);
+                        firstracetime = nextrace;
+                        repeattimes = actualweekofserie.SeasonSchedule.race_time_descriptors[0].repeat_minutes;
+                    }
+                    else
+                    {
+                        firstracetime = new DateTime();
+                        repeattimes = 0;
+                    }
                 }
                 foreach (var track in serie.Tracks)
                 {
@@ -1111,68 +1115,71 @@ namespace RCRPlanner
                 var racetime = helper.getNextRace(DateTime.SpecifyKind(firstracetime, DateTimeKind.Utc), repeattimes, actualtime).ToLocalTime();
                 dgObjects.RaceOverviewDataGrid _raceobj = new dgObjects.RaceOverviewDataGrid();
                 var tr = tracksList.FirstOrDefault(t => t.track_id == actualweekofserie.track_id);
-                List<dgObjects.carsDataGrid> cars = new List<dgObjects.carsDataGrid>();
-                foreach (var car in carsInSeries.Where(s => s.series_id == serie.SerieId))
+                if (tr != null)
                 {
-                    cars.Add(dgCarsList.First(c => c.CarId == car.car_id));
-                }
-                _raceobj.Cars = cars;
-                _raceobj.Track = dgTrackLayoutList.FirstOrDefault(t => t.PackageID == tr.package_id);
-                _raceobj.Tracks = serie.Tracks;
-                _raceobj.SerieId = serie.SerieId;
-                _raceobj.Seriesimage = serie.Seriesimage;
-                _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" : actualweekofserie.SeasonSchedule.race_time_limit.ToString() + " Min";
-                _raceobj.SeriesName = serie.SeriesName;
-                _raceobj.TrackName = tr.track_name;
-                _raceobj.Serie = serie;
-                _raceobj.TracksOwned = serie.Tracks.Count(t => t.Owned == checksymbol).ToString() + "/" + serie.Tracks.Count();
-                _raceobj.NextRace = racetime;
-
-                _raceobj.Timer = RaceAlarms.Any(a => a.SerieId == serie.SerieId) ? alarmClockSymbol : clockSymbol;
-                if (racetime.Date == DateTime.Now.Date && racetime > DateTime.Now && !over)
-                {
-                    _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
-
-                }
-                else if (racetime.Year == DateTime.Parse("01.01.0001").Year || over)
-                {
-                    _raceobj.NextRaceTime = "Season is over.";
-                }
-                else
-                {
-                    _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + ", " + CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
-                }
-                if(actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times != null)
-                {
-                    List<DateTime> sessionTimes = new List<DateTime>();
-                    foreach(DateTime x in actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times)
+                    List<dgObjects.carsDataGrid> cars = new List<dgObjects.carsDataGrid>();
+                    foreach (var car in carsInSeries.Where(s => s.series_id == serie.SerieId))
                     {
-                        sessionTimes.Add(DateTime.SpecifyKind(x, DateTimeKind.Utc).ToLocalTime());
+                        cars.Add(dgCarsList.First(c => c.CarId == car.car_id));
                     }
-                    _raceobj.SessionTimes = String.Join(", ", sessionTimes);
-                }
-                else
-                {
-                    _raceobj.SessionTimes = null;
-                }
-                _raceobj.FirstSessionTime = firstracetime.ToLocalTime().ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
-                if(repeattimes > 0)
-                {
-                    if(repeattimes >= 60)
+                    _raceobj.Cars = cars;
+                    _raceobj.Track = dgTrackLayoutList.FirstOrDefault(t => t.PackageID == tr.package_id);
+                    _raceobj.Tracks = serie.Tracks;
+                    _raceobj.SerieId = serie.SerieId;
+                    _raceobj.Seriesimage = serie.Seriesimage;
+                    _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" : actualweekofserie.SeasonSchedule.race_time_limit.ToString() + " Min";
+                    _raceobj.SeriesName = serie.SeriesName;
+                    _raceobj.TrackName = tr.track_name;
+                    _raceobj.Serie = serie;
+                    _raceobj.TracksOwned = serie.Tracks.Count(t => t.Owned == checksymbol).ToString() + "/" + serie.Tracks.Count();
+                    _raceobj.NextRace = racetime;
+
+                    _raceobj.Timer = RaceAlarms.Any(a => a.SerieId == serie.SerieId) ? alarmClockSymbol : clockSymbol;
+                    if (racetime.Date == DateTime.Now.Date && racetime > DateTime.Now && !over)
                     {
-                        _raceobj.Repeating = repeattimes >= 60 ? "Every " + repeattimes / 60 + " hours" : "Every " + repeattimes / 60 + " hour";
+                        _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+
+                    }
+                    else if (racetime.Year == DateTime.Parse("01.01.0001").Year || over)
+                    {
+                        _raceobj.NextRaceTime = "Season is over.";
                     }
                     else
                     {
-                        _raceobj.Repeating = "Every " + repeattimes + " minutes" ;
+                        _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + ", " + CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
                     }
+                    if(actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times != null)
+                    {
+                        List<DateTime> sessionTimes = new List<DateTime>();
+                        foreach(DateTime x in actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times)
+                        {
+                            sessionTimes.Add(DateTime.SpecifyKind(x, DateTimeKind.Utc).ToLocalTime());
+                        }
+                        _raceobj.SessionTimes = String.Join(", ", sessionTimes);
+                    }
+                    else
+                    {
+                        _raceobj.SessionTimes = null;
+                    }
+                    _raceobj.FirstSessionTime = firstracetime.ToLocalTime().ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+                    if(repeattimes > 0)
+                    {
+                        if(repeattimes >= 60)
+                        {
+                            _raceobj.Repeating = repeattimes >= 60 ? "Every " + repeattimes / 60 + " hours" : "Every " + repeattimes / 60 + " hour";
+                        }
+                        else
+                        {
+                            _raceobj.Repeating = "Every " + repeattimes + " minutes" ;
+                        }
+                    }
+                    else
+                    {
+                        _raceobj.Repeating = "Set times";
+                    }
+                    _raceobj.TrackOwned = User.track_packages.Any(t => t.package_id == tr.package_id) ? true : false;
+                    dgRaceOverviewList.Add(_raceobj);
                 }
-                else
-                {
-                    _raceobj.Repeating = "Set times";
-                }
-                _raceobj.TrackOwned = User.track_packages.Any(t => t.package_id == tr.package_id) ? true : false;
-                dgRaceOverviewList.Add(_raceobj);
             }
             dgRaceOverviewList.Sort((x, y) => x.NextRace.CompareTo(y.NextRace));
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -1289,12 +1296,14 @@ namespace RCRPlanner
             lblDetails4.Content = "";
             lblDetails5.Content = "";
             lblDetails6.Content = "";
+            lblDetails7.Content = "";
             tbDetail1.Text = "";
             tbDetail2.Text = "";
             tbDetail3.Text = "";
             tbDetail4.Text = "";
             tbDetail5.Text = "";
             tbDetail6.Text = "";
+            tbDetail7.Visibility = Visibility.Hidden;
             imDetailImage.Source = null;
         }
         private void scrollDataGridIntoView(object sender)
@@ -1320,6 +1329,16 @@ namespace RCRPlanner
                         lblDetails2.Content = "Horsepower:";
                         tbDetail1.Text = ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).Weight.ToString();
                         lblDetails1.Content = "Weight:";
+                        lblDetails7.Content = "Forum Link:";
+                        tbDetail7.Visibility = Visibility.Visible;
+                        if (((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink != null){
+                            tbDetail7Link.NavigateUri = new Uri(((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink);
+                            tbDetail7Link.ToolTip = ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink;
+                        }
+                        else
+                        {
+                            tbDetail7.Visibility = Visibility.Hidden;
+                        }
                         try
                         {
                             imDetailImage.Source = new BitmapImage(((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarImage);
@@ -2138,6 +2157,31 @@ namespace RCRPlanner
 
         }
 
+        private void link_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (((Hyperlink)sender).NavigateUri != null)
+                {
+                    Process.Start(new ProcessStartInfo(((Hyperlink)sender).NavigateUri.ToString()));
+                    e.Handled = true;
+                }
+            }
+            catch { }
 
+        }
+
+        private void link_Copy(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (((Hyperlink)sender).NavigateUri != null)
+                {
+                    Clipboard.SetText(((Hyperlink)sender).NavigateUri.ToString());
+                    e.Handled = true;
+                }
+            }
+            catch { }
+        }
     }
 }

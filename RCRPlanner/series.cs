@@ -30,6 +30,7 @@ namespace RCRPlanner
             public int series_id { get; set; }
             public string series_name { get; set; }
             public string series_short_name { get; set; }
+            public string forum_url { get; set; }
         }
 
     }

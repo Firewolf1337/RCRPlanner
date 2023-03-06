@@ -68,6 +68,7 @@ namespace RCRPlanner
             public List<string> categories { get; set; }
             public DateTime created { get; set; }
             public bool free_with_subscription { get; set; }
+            public string forum_url { get; set; }
             public bool has_headlights { get; set; }
             public bool has_multiple_dry_tire_types { get; set; }
             public int hp { get; set; }
