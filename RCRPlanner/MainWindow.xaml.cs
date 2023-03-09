@@ -58,6 +58,7 @@ namespace RCRPlanner
         string alarmClockSymbol = "⏰";
         string clockSymbol = "🕙";
         string activeGrid = "";
+        string magnifier = "🔍";
         bool reloadData = false;
         int lastLoginResult = -1;
         bool savelogin = false;
@@ -1266,6 +1267,140 @@ namespace RCRPlanner
                 gridRaces.UpdateLayout();
             }));
         }
+        private void filterSeries()
+        {
+            if (tbMenu2tb.Text != "" || cbMenu4.IsChecked == false || cbMenu5.IsChecked == false)
+            {
+                List<dgObjects.seriesDataGrid> dgFilteredSeries = new List<dgObjects.seriesDataGrid>();
+                dgFilteredSeries.Clear();
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach (var ser in dgSeriesList)
+                    {
+                        bool toadd = false;
+                        if (cbMenu4.IsChecked == true && (ser.Eligible == checksymbol))
+                        {
+                            toadd = true;
+                        }
+                        if (cbMenu5.IsChecked == true && (ser.Eligible != checksymbol))
+                        {
+                            toadd = true;
+                        }
+                        if (toadd)
+                        {
+                            foreach (string sername in tbMenu2tb.Text.Split(','))
+                            {
+                                if (ser.SeriesName.Contains(sername.Trim()))
+                                {
+                                    dgFilteredSeries.Add(ser);
+                                }
+                            }
+                        }
+                    }
+                    gridSeries.ItemsSource = null;
+                    gridSeries.ItemsSource = dgFilteredSeries;
+                    gridSeries.UpdateLayout();
+                }));
+            }
+            else
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    gridSeries.ItemsSource = null;
+                    gridSeries.ItemsSource = dgSeriesList;
+                    gridSeries.UpdateLayout();
+                }));
+            }
+        }
+        private void filterCars()
+        {
+            if (tbMenu2tb.Text != "" || cbMenu4.IsChecked == false || cbMenu5.IsChecked == false)
+            {
+                List<dgObjects.carsDataGrid> dgFilteredCars = new List<dgObjects.carsDataGrid>();
+                dgFilteredCars.Clear();
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach (var car in dgCarsList)
+                    {
+                        bool toadd = false;
+                        if (cbMenu4.IsChecked == true && (car.Owned == checksymbol))
+                        {
+                            toadd = true;
+                        }
+                        if (cbMenu5.IsChecked == true && (car.Owned != checksymbol))
+                        {
+                            toadd = true;
+                        }
+                        if (toadd)
+                        {
+                            foreach (string carname in tbMenu2tb.Text.Split(','))
+                            {
+                                if (car.CarName.Contains(carname.Trim()))
+                                {
+                                    dgFilteredCars.Add(car);
+                                }
+                            }
+                        }
+                    }
+                    gridCars.ItemsSource = null;
+                    gridCars.ItemsSource = dgFilteredCars;
+                    gridCars.UpdateLayout();
+                }));
+            }
+            else
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    gridCars.ItemsSource = null;
+                    gridCars.ItemsSource = dgCarsList;
+                    gridCars.UpdateLayout();
+                }));
+            }
+        }
+        private void filterTracks() {
+            if (tbMenu2tb.Text != "" || cbMenu4.IsChecked == false || cbMenu5.IsChecked == false)
+            {
+                List<dgObjects.tracksLayoutsDataGrid> dgFilteredTracks = new List<dgObjects.tracksLayoutsDataGrid>();
+                dgFilteredTracks.Clear();
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach (var track in dgTrackLayoutList)
+                    {
+                        bool toadd = false;
+                        if (cbMenu4.IsChecked == true && (track.Owned == checksymbol))
+                        {
+                            toadd = true;
+                        }
+                        if (cbMenu5.IsChecked == true && (track.Owned != checksymbol))
+                        {
+                            toadd = true;
+                        }
+                        if (toadd)
+                        {
+                            foreach (string trname in tbMenu2tb.Text.Split(','))
+                            {
+                                if (track.Name.Contains(trname.Trim()) || tbMenu2tb.Text == "")
+                                {
+                                    dgFilteredTracks.Add(track);
+                                }
+                            }
+                        }
+                    }
+                    gridTracksLayout.ItemsSource = null;
+                    gridTracksLayout.ItemsSource = dgFilteredTracks;
+                    gridTracksLayout.UpdateLayout();
+                }));
+            }
+            else
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    gridTracksLayout.ItemsSource = null;
+                    gridTracksLayout.ItemsSource = dgTrackLayoutList;
+                    gridTracksLayout.UpdateLayout();
+                }));
+            }
+        }
         private void generateAutoStartView()
         {
 
@@ -1465,51 +1600,74 @@ namespace RCRPlanner
         private void btnLoadCars_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridCars";
-            btnMenu1.Visibility = Visibility.Hidden;
+            btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
+            tbMenu2.Visibility = Visibility.Visible;
             dpMenu2.Visibility = Visibility.Hidden;
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
-            cbMenu4.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
-            cbMenu5.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
+            btnMenu1.Content = magnifier;
+            btnMenu1.Width = 40;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
+            tbMenu2lb.Content = "Car name:";
+            tbMenu2tb.Text = "";
+            cbMenu4.Content = "Owned cars";
+            cbMenu4.IsChecked = true;
+            cbMenu5.Content = "Not owned cars";
+            cbMenu5.IsChecked = true;
+            cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
             clearDetails();
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid>{ gridCars, gridCarDetail } , true);
+            filterCars();
 
         }
 
         private void btnLoadTracks_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridTracksLayout";
-            btnMenu1.Visibility = Visibility.Hidden;
+            btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
+            tbMenu2.Visibility = Visibility.Visible;
             dpMenu2.Visibility = Visibility.Hidden;
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
-            cbMenu4.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
-            cbMenu5.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
+            btnMenu1.Content = magnifier;
+            btnMenu1.Width = 40;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
+            tbMenu2lb.Content = "Track name:";
+            tbMenu2tb.Text = "";
+            cbMenu4.Content = "Owned tracks";
+            cbMenu4.IsChecked = true;
+            cbMenu5.Content = "Not owned tracks";
+            cbMenu5.IsChecked = true;
+            cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
             clearDetails();
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridTracksLayout, gridTrackDetail }, true);
+            filterTracks();
         }
 
         private void btnLoadPurchase_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridPurchaseGuide";
             btnMenu1.Visibility = Visibility.Visible;
-            btnMenu1.Content = "Reload";
             cbMenu2.Visibility = Visibility.Visible;
-            cbMenu2.Content = "only if owned track in serie <8";
+            tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Hidden;
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
@@ -1520,6 +1678,10 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
+            btnMenu1.Content = "Reload";
+            btnMenu1.Width = 80;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
+            cbMenu2.Content = "only if owned track in serie <8";
             generatePurchaseGuideView();
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridPurchaseGuide }, false);
@@ -1528,18 +1690,29 @@ namespace RCRPlanner
         private void btnLoadSeries_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridSeries";
-            btnMenu1.Visibility = Visibility.Hidden;
+            btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
+            tbMenu2.Visibility = Visibility.Visible;
             dpMenu2.Visibility = Visibility.Hidden;
             lbMenu2.Visibility = Visibility.Hidden;
-            dpMenu3.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
+            dpMenu3.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
-            cbMenu4.Visibility = Visibility.Hidden;
-            cbMenu5.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
+            btnMenu1.Content = magnifier;
+            btnMenu1.Width = 40;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
+            tbMenu2lb.Content = "Serie name:";
+            tbMenu2tb.Text = "";
+            cbMenu4.Content = "Eligible series";
+            cbMenu4.IsChecked = true;
+            cbMenu5.Content = "Not eligible series";
+            cbMenu5.IsChecked = true;
+            cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridSeries }, false);
         }
@@ -1548,23 +1721,10 @@ namespace RCRPlanner
         {
             activeGrid = "gridRaces";
             btnMenu1.Visibility = Visibility.Visible;
-            btnMenu1.Content = "Filter";
-            
-
             cbMenu2.Visibility = Visibility.Hidden;
+            tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Visible;
-            ddMenu2.Items.Clear();
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "No Offset", Name = "i0" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "1 Minute", Name = "i1" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "2 Minutes", Name = "i2" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "5 Minutes", Name = "i5" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "10 Minutes", Name = "i10" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "15 Minutes", Name = "i15" });
-
-            ddMenu2.SelectedIndex = Properties.Settings.Default.defaultTimer;
             lbMenu2.Visibility = Visibility.Visible;
-            lbMenu2.Content = "Alarm offset:";
-
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
@@ -1573,6 +1733,18 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Visible;
             btnMenu6.Visibility = Visibility.Hidden;
+            btnMenu1.Content = "Show filter";
+            btnMenu1.Width = 100;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
+            ddMenu2.Items.Clear();
+            ddMenu2.Items.Add(new ComboBoxItem() { Content = "No Offset", Name = "i0" });
+            ddMenu2.Items.Add(new ComboBoxItem() { Content = "1 Minute", Name = "i1" });
+            ddMenu2.Items.Add(new ComboBoxItem() { Content = "2 Minutes", Name = "i2" });
+            ddMenu2.Items.Add(new ComboBoxItem() { Content = "5 Minutes", Name = "i5" });
+            ddMenu2.Items.Add(new ComboBoxItem() { Content = "10 Minutes", Name = "i10" });
+            ddMenu2.Items.Add(new ComboBoxItem() { Content = "15 Minutes", Name = "i15" });
+            ddMenu2.SelectedIndex = Properties.Settings.Default.defaultTimer;
+            lbMenu2.Content = "Alarm offset:";
 
             stackPanelMenuClose_MouseDown(null, null);
             generateRaceView();
@@ -1581,13 +1753,22 @@ namespace RCRPlanner
         private void btnPartStats_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridPartStat";
+            tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Visible;
             btnMenu1.Visibility = Visibility.Visible;
+            cbMenu2.Visibility = Visibility.Hidden;
+            cbMenu3.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Hidden;
+            tbMenu6.Visibility = Visibility.Hidden;
+            btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Loading...";
+            btnMenu1.Width = 100;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
             btnMenu1.IsEnabled = false;
             ddMenu2.Items.Clear();
             ddMenu3.Items.Clear();
@@ -1610,14 +1791,6 @@ namespace RCRPlanner
                 ddMenu3.Items.Add(new ComboBoxItem() { Content = i, Name = "y" + i });
             }
             ddMenu3.SelectedIndex = ddMenu3.Items.IndexOf(ddMenu3.Items.OfType<ComboBoxItem>().FirstOrDefault(x => x.Content.ToString() == DateTime.Now.Year.ToString()));
-
-
-            cbMenu2.Visibility = Visibility.Hidden;
-            cbMenu3.Visibility = Visibility.Hidden;
-            cbMenu4.Visibility = Visibility.Hidden;
-            cbMenu5.Visibility = Visibility.Hidden;
-            tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridPartStat }, false);
             btnMenu1.Content = "Get stat";
@@ -1626,13 +1799,22 @@ namespace RCRPlanner
         private void btniRatingStats_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridiRatingStat";
+            tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
+            cbMenu2.Visibility = Visibility.Hidden;
+            cbMenu3.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Hidden;
+            tbMenu6.Visibility = Visibility.Hidden;
+            btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Loading...";
+            btnMenu1.Width = 80;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
             btnMenu1.IsEnabled = false;
             ddMenu2.Items.Clear();
             ddMenu3.Items.Clear();
@@ -1644,14 +1826,6 @@ namespace RCRPlanner
             {
                 ddMenu2.Items.Add(new ComboBoxItem() { Content = serie.SeriesName, Name = "s" + serie.SerieId.ToString() });
             }
-           
-
-            cbMenu2.Visibility = Visibility.Hidden;
-            cbMenu3.Visibility = Visibility.Hidden;
-            cbMenu4.Visibility = Visibility.Hidden;
-            cbMenu5.Visibility = Visibility.Hidden;
-            tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridiRatingStat }, false);
             btnMenu1.Content = "Get stat";
@@ -1661,33 +1835,31 @@ namespace RCRPlanner
         {
             activeGrid = "gridAutoStart";
             btnMenu1.Visibility = Visibility.Visible;
-            btnMenu1.Content = "Add program";
-
             cbMenu2.Visibility = Visibility.Visible;
-            cbMenu2.Content = "Auto start progams on launch?";
-            cbMenu2.IsChecked = autoStartApps.Active;
+            tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Hidden;
             lbMenu2.Visibility = Visibility.Hidden;
-
             cbMenu3.Visibility = Visibility.Visible;
+            dpMenu3.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Visible;
+            dpMenu4.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Visible;
+            dpMenu5.Visibility = Visibility.Hidden;
+            tbMenu6.Visibility = Visibility.Hidden;
+            btnMenu6.Visibility = Visibility.Hidden;
+            cbMenu2.IsChecked = autoStartApps.Active;
+            btnMenu1.Content = "Add program";
+            btnMenu1.Width = 100;
+            btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
+            cbMenu2.Content = "Auto start progams on launch?";
             cbMenu3.Content = "Start programs minimized?";
             cbMenu3.IsChecked = autoStartApps.Minimized;
-            dpMenu3.Visibility = Visibility.Hidden;
-
-            cbMenu4.Visibility = Visibility.Visible;
             cbMenu4.Content = "Kill programs on close?";
             cbMenu4.IsChecked = autoStartApps.Kill;
-            dpMenu4.Visibility = Visibility.Hidden;
-
-            cbMenu5.Visibility = Visibility.Visible;
             cbMenu5.Content = "Kill programs by Name?";
             cbMenu5.ToolTip = "Can lead to data loss, since all programs with the specified program name will be closed!";
             cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Yellow"));
             cbMenu5.IsChecked = autoStartApps.KillByName;
-            dpMenu5.Visibility = Visibility.Hidden;
-
-            tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
             clearDetails();
             stackPanelMenuClose_MouseDown(null, null);
             generateAutoStartView();
@@ -1886,6 +2058,15 @@ namespace RCRPlanner
                     break;
                 case "gridRaces":
                     resize_Grid(gridFilter, "height", 285, moveAnimationDuration);
+                    break;
+                case "gridSeries":
+                    filterSeries();
+                    break;
+                case "gridCars":
+                    filterCars();
+                    break;
+                case "gridTracksLayout":
+                    filterTracks();
                     break;
                 case "gridPurchaseGuide":
                     generatePurchaseGuideView();
