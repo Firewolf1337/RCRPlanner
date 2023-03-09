@@ -85,6 +85,7 @@ namespace RCRPlanner
             public Uri TrackImage { get; set; }
             public string Created { get; set; }
             public string Favourite { get; set; }
+            public int TrackID { get; set; }
         }
 
         public class RaceOverviewDataGrid

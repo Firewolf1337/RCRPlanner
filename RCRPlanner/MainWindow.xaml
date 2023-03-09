@@ -112,7 +112,11 @@
                     <Label x:Name="lblDetails7" Grid.Column="1" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
                     <TextBlock x:Name="tbDetail7" Grid.Column="2" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
                         <Hyperlink x:Name="tbDetail7Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="White">Left click open / Right click copy</Hyperlink>
-                     </TextBlock>               
+                     </TextBlock>
+                    <Label x:Name="lblDetails8" Grid.Column="3" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
+                    <TextBlock x:Name="tbDetail8" Grid.Column="4" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
+                        <Hyperlink x:Name="tbDetail8Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="White">Left click open / Right click copy</Hyperlink>
+                    </TextBlock>
                     <DataGrid x:Name="gridCarDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30"  GridLinesVisibility="Horizontal" Visibility="Visible" 
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" BorderBrush="{StaticResource DefaultBorderBrush}">
                         <DataGrid.Columns>
@@ -153,7 +157,7 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="gridTrackDetail" Grid.Row="4" Grid.RowSpan="9" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30" GridLinesVisibility="Horizontal" Visibility="Visible"
+                    <DataGrid x:Name="gridTrackDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30" GridLinesVisibility="Horizontal" Visibility="Visible"
                                   SelectionMode="Extended" ScrollViewer.CanContentScroll="False"
                                   PreviewMouseWheel="DataGrid_PreviewMouseWheel" BorderBrush="{StaticResource DefaultBorderBrush}">
                         <DataGrid.Columns>

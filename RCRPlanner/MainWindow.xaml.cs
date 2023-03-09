@@ -940,6 +940,7 @@ namespace RCRPlanner
                     newTrack.Layouts_count = 1;
                     newTrack.Participations = track.Participations;
                     newTrack.Favourite = favoutireTracks.Any(x => x.track_id == track.PackageID)? favsymbolSelected : favsymbolUnselected;
+                    newTrack.TrackID = track.TrackID;
                     dgTrackLayoutList.Add(newTrack);
                 }
                 else if (dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
@@ -1304,6 +1305,7 @@ namespace RCRPlanner
             tbDetail5.Text = "";
             tbDetail6.Text = "";
             tbDetail7.Visibility = Visibility.Hidden;
+            tbDetail8.Visibility = Visibility.Hidden;
             imDetailImage.Source = null;
         }
         private void scrollDataGridIntoView(object sender)
@@ -1329,11 +1331,23 @@ namespace RCRPlanner
                         lblDetails2.Content = "Horsepower:";
                         tbDetail1.Text = ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).Weight.ToString();
                         lblDetails1.Content = "Weight:";
-                        lblDetails7.Content = "Forum Link:";
+                        lblDetails8.Content = "Forum Link:";
+                        tbDetail8.Visibility = Visibility.Visible;
+                        lblDetails7.Content = "🛒 Link:";
                         tbDetail7.Visibility = Visibility.Visible;
+                        if (((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarId != null)
+                        {
+                            string url = "https://members.iracing.com/membersite/member/CarDetail.do?carid=" + ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarId;
+                            tbDetail7Link.NavigateUri = new Uri(url);
+                            tbDetail7Link.ToolTip = url;
+                        }
+                        else
+                        {
+                            tbDetail7.Visibility = Visibility.Hidden;
+                        }
                         if (((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink != null){
-                            tbDetail7Link.NavigateUri = new Uri(((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink);
-                            tbDetail7Link.ToolTip = ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink;
+                            tbDetail8Link.NavigateUri = new Uri(((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink);
+                            tbDetail8Link.ToolTip = ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).ForumLink;
                         }
                         else
                         {
@@ -1361,6 +1375,18 @@ namespace RCRPlanner
                                 }
                             }
                             gridTrackDetail.ItemsSource = seriesOnTrack;
+                            lblDetails7.Content = "🛒 Link:";
+                            tbDetail7.Visibility = Visibility.Visible;
+                            if (((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((DataGrid)sender).SelectedItem).TrackID != null)
+                            {
+                                string url = "https://members.iracing.com/membersite/member/TrackDetail.do?trkid=" + ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((DataGrid)sender).SelectedItem).TrackID;
+                                tbDetail7Link.NavigateUri = new Uri(url);
+                                tbDetail7Link.ToolTip = url;
+                            }
+                            else
+                            {
+                                tbDetail7.Visibility = Visibility.Hidden;
+                            }
                             //gridTrackDetail.ItemsSource = ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((DataGrid)sender).SelectedItem).Layouts;
                         }
                         break;
