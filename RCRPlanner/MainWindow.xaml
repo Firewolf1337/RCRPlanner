@@ -200,7 +200,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="60" Width="100*" SortMemberPath="Favourite" HeaderStyle="{StaticResource DataGridHeaderCenter}" CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                            <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="60" Width="100" SortMemberPath="Favourite" HeaderStyle="{StaticResource DataGridHeaderCenter}" CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Favourite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavoutire_MouseDown"/>

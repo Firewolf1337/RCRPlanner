@@ -17,7 +17,7 @@ namespace RCRUpdater
 
             tempDir = args[3].ToString();
 
-            if(!updatePath.EndsWith(@"\"))
+            if (!updatePath.EndsWith(@"\"))
             {
                 updatePath += @"\";
             }
@@ -31,10 +31,16 @@ namespace RCRUpdater
                 pro.Kill();
                 pro.WaitForExit(5000);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Step killing Planner files error:");
+                Console.WriteLine(ex.Message);
+            }
 
 
-            foreach(var file in Directory.GetFiles(tempDir))
+
+
+            foreach (var file in Directory.GetFiles(tempDir))
             {
                 string filename = Path.GetFileName(file);
                 try
@@ -42,14 +48,26 @@ namespace RCRUpdater
                     File.Delete(updatePath + filename);
                     File.Move(file, updatePath + filename);
                 }
-                catch (Exception ex) { Console.WriteLine(ex.Message); }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Step moving files error:");
+                    Console.WriteLine(ex.Message);
+                }
             }
             try
             {
                 Directory.Delete(tempDir);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Step deleting temp folder error:");
+                Console.WriteLine(ex.Message);
+            }
+
+
             Process.Start(updatePath + "\\" + updateFileName, "/noAutostart");
+            Console.WriteLine("Press any key to continue.");
+            Console.ReadLine();
         }
     }
 }

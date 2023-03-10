@@ -1498,7 +1498,7 @@ namespace RCRPlanner
                         }
                         else
                         {
-                            tbDetail7.Visibility = Visibility.Hidden;
+                            tbDetail8.Visibility = Visibility.Hidden;
                         }
                         try
                         {
