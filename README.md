@@ -9,6 +9,12 @@ In addition, it is possible to create some interesting statistics.
 If you are interested, try it! No installation necessary. Just extract the zip file in an empty folder of your choice.
 
 
+## Handling and Troubleshooting 
+* **There is no auto refresh of the data.**
+    * You need to manually refresh the data when the new season or "Week 13" starts or you purchase something.
+
+* **Please try to start with a fresh copy in an empty folder, if you have any problems after some time with the planner.**
+
 ## Overview
 #### Start and Login
 At first run, you need to login with your iRacing credentials to download all necessary files and data from the iRacing API.
@@ -22,7 +28,7 @@ There you can see your ingame name and iRacing ID and your license class and iRa
 ![Profile](/doc/images/profile.png)
 
 #### Main Menu
-On the upper part, you can see the different views for the different contents in iRacing. At the bottom, you can update or reset the Planner or set it to start minimized. Also you can the actual running version of your planner.
+On the upper part, you can see the different views for the different contents in iRacing. At the bottom, you can update or reset the Planner or set it to start minimized. Also you can see the actual running version of your planner.
 
 ![Main Menu](/doc/images/main_menu.png)
 
