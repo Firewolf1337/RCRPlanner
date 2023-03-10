@@ -6,7 +6,7 @@ You can automatically start applications which you need while racing and close t
 In addition, it is possible to create some interesting statistics.
 
 
-If you are interested, try it! No installation necessary. Just extract the zip file in a folder of your choice.
+If you are interested, try it! No installation necessary. Just extract the zip file in an empty folder of your choice.
 
 
 ## Overview
