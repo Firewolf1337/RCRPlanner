@@ -1287,6 +1287,7 @@
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="cbFilterOwnCars" Content="Own cars" Grid.Row="0" Grid.Column="0"/>
                     <CheckBox x:Name="cbFilterOwnTracks" Content="Own tracks" Grid.Row="1" Grid.Column="0"/>
+                    <CheckBox x:Name="cbFilterOwnBoth" Content="Own track and car" Grid.Row="2" Grid.Column="0" Checked="cbFilterOwnBoth_Changed" Unchecked="cbFilterOwnBoth_Changed" />
                     <CheckBox x:Name="cbFilterFavSeries" Content="Fav. series" Grid.Row="0" Grid.Column="1"/>
                     <CheckBox x:Name="cbFilterFavCars" Content="Fav. cars" Grid.Row="1" Grid.Column="1"/>
                     <CheckBox x:Name="cbFilterFavTracks" Content="Fav. tracks" Grid.Row="2" Grid.Column="1"/>

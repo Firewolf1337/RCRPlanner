@@ -1253,11 +1253,23 @@ namespace RCRPlanner
                         favs = true;
                     }
 
-                    if ((cbFilterOwnTracks.IsChecked == true && race.TrackOwned == true) || (cbFilterOwnCars.IsChecked == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId))) || (cbFilterOwnTracks.IsChecked == false && cbFilterOwnCars.IsChecked == false))
+                    if (cbFilterOwnBoth.IsChecked == true)
                     {
-                        own = true;
+                        if (race.TrackOwned == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId)))
+                        {
+                            own = true;
+                        }
                     }
-                        if (category && official && serieclass && favs && own && over)
+                    else
+                    {
+                        if ((cbFilterOwnTracks.IsChecked == true && race.TrackOwned == true) ||
+                        (cbFilterOwnCars.IsChecked == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId))) ||
+                        (cbFilterOwnTracks.IsChecked == false && cbFilterOwnCars.IsChecked == false))
+                        {
+                            own = true;
+                        }
+                    }
+                    if (category && official && serieclass && favs && own && over)
                     {
                         dgFilteredRaces.Add(race);
                     }
@@ -1290,7 +1302,7 @@ namespace RCRPlanner
                         {
                             foreach (string sername in tbMenu2tb.Text.Split(','))
                             {
-                                if (ser.SeriesName.Contains(sername.Trim()))
+                                if (ser.SeriesName.ToLower().Contains(sername.Trim().ToLower()))
                                 {
                                     dgFilteredSeries.Add(ser);
                                 }
@@ -1335,7 +1347,7 @@ namespace RCRPlanner
                         {
                             foreach (string carname in tbMenu2tb.Text.Split(','))
                             {
-                                if (car.CarName.Contains(carname.Trim()))
+                                if (car.CarName.ToLower().Contains(carname.Trim().ToLower()))
                                 {
                                     dgFilteredCars.Add(car);
                                 }
@@ -1379,7 +1391,7 @@ namespace RCRPlanner
                         {
                             foreach (string trname in tbMenu2tb.Text.Split(','))
                             {
-                                if (track.Name.Contains(trname.Trim()) || tbMenu2tb.Text == "")
+                                if (track.Name.ToLower().Contains(trname.Trim().ToLower()))
                                 {
                                     dgFilteredTracks.Add(track);
                                 }
@@ -2389,6 +2401,20 @@ namespace RCRPlanner
                 }
             }
             catch { }
+        }
+
+        private void cbFilterOwnBoth_Changed(object sender, RoutedEventArgs e)
+        {
+            if(((CheckBox)sender).IsChecked == true)
+            {
+                cbFilterOwnCars.IsEnabled = false;
+                cbFilterOwnTracks.IsEnabled = false;
+            }
+            if (((CheckBox)sender).IsChecked == false)
+            {
+                cbFilterOwnCars.IsEnabled = true;
+                cbFilterOwnTracks.IsEnabled = true;
+            }
         }
     }
 }
