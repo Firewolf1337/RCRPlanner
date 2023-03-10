@@ -1445,6 +1445,7 @@ namespace RCRPlanner
             lblDetails5.Content = "";
             lblDetails6.Content = "";
             lblDetails7.Content = "";
+            lblDetails8.Content = "";
             tbDetail1.Text = "";
             tbDetail2.Text = "";
             tbDetail3.Text = "";
@@ -1694,6 +1695,7 @@ namespace RCRPlanner
             btnMenu1.Width = 80;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
             cbMenu2.Content = "only if owned track in serie <8";
+            clearDetails();
             generatePurchaseGuideView();
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridPurchaseGuide }, false);
