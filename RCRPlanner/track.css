@@ -1,0 +1,124 @@
+body{
+	background: #000;
+}
+#svgMap, #svgMap * {
+	 margin: 0;
+	 padding: 0;
+}
+ #svgMap {
+	 width: 100%;
+	 background: none;
+	 height: 500px;
+	 border: none;
+	 outline: none;
+}
+ #svgMap svg {
+	 position: absolute;
+	 left: 0px;
+	 top: 0px;
+	 width: 100%;
+	 height: 90%;
+}
+/** Backgrounds **/
+ #track-background {
+	 z-index: 0;
+	 opacity: 0.35;
+}
+ #track-background #Bridge * {
+	 fill: #FFF;
+}
+ #track-background #Pavement * {
+	 fill: #CCC;
+}
+ #track-background #Buildings * {
+	 fill: #999;
+}
+/** Inactive **/
+ #track-inactive {
+	 z-index: 1;
+}
+ #track-inactive * {
+	 fill: #888;
+}
+/** Active **/
+ #track-active {
+	 z-index: 2;
+}
+ #track-active * {
+	 fill: #FFF;
+}
+ #svgMap #legend .line.active {
+	 border-color: #a7a9ac;
+	 border-width: 2px;
+}
+/** Pits & Other **/
+ #track-pitroad {
+	 z-index: 3;
+	 fill: #d82520;
+}
+ #track-pitroad #Pitroad * {
+	 fill: #d82520;
+}
+ #svgMap #legend .line.pit {
+	 border-color: #d82520;
+	 border-style: dashed;
+}
+ #track-pitroad #Mergeline * {
+	 fill: #0089ba;
+}
+ #svgMap #legend .line.merge {
+	 border-color: #0089ba;
+	 border-style: dashed;
+}
+ #track-pitroad #Joker * {
+	 fill: #ff9100;
+}
+ #svgMap #legend .line.joker {
+	 border-color: #ff9100;
+	 border-style: dashed;
+}
+/** Start / Finish lines **/
+ #track-start-finish {
+	 z-index: 4;
+}
+
+
+#track-StartFinish * {
+	 fill: #d82520;
+}
+ #track-turns {
+	 z-index: 5;
+	 user-select: none;
+}
+ #track-turns text {
+	 fill: #FFF;
+	 font-size: 30px;
+	 font-family: "Lato", sans-serif;
+	 text-shadow: 0 2px 1px #eee;
+}
+ #track-map-info {
+	 margin-top: 0px;
+}
+ #track-map-info table {
+	 width: 350px;
+	 margin-top: 0;
+	 float: right;
+	 margin-left: 0px;
+	 margin-bottom: 0px;
+}
+ #track-map-info th {
+	 background: #CCC;
+	 color: #fff;
+	 font-size: 14px;
+}
+ #track-map-info tr:nth-child(odd) {
+	 background: #eee;
+}
+ #track-map-info td, #track-map-info th {
+	 padding: 0px 0px;
+	 border: 1px solid #aaa;
+}
+ #track-map-info tr td:first-child {
+	 font-weight: bold;
+}
+ 

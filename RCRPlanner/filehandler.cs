@@ -283,6 +283,10 @@ namespace RCRPlanner
         }
         public async void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
         {
+            if(!File.Exists(targetfolder + "track.css"))
+            {
+                File.Copy(exePath + "\\track.css", targetfolder + "track.css");
+            }
             foreach (var track in tracks)
             {
                 string trackfile = track.track_id + ".html";
