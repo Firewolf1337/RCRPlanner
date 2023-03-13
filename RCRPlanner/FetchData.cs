@@ -55,7 +55,7 @@ namespace RCRPlanner
             {
                 if (cookie.Name == "authtoken_members" && cookie.Expires > DateTime.Now.AddMinutes(10) && forcelogin == false)
                 {
-                    return 200;
+                    response = await client.GetAsync(iracingDataDoc);
                 }
             }
             if (handler.CookieContainer.Count == 0 || forcelogin)

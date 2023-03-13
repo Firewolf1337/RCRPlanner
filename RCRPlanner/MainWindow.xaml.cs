@@ -145,9 +145,8 @@ namespace RCRPlanner
             gridLoading.Visibility = Visibility.Visible;
             gridLoadingBG.Visibility = Visibility.Visible;
             bwPresetLoader.DoWork += worker_DoWork;
-            bwPresetLoader.WorkerReportsProgress = true;
+            bwPresetLoader.WorkerReportsProgress = false;
             bwPresetLoader.RunWorkerCompleted += worker_RunWorkerCompleted;
-            bwPresetLoader.ProgressChanged += worker_ProgressChanged;
             bwPresetLoader.RunWorkerAsync();
             btnLoadRaces_Click(null, null);
 
@@ -222,15 +221,12 @@ namespace RCRPlanner
             {
                 Directory.CreateDirectory(exePath+seriesLogos);
             }
-            bwProgress _bwProgress = new bwProgress() { StatusText = "Init"};
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
 
-                _bwProgress.StatusText = "Loading user information.";
-                bwPresetLoader.ReportProgress(0, _bwProgress);
+                lblLoadingText.Content = "Loading user information.";
                 if (Properties.Settings.Default.username != string.Empty)
                 {
-                    _bwProgress.StatusText = "Login information present.";
-                    bwPresetLoader.ReportProgress(3, _bwProgress);
+                    lblLoadingText.Content = "Login information present.";
                     username = Properties.Settings.Default.username;
                     cbSaveLogin.IsChecked = true;
                     savelogin = true;
@@ -271,16 +267,14 @@ namespace RCRPlanner
                 catch { }
                 if (File.Exists(userfile) && !reloadData)
                 {
-                    _bwProgress.StatusText = "Loading user information from file.";
-                    bwPresetLoader.ReportProgress(5, _bwProgress);
+                    lblLoadingText.Content = "Loading user information from file.";
                     User = helper.DeSerializeObject<memberInfo.Root>(userfile);
                     Style_ProfileIcon(User);
 
                 }
                 else
                 {
-                    _bwProgress.StatusText = "User information not present in file.";
-                    bwPresetLoader.ReportProgress(5, _bwProgress);
+                    lblLoadingText.Content = "User information not present in file.";
                     filemissing = true;
                 }
                 if(File.Exists(exePath + autostartfile))
@@ -313,8 +307,10 @@ namespace RCRPlanner
                     favoutireCars = favoutireCars.GroupBy(x => x.car_id).Select(x => x.First()).ToList();
                 }
             }));
-            _bwProgress.StatusText = "Checking present data files.";
-            bwPresetLoader.ReportProgress(10, _bwProgress);
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                lblLoadingText.Content = "Checking present data files.";
+            }));
             foreach (var filename in ((System.Reflection.TypeInfo)typeof(MainWindow)).DeclaredFields)
             {
                 if (filename.Name.EndsWith("File"))
@@ -322,64 +318,80 @@ namespace RCRPlanner
                     var file = exePath + filename.GetValue(this);
                     if (File.Exists(file))
                     {
-                        _bwProgress.StatusText = "Loading information from " + filename.GetValue(this);
-                        bwPresetLoader.ReportProgress(12, _bwProgress);
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "Loading information from " + filename.GetValue(this);
+                        }));
                     }
                     else
                     {
-                        _bwProgress.StatusText = "Missing file: " + filename.GetValue(this);
-                        bwPresetLoader.ReportProgress(12, _bwProgress);
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "Missing file: " + filename.GetValue(this);
+                        }));
                         filemissing = true;
                     }
                 }
             }
             if (filemissing || reloadData)
             {
-                _bwProgress.StatusText = "Fetching data from iRacion API due to missing files.";
-                bwPresetLoader.ReportProgress(20, _bwProgress);
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    lblLoadingText.Content = "Fetching data from iRacion API due to missing files.";
+                }));
                 if (savelogin && password.Length != 0)
                 {
-                    _bwProgress.StatusText = "Credentials present. Conneting to API...";
-                    bwPresetLoader.ReportProgress(25, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "Credentials present. Conneting to API...";
+                    }));
                     var status = fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),false);
                     status.Wait();
+                    lastLoginResult = status.Result;
                     if (status.Result == 401)
                     {
                         move_grid(gridLogin, "bottom", -250, moveAnimationDuration);
                         mre.WaitOne();
                     }
-                    if (status.Result >= 200 && 210 >= status.Result)
+                    if (status.Result == 503)
                     {
-                        Task<memberInfo.Root> getUser = fData.getMemberInfo();
-                        getUser.Wait();
-                        User = getUser.Result;
-                        helper.SerializeObject<memberInfo.Root>(User, userfile);
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "iRacing is in maintenance mode!";
+                        }));
                     }
-                    if(lastLoginResult == 503)
+                    if (status.Result >= 200 && 210 >= status.Result)
                     {
                         try
                         {
-                            _bwProgress.StatusText = "iRacing is down!";
+                            Task<memberInfo.Root> getUser = fData.getMemberInfo();
+                            getUser.Wait();
+                            User = getUser.Result;
+                            helper.SerializeObject<memberInfo.Root>(User, userfile);
                         }
                         catch { }
                     }
                 }
                 else
                 {
-                    _bwProgress.StatusText = "Credentials NOT present. Please enter credentials.";
-                    bwPresetLoader.ReportProgress(25, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "Credentials NOT present. Please enter credentials.";
+                    }));
                     move_grid(gridLogin, "bottom", -250, moveAnimationDuration);
                     mre.WaitOne();
                 }
             }
 
 
-            if (!(lastLoginResult >= 200 && 210 >= lastLoginResult) && lastLoginResult != -1)
+            if (!(lastLoginResult>= 200 && 210 >= lastLoginResult) && lastLoginResult != -1)
             {
                 try
                 {
-                    _bwProgress.StatusText = "iRacing is down!";
-                    bwPresetLoader.ReportProgress(99, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "iRacing is down!";
+                    })); 
                 }
                 catch { }
             }
@@ -387,8 +399,10 @@ namespace RCRPlanner
             {
                 try
                 {
-                    _bwProgress.StatusText = "Loading series information.";
-                    bwPresetLoader.ReportProgress(30, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "Loading series information.";
+                    }));
                 }
                 catch { }
                 seriesList = await fh.getSeriesList(seriesFile, reloadData);
@@ -397,10 +411,12 @@ namespace RCRPlanner
                 
                 try
                 {
-                    _bwProgress.StatusText = "Loading car information.";
-                    bwPresetLoader.ReportProgress(40, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "Loading car information.";
+                    }));
                 }
-                catch { }
+                catch (Exception ex) { }
                 carsList = await fh.getCarList(carsFile, reloadData);
                 carsAssetsList = await fh.getCarAssetsList(carsAssetsFile, carLogos, reloadData);
                 carClassList = await fh.getCarClassList(carClassFile, reloadData);
@@ -409,8 +425,10 @@ namespace RCRPlanner
 
                 try
                 {
-                    _bwProgress.StatusText = "Loading track information.";
-                    bwPresetLoader.ReportProgress(50, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "Loading track information.";
+                    }));
                 }
                 catch { }
                 tracksList = await fh.getTracksList(tracksFile, reloadData);
@@ -419,8 +437,10 @@ namespace RCRPlanner
                 fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
                 try
                 {
-                    _bwProgress.StatusText = "Loading views.";
-                    bwPresetLoader.ReportProgress(70, _bwProgress);
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        lblLoadingText.Content = "Loading views.";
+                    }));
                 }
                 catch { }
                 createDgData();
@@ -429,14 +449,13 @@ namespace RCRPlanner
                     gridSeries.ItemsSource = dgSeriesList;
                     gridCars.ItemsSource = dgCarsList;
                     gridTracksLayout.ItemsSource = dgTrackLayoutList;
-                }));
+                
                 try
                 {
-
-                    _bwProgress.StatusText = "Done";
-                    bwPresetLoader.ReportProgress(100, _bwProgress);
+                    lblLoadingText.Content = "Done";                
                 }
                 catch{ }
+                }));
             }
             reloadData = false;
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -451,16 +470,6 @@ namespace RCRPlanner
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 Style_ProfileIcon(User);
             }));
-        }
-        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
-                lblLoadingText.Content = ((bwProgress)e.UserState).StatusText;
-            }));
-            if(e.ProgressPercentage == 100)
-            {
-
-            }
         }
         private void startPrograms()
         {
@@ -2354,9 +2363,7 @@ namespace RCRPlanner
             gridLoadingBG.Visibility = Visibility.Visible;
             bwPresetLoader.WorkerReportsProgress = true;
             bwPresetLoader.RunWorkerCompleted -= worker_RunWorkerCompleted;
-            bwPresetLoader.ProgressChanged -= worker_ProgressChanged;
             bwPresetLoader.RunWorkerCompleted += worker_RunWorkerCompleted;
-            bwPresetLoader.ProgressChanged += worker_ProgressChanged;
             bwPresetLoader.RunWorkerAsync();
             generateRaceView();
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridRaces }, false);
