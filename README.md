@@ -18,7 +18,11 @@ No installation necessary. Just extract the zip file in an empty folder of your 
 * **Please try to start with a fresh copy in an empty folder, if you have any problems after some time with the planner.**
 
 ## Overview
-#### Start and Login
+### Basic information
+   *Most of the table rows are clickable and will show more information.*
+   *To close the opend row again press crtl + right mouse button.*
+
+#### Start and login
 At first run, you need to login with your iRacing credentials to download all necessary files and data from the iRacing API.
 If you want, you can save the credentials so updating the data can be done without entering it again later. (Credentials are stored locally in your windows profile on your PC)
 Login data can be changed on the top right through clicking on Login.
@@ -29,7 +33,7 @@ Next to the Login, you can find the profile button. The button includes your hel
 There you can see your ingame name and iRacing ID and your license class and iRating. Also you can reload the data from the API.
 ![Profile](/doc/images/profile.png)
 
-#### Main Menu
+#### Main menu
 On the upper part, you can see the different views for the different contents in iRacing. At the bottom, you can update or reset the Planner or set it to start minimized. Also you can see the actual running version of your planner.
 
 ![Main Menu](/doc/images/main_menu.png)
@@ -57,7 +61,7 @@ This view as nearly the same like the car view only for the tracks. By clicking 
 This view will help you to decide which tracks you should buy. For this view, you have to select your favorite series. On this information, it will select the tracks, which are in this series and show you the count how often this track is in your favorite series (Participation). You can filter out all series where you are over 8 races in the season so that you maybe don't need to purchase.
 ![Purchasing Guide](/doc/images/purchase_guide.png)
 
-#### Autostart Programs
+#### Autostart programs
 Here you can add Programs which you want to start either automatically or by clicking on the "⟳" in the main menu next to "Autostart Programs"
 * Auto start programs on launch - will start the programs when the planner is started.
 * Start programs minimized - will try to launch them minimized.
