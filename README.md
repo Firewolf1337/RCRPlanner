@@ -15,16 +15,14 @@ ___
 <br /><a href="https://www.buymeacoffee.com/RCRacing" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 162px !important;" ></a>
 
 ## Handling and Troubleshooting 
+* **Most of the table rows are clickable and will show more information.**
+   * To close the opend row again press crtl + left mouse button.
 * **There is no auto refresh of the data.**
     * You need to manually refresh the data when the new season or "Week 13" starts or you purchase something.
 
 * **Please try to start with a fresh copy in an empty folder, if you have any problems after some time with the planner.**
 
 ## Overview
-### Basic information
-   *Most of the table rows are clickable and will show more information.*
-   *To close the opend row again press crtl + right mouse button.*
-
 #### Start and login
 At first run, you need to login with your iRacing credentials to download all necessary files and data from the iRacing API.
 If you want, you can save the credentials so updating the data can be done without entering it again later. (Credentials are stored locally in your windows profile on your PC)
