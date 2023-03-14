@@ -6,10 +6,13 @@ You can automatically start applications which you need while racing and close t
 In addition, it is possible to create some interesting statistics.
 
 
-**If you are interested, try it! -> [Latest Release](/../../releases/latest)**
-
+**If you are interested, try it! -> [Latest Release](/../../releases/latest)** <br />
 No installation necessary. Just extract the zip file in an empty folder of your choice.
-
+<br />
+<br />
+___ 
+*If you like this planner, we would appreciate any tips.*
+<br /><a href="https://www.buymeacoffee.com/RCRacing" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 162px !important;" ></a>
 
 ## Handling and Troubleshooting 
 * **There is no auto refresh of the data.**
@@ -79,4 +82,3 @@ Here you can add Programs which you want to start either automatically or by cli
 
 If you want to build it on your own, please modify RCRPlanner/salt.txt. With this String you password will be encrypted and stored on your PC.
 Also change the repo in the App.config file to prevent downloading another version from this repo.
-
