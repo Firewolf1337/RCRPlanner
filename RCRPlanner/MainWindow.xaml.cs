@@ -1014,6 +1014,8 @@ namespace RCRPlanner
                             tracksDataGridObject.Series = seriesDataGridsList;
                             tracksDataGridObject.Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length;
                             tracksDataGridObject.Participations = 1;
+                            tracksDataGridObject.TrackLink = new Uri("https://members.iracing.com/membersite/member/TrackDetail.do?trkid=" + track.track_id);
+
                             dgPurchaseGuideList.Add(tracksDataGridObject);
                         }
                         else

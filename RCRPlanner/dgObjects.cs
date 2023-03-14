@@ -71,6 +71,7 @@ namespace RCRPlanner
             public Uri TrackImage { get; set; }
             public string Racelenght { get; set; }
             public bool WeekActive { get; set; }
+            public Uri TrackLink {get; set;}
 
         }
         public class tracksLayoutsDataGrid

@@ -1013,24 +1013,33 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" Width="100" SortMemberPath="Price"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Created" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" Width="100" SortMemberPath="Created"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Price}"/>
+                                    <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" Width="100*" SortMemberPath="Created"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Track lenght" HeaderStyle="{StaticResource DataGridHeaderCenter}"  IsReadOnly="True" Width="100" SortMemberPath="Length"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Created}"/>
+                                    <TextBlock Text="{Binding Length}" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Tracklenght"  IsReadOnly="True" Width="100*" SortMemberPath="Length"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Price" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" Width="100" SortMemberPath="Price"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Length}"/>
+                                    <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Track link" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" MinWidth="50" MaxWidth="50" SortMemberPath="TrackLink" CanUserSort="True">
+                            <DataGridTemplateColumn.CellTemplate >
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Center">
+                                        <Hyperlink NavigateUri="{Binding TrackLink}" Click="link_Click" MouseRightButtonDown="link_Copy"><TextBlock ToolTip="{Binding TrackLink}" Text="🛒" HorizontalAlignment="Center" Style="{StaticResource DefaultTextBlockStyle}"/></Hyperlink>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
