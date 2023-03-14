@@ -15,6 +15,7 @@ namespace RCRPlanner
 {
     class filehandler
     {
+        //MainWindow mw = new MainWindow();
         string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
         string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
 
@@ -32,6 +33,7 @@ namespace RCRPlanner
 
             //Load asset series information and fetching logos
             string file = exePath + filestring;
+            int counter = 0;
             if (File.Exists(file) && !reload)
             {
                 seriesAssetsList = helper.DeSerializeObject<List<seriesAssets>>(file);
@@ -47,6 +49,8 @@ namespace RCRPlanner
             }
             foreach (var logo in seriesAssetsList)
             {
+                counter++;
+                MainWindow.main.Status = "Loading serie logo " + counter + " / " + seriesAssetsList.Count();
                 file = exePath + logofolder + logo.logo;
                 if (!File.Exists(file))
                 {
@@ -153,6 +157,7 @@ namespace RCRPlanner
             oddCarImgs = helper.DeSerializeObject<List<oddCarImages>>(@"oddCarImages.xml");
             //Load asset series information and fetching logos
             string file = exePath + filestring;
+            int counter = 0;
             if (File.Exists(file) && !reload)
             {
                 carsAssetsList = helper.DeSerializeObject<List<carAssets>>(file);
@@ -168,6 +173,8 @@ namespace RCRPlanner
             }
             foreach (var logo in carsAssetsList)
             {
+                counter++;
+                MainWindow.main.Status = "Loading car pictures " + counter + " / " + carsAssetsList.Count();
                 file = exePath + imagefolder + logo.car_id + ".png";
                 if (!File.Exists(file))
                 {
@@ -283,14 +290,17 @@ namespace RCRPlanner
         }
         public async void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
         {
+            int counter = 0;
             if(!File.Exists(targetfolder + "track.css"))
             {
                 File.Copy(exePath + "\\track.css", targetfolder + "track.css");
             }
             foreach (var track in tracks)
             {
+                counter++;
                 string trackfile = track.track_id + ".html";
                 string trackpic = track.track_id + ".png";
+                MainWindow.main.Status = "Loading track pictures " + counter + " / " + tracks.Count();
                 if (!File.Exists(targetfolder+trackfile))
                 {
                     string htmlcontent = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><meta http-equiv=\"Content-Type\" content = \"text/html; charset=utf-8\" /><link type=\"text/css\" rel=\"stylesheet\" href=\"track.css\" /></head><body><div id=\"svgMap\">";

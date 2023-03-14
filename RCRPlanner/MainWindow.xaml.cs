@@ -41,6 +41,13 @@ namespace RCRPlanner
 
     public partial class MainWindow : Window
     {
+        internal static MainWindow main;
+        internal string Status
+        {
+            get { return lblLoadingText.Content.ToString(); }
+            set { Dispatcher.Invoke(new Action(() => { lblLoadingText.Content = value; })); }
+        }
+
         double moveAnimationDuration = 0.3;
         RCRPlanner.FetchData fData = new RCRPlanner.FetchData();
         RCRPlanner.filehandler fh = new RCRPlanner.filehandler();
@@ -130,6 +137,7 @@ namespace RCRPlanner
 
         public MainWindow()
         {
+            main = this;
             this.InitializeComponent();
             if (Properties.Settings.Default.UpdateSettings)
             {
