@@ -383,12 +383,19 @@ namespace RCRPlanner
                                 User = getUser.Result;
                                 helper.SerializeObject<memberInfo.Root>(User, userfile);
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                if(ex.InnerException != null)
+                                {
+                                    MessageBox.Show("Download user data: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                                error = true;
+                            }
                         }
                     }
                     catch (Exception ex)
                     {
-                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        if(ex.InnerException != null)
                         {
                             MessageBox.Show("Reload data: " + ex.InnerException.Message,"Something went wrong." , MessageBoxButton.OK, MessageBoxImage.Error);
                         }
@@ -426,11 +433,22 @@ namespace RCRPlanner
                         {
                             lblLoadingText.Content = "Loading series information.";
                         }));
+                        seriesList = await fh.getSeriesList(seriesFile, reloadData);
+                        seriesAssetsList = await fh.getSeriesAssets(seriesAssetsFile, seriesLogos, reloadData);
+                        seriesSeasonList = await fh.getSeriesSeason(seriesSeasonFile, reloadData);
                     }
-                    catch { }
-                    seriesList = await fh.getSeriesList(seriesFile, reloadData);
-                    seriesAssetsList = await fh.getSeriesAssets(seriesAssetsFile, seriesLogos, reloadData);
-                    seriesSeasonList = await fh.getSeriesSeason(seriesSeasonFile, reloadData);
+                    catch (Exception ex)
+                    {
+                        if (ex.InnerException != null)
+                        {
+                            MessageBox.Show("Error loading series: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error loading series: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+
 
                     try
                     {
@@ -438,26 +456,47 @@ namespace RCRPlanner
                         {
                             lblLoadingText.Content = "Loading car information.";
                         }));
-                    }
-                    catch (Exception ex) { }
-                    carsList = await fh.getCarList(carsFile, reloadData);
-                    carsAssetsList = await fh.getCarAssetsList(carsAssetsFile, carLogos, reloadData);
-                    carClassList = await fh.getCarClassList(carClassFile, reloadData);
-                    carClassesList = await fh.getCarClassesList(carsList, carClassList);
-                    carsInSeries = await fh.getCarsInSeries(carClassesList, seriesSeasonList);
 
+                        carsList = await fh.getCarList(carsFile, reloadData);
+                        carsAssetsList = await fh.getCarAssetsList(carsAssetsFile, carLogos, reloadData);
+                        carClassList = await fh.getCarClassList(carClassFile, reloadData);
+                        carClassesList = await fh.getCarClassesList(carsList, carClassList);
+                        carsInSeries = await fh.getCarsInSeries(carClassesList, seriesSeasonList);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.InnerException != null)
+                        {
+                            MessageBox.Show("Error loading cars: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error loading cars: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
                     try
                     {
                         System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                         {
                             lblLoadingText.Content = "Loading track information.";
                         }));
+
+                        tracksList = await fh.getTracksList(tracksFile, reloadData);
+                        tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
+                        tracksInSeries = await fh.getTracksInSeries(tracksList, seriesSeasonList);
+                        fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
                     }
-                    catch { }
-                    tracksList = await fh.getTracksList(tracksFile, reloadData);
-                    tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
-                    tracksInSeries = await fh.getTracksInSeries(tracksList, seriesSeasonList);
-                    fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
+                    catch (Exception ex)
+                    {
+                        if (ex.InnerException != null)
+                        {
+                            MessageBox.Show("Error loading tracks: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error loading tracks: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
                     try
                     {
                         System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -502,7 +541,21 @@ namespace RCRPlanner
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
-                Style_ProfileIcon(User);
+                try
+                {
+                    Style_ProfileIcon(User);
+                }
+                catch (Exception ex)
+                {
+                    if(ex.InnerException != null)
+                    {
+                        MessageBox.Show("Style user profile: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error creating series: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
             }));
         }
         private void startPrograms()
@@ -599,39 +652,53 @@ namespace RCRPlanner
                         helper.SerializeObject<memberInfo.Root>(User, userfile);
                     }
                 }
-                string roadClass = User.licenses.road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro","P");
-                string ovalClass = User.licenses.oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
-                string dirtovalClass = User.licenses.dirt_oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
-                string dirtroadClass = User.licenses.dirt_road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
-                progressOval.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.oval.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
-                progressOval.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.oval.color);
-                textProgressOval.Text = ovalClass + User.licenses.oval.safety_rating.ToString();
-                lbliRatingOval.Content = User.licenses.oval.irating.ToString() + " iR";
-                lblCpiOval.Content = Math.Round(User.licenses.oval.cpi,2).ToString() + " CPI";
+                try
+                {
+                    string roadClass = User.licenses.road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    string ovalClass = User.licenses.oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    string dirtovalClass = User.licenses.dirt_oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    string dirtroadClass = User.licenses.dirt_road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    progressOval.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.oval.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
+                    progressOval.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.oval.color);
+                    textProgressOval.Text = ovalClass + User.licenses.oval.safety_rating.ToString();
+                    lbliRatingOval.Content = User.licenses.oval.irating.ToString() + " iR";
+                    lblCpiOval.Content = Math.Round(User.licenses.oval.cpi, 2).ToString() + " CPI";
 
-                progressRoad.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.road.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
-                progressRoad.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.road.color);
-                textProgressRoad.Text = roadClass + User.licenses.road.safety_rating.ToString();
-                lbliRatingRoad.Content = User.licenses.road.irating.ToString() + " iR";
-                lblCpiRoad.Content = Math.Round(User.licenses.road.cpi,2).ToString() + " CPI";
+                    progressRoad.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.road.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
+                    progressRoad.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.road.color);
+                    textProgressRoad.Text = roadClass + User.licenses.road.safety_rating.ToString();
+                    lbliRatingRoad.Content = User.licenses.road.irating.ToString() + " iR";
+                    lblCpiRoad.Content = Math.Round(User.licenses.road.cpi, 2).ToString() + " CPI";
 
-                progressDirtOval.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.dirt_oval.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
-                progressDirtOval.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.dirt_oval.color);
-                textProgressDirtOval.Text = dirtovalClass + User.licenses.dirt_oval.safety_rating.ToString();
-                lbliRatingDirtOval.Content = User.licenses.dirt_oval.irating.ToString() + " iR";
-                lblCpiDirtOval.Content = Math.Round(User.licenses.dirt_oval.cpi,2).ToString() + " CPI";
+                    progressDirtOval.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.dirt_oval.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
+                    progressDirtOval.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.dirt_oval.color);
+                    textProgressDirtOval.Text = dirtovalClass + User.licenses.dirt_oval.safety_rating.ToString();
+                    lbliRatingDirtOval.Content = User.licenses.dirt_oval.irating.ToString() + " iR";
+                    lblCpiDirtOval.Content = Math.Round(User.licenses.dirt_oval.cpi, 2).ToString() + " CPI";
 
-                progressDirtRoad.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.dirt_road.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
-                progressDirtRoad.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.dirt_road.color);
-                textProgressDirtRoad.Text = dirtroadClass + User.licenses.dirt_road.safety_rating.ToString();
-                lbliRatingDirtRoad.Content = User.licenses.dirt_road.irating.ToString() + " iR";
-                lblCpiDirtRoad.Content = Math.Round(User.licenses.dirt_road.cpi,2).ToString() + " CPI";
+                    progressDirtRoad.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.dirt_road.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
+                    progressDirtRoad.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.dirt_road.color);
+                    textProgressDirtRoad.Text = dirtroadClass + User.licenses.dirt_road.safety_rating.ToString();
+                    lbliRatingDirtRoad.Content = User.licenses.dirt_road.irating.ToString() + " iR";
+                    lblCpiDirtRoad.Content = Math.Round(User.licenses.dirt_road.cpi, 2).ToString() + " CPI";
 
 
-                lblCustId.Content = "iRacing ID: " + User.cust_id.ToString();
+                    lblCustId.Content = "iRacing ID: " + User.cust_id.ToString();
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null)
+                    {
+                        MessageBox.Show("Profile: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Profile: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
 
                 position = 300;
-
+                
             }
             else
             {
@@ -740,35 +807,60 @@ namespace RCRPlanner
             }
             catch (Exception ex)
             {
-                if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                if(ex.InnerException != null)
                 {
                     MessageBox.Show("Login: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Login: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
         private void Style_ProfileIcon(memberInfo.Root info)
         {
-            var displayName = info.display_name.Split(' ');
-            string initials = "" ;
-            if (displayName.Length > 2)
+            try
             {
-                initials = displayName[0].Substring(0,1) + displayName[1].Substring(0, 1) + displayName[displayName.Length - 1].Substring(0, 1);
+                if (info.display_name != null)
+                {
+                    var displayName = info.display_name.Split(' ');
+                    string initials = "";
+                    if (displayName.Length > 2)
+                    {
+                        initials = displayName[0].Substring(0, 1) + displayName[1].Substring(0, 1) + displayName[displayName.Length - 1].Substring(0, 1);
+                    }
+                    else
+                    {
+                        initials = displayName[0].Substring(0, 1) + displayName[1].Substring(0, 1);
+                    }
+                    tbHeaderMenuProfileName.Content = initials;
+                    this.lblUsername.Content = User.display_name;
+                }
+                if (info.helmet != null)
+                {
+                    string color1 = "#" + info.helmet.color1;
+                    string color2 = "#" + info.helmet.color2;
+                    string color3 = "#" + info.helmet.color3;
+
+                    elHeaderMenuProfileColor1.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color1));
+                    elHeaderMenuProfileColor2.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color2));
+                    elHeaderMenuProfileColor3.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color3));
+                    this.tbHeaderMenuProfileName.Foreground = new SolidColorBrush(helper.getNegative(color3));
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                initials = displayName[0].Substring(0, 1) + displayName[1].Substring(0, 1);
+                if(ex.InnerException != null)
+                {
+                    MessageBox.Show("Profile styling: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Profile styling: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
 
-            string color1 = "#" + info.helmet.color1;
-            string color2 = "#" + info.helmet.color2;
-            string color3 = "#" + info.helmet.color3;
-            elHeaderMenuProfileColor1.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color1));
-            elHeaderMenuProfileColor2.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color2));
-            elHeaderMenuProfileColor3.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color3));
-            this.tbHeaderMenuProfileName.Foreground = new SolidColorBrush(helper.getNegative(color3));
-            tbHeaderMenuProfileName.Content = initials;
-            this.lblUsername.Content = User.display_name;
-            
         }
 
         private void switchMainGridVisibility(List<System.Windows.Controls.DataGrid> gridToShow, bool Details)
@@ -805,6 +897,7 @@ namespace RCRPlanner
         }
         private void generateSeriesView()
         {
+            try { 
             //Generate series information
             dgSeriesList.Clear();
             dgSeriesList = (from series in seriesList
@@ -859,81 +952,215 @@ namespace RCRPlanner
                 serie.Tracks = tracks;
             }
             dgSeriesList.Sort((x, y) => x.SeriesName.CompareTo(y.SeriesName));
-        }
-        private void generateCarView()
-        {
-            // Generate cars information
-            dgCarsList.Clear();
-            foreach (var car in carsList)
-            {
-                List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
-                foreach (var carsinseries in carsInSeries)
-                {
-                    if (carsinseries.car_id == car.car_id)
-                    {
-                        var seriesDataGridsObject = (from serie in dgSeriesList
-                                                     where serie.SerieId == carsinseries.series_id
-                                                     select new dgObjects.seriesDataGrid()
-                                                     {
-                                                         SerieId = serie.SerieId,
-                                                         Seriesimage = serie.Seriesimage,
-                                                         SeriesName = serie.SeriesName,
-                                                         Category = serie.Category,
-                                                         Class = serie.Class,
-                                                         License = serie.License,
-                                                         Eligible = serie.Eligible,
-                                                         Favourite = serie.Favourite,
-                                                     }).FirstOrDefault();
-                        seriesDataGridsList.Add(seriesDataGridsObject);
-                    }
-
-                }
-                dgObjects.carsDataGrid carsDataGridObject = new dgObjects.carsDataGrid();
-                carsDataGridObject.Favourite = favoutireCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected;
-                carsDataGridObject.CarId = car.car_id;
-                carsDataGridObject.CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png");
-                carsDataGridObject.CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png");
-                carsDataGridObject.CarName = car.car_name;
-                carsDataGridObject.Category = string.Join(",", car.categories);
-                carsDataGridObject.Horsepower = isMetric ? Convert.ToInt32(car.hp * 1.01387) : car.hp;
-                carsDataGridObject.Weight = isMetric ? Convert.ToInt32(car.car_weight * 0.453592) : car.car_weight;
-                carsDataGridObject.Price = "$" + car.price.ToString();
-                carsDataGridObject.Owned = User.car_packages.Any(p => p.package_id == car.package_id) ? checksymbol : "";
-                carsDataGridObject.Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                carsDataGridObject.Series = seriesDataGridsList;
-                carsDataGridObject.Series_Participations = seriesDataGridsList.Count;
-                carsDataGridObject.ForumLink = car.forum_url;
-                dgCarsList.Add(carsDataGridObject);  
             }
-            dgCarsList.Sort((x, y) => x.CarName.CompareTo(y.CarName));
-            foreach (var serie in dgSeriesList)
+            catch (Exception ex)
             {
-                var cars = dgCarsList.FindAll(c => c.Series.Any(s => s != null ?  s.SerieId == serie.SerieId : false));
-                if (serie.Cars == null)
+                if (ex.InnerException != null)
                 {
-                    serie.Cars = cars;
+                    MessageBox.Show("Error creating series: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    serie.Cars.AddRange(cars);
+                    MessageBox.Show("Error creating series: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                serie.OwnCars = serie.Cars.Where(c => c.Owned == checksymbol).Count() + "/" + serie.Cars.Count();
+            }
+        }
+        private void generateCarView()
+        {
+            try
+            {
+                // Generate cars information
+                dgCarsList.Clear();
+                foreach (var car in carsList)
+                {
+                    List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
+                    foreach (var carsinseries in carsInSeries)
+                    {
+                        if (carsinseries.car_id == car.car_id)
+                        {
+                            var seriesDataGridsObject = (from serie in dgSeriesList
+                                                         where serie.SerieId == carsinseries.series_id
+                                                         select new dgObjects.seriesDataGrid()
+                                                         {
+                                                             SerieId = serie.SerieId,
+                                                             Seriesimage = serie.Seriesimage,
+                                                             SeriesName = serie.SeriesName,
+                                                             Category = serie.Category,
+                                                             Class = serie.Class,
+                                                             License = serie.License,
+                                                             Eligible = serie.Eligible,
+                                                             Favourite = serie.Favourite,
+                                                         }).FirstOrDefault();
+                            seriesDataGridsList.Add(seriesDataGridsObject);
+                        }
+
+                    }
+                    dgObjects.carsDataGrid carsDataGridObject = new dgObjects.carsDataGrid();
+                    carsDataGridObject.Favourite = favoutireCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected;
+                    carsDataGridObject.CarId = car.car_id;
+                    carsDataGridObject.CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png");
+                    carsDataGridObject.CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png");
+                    carsDataGridObject.CarName = car.car_name;
+                    carsDataGridObject.Category = string.Join(",", car.categories);
+                    carsDataGridObject.Horsepower = isMetric ? Convert.ToInt32(car.hp * 1.01387) : car.hp;
+                    carsDataGridObject.Weight = isMetric ? Convert.ToInt32(car.car_weight * 0.453592) : car.car_weight;
+                    carsDataGridObject.Price = "$" + car.price.ToString();
+                    carsDataGridObject.Owned = User.car_packages.Any(p => p.package_id == car.package_id) ? checksymbol : "";
+                    carsDataGridObject.Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
+                    carsDataGridObject.Series = seriesDataGridsList;
+                    carsDataGridObject.Series_Participations = seriesDataGridsList.Count;
+                    carsDataGridObject.ForumLink = car.forum_url;
+                    dgCarsList.Add(carsDataGridObject);
+                }
+                dgCarsList.Sort((x, y) => x.CarName.CompareTo(y.CarName));
+                foreach (var serie in dgSeriesList)
+                {
+                    var cars = dgCarsList.FindAll(c => c.Series.Any(s => s != null ? s.SerieId == serie.SerieId : false));
+                    if (serie.Cars == null)
+                    {
+                        serie.Cars = cars;
+                    }
+                    else
+                    {
+                        serie.Cars.AddRange(cars);
+                    }
+                    serie.OwnCars = serie.Cars.Where(c => c.Owned == checksymbol).Count() + "/" + serie.Cars.Count();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("Error creating cars: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Error creating cars: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
         private void generateTrackView()
         {
-            //Generate tracks information
-            dgTracksList.Clear();
-            foreach (var track in tracksList)
+            try
             {
-                List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
-                foreach (var tracksinseries in tracksInSeries)
+                //Generate tracks information
+                dgTracksList.Clear();
+                foreach (var track in tracksList)
                 {
-                    if (tracksinseries.track_id == track.track_id && !seriesDataGridsList.Any(s => s != null? s.SerieId == tracksinseries.series_id: false))
+                    List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
+                    foreach (var tracksinseries in tracksInSeries)
                     {
+                        if (tracksinseries.track_id == track.track_id && !seriesDataGridsList.Any(s => s != null ? s.SerieId == tracksinseries.series_id : false))
+                        {
 
+                            var seriesDataGridsObject = (from serie in dgSeriesList
+                                                         where serie.SerieId == tracksinseries.series_id
+                                                         select new dgObjects.seriesDataGrid()
+                                                         {
+                                                             SerieId = serie.SerieId,
+                                                             Seriesimage = serie.Seriesimage,
+                                                             SeriesName = serie.SeriesName,
+                                                             Category = serie.Category,
+                                                             Class = serie.Class,
+                                                             License = serie.License,
+                                                             Eligible = serie.Eligible,
+                                                             Weeks = tracksinseries.week.ToString(),
+                                                             Favourite = serie.Favourite,
+                                                         }).FirstOrDefault();
+                            seriesDataGridsList.Add(seriesDataGridsObject);
+                        }
+                        else if (tracksinseries.track_id == track.track_id && seriesDataGridsList.Any(s => s != null ? s.SerieId == tracksinseries.series_id : false))
+                        {
+                            var _trackObj = seriesDataGridsList.FirstOrDefault(t => t != null ? t.SerieId == tracksinseries.series_id : false);
+                            if (_trackObj != null)
+                            {
+                                _trackObj.Weeks += ", " + tracksinseries.week;
+                            }
+                        }
+                    }
+
+                    dgObjects.tracksDataGrid newLayout = new dgObjects.tracksDataGrid();
+                    newLayout.Name = track.track_name;
+                    newLayout.Layoutname = track.config_name;
+                    newLayout.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
+                    newLayout.Corners = track.corners_per_lap;
+                    newLayout.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
+                    newLayout.Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length; ;
+                    newLayout.Owned = User.track_packages.Any(p => p.package_id == track.package_id) ? checksymbol : "";
+                    newLayout.Pitlimit = isMetric ? Convert.ToInt32(track.pit_road_speed_limit * 1.60934) : track.pit_road_speed_limit;
+                    newLayout.Price = "$" + track.price.ToString();
+                    newLayout.PackageID = track.package_id;
+                    newLayout.TrackID = track.track_id;
+                    newLayout.Category = track.category;
+                    newLayout.Series = seriesDataGridsList;
+                    newLayout.Participations = seriesDataGridsList.Count;
+                    dgTracksList.Add(newLayout);
+                }
+                dgTrackLayoutList.Clear();
+                foreach (dgObjects.tracksDataGrid track in dgTracksList)
+                {
+                    if (!dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
+                    {
+                        List<dgObjects.tracksDataGrid> layout = new List<dgObjects.tracksDataGrid>() { track };
+                        dgObjects.tracksLayoutsDataGrid newTrack = new dgObjects.tracksLayoutsDataGrid();
+                        newTrack.Layouts = layout;
+                        newTrack.Created = track.Created;
+                        newTrack.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.TrackID + ".png");
+                        newTrack.Name = track.Name;
+                        newTrack.Owned = track.Owned;
+                        newTrack.PackageID = track.PackageID;
+                        newTrack.Price = track.Price;
+                        newTrack.Layouts_count = 1;
+                        newTrack.Participations = track.Participations;
+                        newTrack.Favourite = favoutireTracks.Any(x => x.track_id == track.PackageID) ? favsymbolSelected : favsymbolUnselected;
+                        newTrack.TrackID = track.TrackID;
+                        dgTrackLayoutList.Add(newTrack);
+                    }
+                    else if (dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
+                    {
+                        var _trackObj = dgTrackLayoutList.FirstOrDefault(t => t.PackageID == track.PackageID);
+                        if (_trackObj != null)
+                        {
+                            _trackObj.Layouts.Add(track);
+                            _trackObj.Layouts_count++;
+                            _trackObj.Participations += track.Participations;
+                            _trackObj.Created = (DateTime.Parse(track.Created, Thread.CurrentThread.CurrentUICulture) < DateTime.Parse(_trackObj.Created, Thread.CurrentThread.CurrentUICulture)) ? track.Created : _trackObj.Created;
+                        }
+                        if (_trackObj.Name.Contains("[Retired]"))
+                        {
+                            _trackObj.Name = _trackObj.Layouts.FirstOrDefault(l => !l.Name.Contains("[Retired]")) != null ? _trackObj.Layouts.FirstOrDefault(l => !l.Name.Contains("[Retired]")).Name : _trackObj.Name;
+                        }
+                    }
+                }
+                dgTrackLayoutList.Sort((x, y) => x.Name.CompareTo(y.Name));
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("Error creating tracks: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Error creating tracks: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+        private void generatePurchaseGuideView()
+        {
+            try
+            {
+                //Generate Purchase information
+                dgPurchaseGuideList.Clear();
+
+                foreach (var item in tracksInSeries)
+                {
+                    var track = tracksList.First(t => t.track_id == item.track_id);
+                    if (favoutireSeries.Any(f => f.series_id == item.series_id) && !User.track_packages.Any(p => p.package_id == track.package_id))
+                    {
+                        List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
                         var seriesDataGridsObject = (from serie in dgSeriesList
-                                                     where serie.SerieId == tracksinseries.series_id
+                                                     where serie.SerieId == item.series_id
                                                      select new dgObjects.seriesDataGrid()
                                                      {
                                                          SerieId = serie.SerieId,
@@ -943,394 +1170,343 @@ namespace RCRPlanner
                                                          Class = serie.Class,
                                                          License = serie.License,
                                                          Eligible = serie.Eligible,
-                                                         Weeks = tracksinseries.week.ToString(),
+                                                         Weeks = item.week.ToString(),
                                                          Favourite = serie.Favourite,
+                                                         OwnTracks = serie.Tracks.Count(t => t.Owned == checksymbol),
                                                      }).FirstOrDefault();
                         seriesDataGridsList.Add(seriesDataGridsObject);
-                    }
-                    else if (tracksinseries.track_id == track.track_id && seriesDataGridsList.Any(s => s != null ? s.SerieId == tracksinseries.series_id : false))
-                    {
-                        var _trackObj = seriesDataGridsList.FirstOrDefault(t => t != null ? t.SerieId == tracksinseries.series_id : false);
-                        if (_trackObj != null)
+                        //var serie = seriesList.First(s => s.series_id == item.series_id);
+                        if (seriesDataGridsObject.OwnTracks < 8 || cbMenu2.IsChecked == false)
                         {
-                            _trackObj.Weeks += ", " + tracksinseries.week;
-                        }
-                    }
-                }
+                            if (!dgPurchaseGuideList.Any(t => t.PackageID == track.package_id))
+                            {
+                                dgObjects.tracksDataGrid tracksDataGridObject = new dgObjects.tracksDataGrid();
+                                tracksDataGridObject.Name = track.track_name;
+                                tracksDataGridObject.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
+                                tracksDataGridObject.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
+                                tracksDataGridObject.Price = "$" + track.price.ToString();
+                                tracksDataGridObject.PackageID = track.package_id;
+                                tracksDataGridObject.TrackID = track.track_id;
+                                tracksDataGridObject.Category = track.category;
+                                tracksDataGridObject.Series = seriesDataGridsList;
+                                tracksDataGridObject.Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length;
+                                tracksDataGridObject.Participations = 1;
+                                tracksDataGridObject.TrackLink = new Uri("https://members.iracing.com/membersite/member/TrackDetail.do?trkid=" + track.track_id);
 
-                dgObjects.tracksDataGrid newLayout = new dgObjects.tracksDataGrid();
-                newLayout.Name = track.track_name;
-                newLayout.Layoutname = track.config_name;
-                newLayout.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
-                newLayout.Corners = track.corners_per_lap;
-                newLayout.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                newLayout.Length = isMetric ? Math.Round(track.track_config_length * 1.60934,3) : track.track_config_length; ;
-                newLayout.Owned = User.track_packages.Any(p => p.package_id == track.package_id) ? checksymbol : "";
-                newLayout.Pitlimit = isMetric ? Convert.ToInt32(track.pit_road_speed_limit * 1.60934) : track.pit_road_speed_limit;
-                newLayout.Price = "$" + track.price.ToString();
-                newLayout.PackageID = track.package_id;
-                newLayout.TrackID = track.track_id;
-                newLayout.Category = track.category;
-                newLayout.Series = seriesDataGridsList;
-                newLayout.Participations = seriesDataGridsList.Count;
-                dgTracksList.Add(newLayout);
-            }
-            dgTrackLayoutList.Clear();
-            foreach (dgObjects.tracksDataGrid track in dgTracksList)
-            {
-                if (!dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
-                {
-                    List<dgObjects.tracksDataGrid> layout = new List<dgObjects.tracksDataGrid>() { track };
-                    dgObjects.tracksLayoutsDataGrid newTrack = new dgObjects.tracksLayoutsDataGrid();
-                    newTrack.Layouts = layout;
-                    newTrack.Created = track.Created;
-                    newTrack.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.TrackID + ".png");
-                    newTrack.Name = track.Name;
-                    newTrack.Owned = track.Owned;
-                    newTrack.PackageID = track.PackageID;
-                    newTrack.Price = track.Price;
-                    newTrack.Layouts_count = 1;
-                    newTrack.Participations = track.Participations;
-                    newTrack.Favourite = favoutireTracks.Any(x => x.track_id == track.PackageID)? favsymbolSelected : favsymbolUnselected;
-                    newTrack.TrackID = track.TrackID;
-                    dgTrackLayoutList.Add(newTrack);
-                }
-                else if (dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
-                {
-                    var _trackObj = dgTrackLayoutList.FirstOrDefault(t => t.PackageID == track.PackageID);
-                    if (_trackObj != null)
-                    {
-                        _trackObj.Layouts.Add(track);
-                        _trackObj.Layouts_count++;
-                        _trackObj.Participations += track.Participations;
-                        _trackObj.Created = (DateTime.Parse(track.Created, Thread.CurrentThread.CurrentUICulture) < DateTime.Parse(_trackObj.Created, Thread.CurrentThread.CurrentUICulture)) ? track.Created : _trackObj.Created;
-                    }
-                    if (_trackObj.Name.Contains("[Retired]"))
-                    {
-                        _trackObj.Name = _trackObj.Layouts.FirstOrDefault(l => !l.Name.Contains("[Retired]")) != null? _trackObj.Layouts.FirstOrDefault(l => !l.Name.Contains("[Retired]")).Name: _trackObj.Name;
-                    }
-                }
-            }
-            dgTrackLayoutList.Sort((x, y) => x.Name.CompareTo(y.Name));
-        }
-        private void generatePurchaseGuideView()
-        {
-            //Generate Purchase information
-            dgPurchaseGuideList.Clear();
-            
-            foreach(var item in tracksInSeries)
-            {
-                var track = tracksList.First(t => t.track_id == item.track_id);
-                if (favoutireSeries.Any(f => f.series_id == item.series_id) && !User.track_packages.Any(p => p.package_id == track.package_id))
-                {
-                    List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
-                    var seriesDataGridsObject = (from serie in dgSeriesList
-                                                 where serie.SerieId == item.series_id
-                                                 select new dgObjects.seriesDataGrid()
-                                                 {
-                                                     SerieId = serie.SerieId,
-                                                     Seriesimage = serie.Seriesimage,
-                                                     SeriesName = serie.SeriesName,
-                                                     Category = serie.Category,
-                                                     Class = serie.Class,
-                                                     License = serie.License,
-                                                     Eligible = serie.Eligible,
-                                                     Weeks = item.week.ToString(),
-                                                     Favourite = serie.Favourite,
-                                                     OwnTracks = serie.Tracks.Count(t => t.Owned == checksymbol),
-                                                 }).FirstOrDefault();
-                    seriesDataGridsList.Add(seriesDataGridsObject);
-                    //var serie = seriesList.First(s => s.series_id == item.series_id);
-                    if (seriesDataGridsObject.OwnTracks < 8 || cbMenu2.IsChecked == false)
-                    {
-                        if (!dgPurchaseGuideList.Any(t => t.PackageID == track.package_id))
-                        {
-                            dgObjects.tracksDataGrid tracksDataGridObject = new dgObjects.tracksDataGrid();
-                            tracksDataGridObject.Name = track.track_name;
-                            tracksDataGridObject.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
-                            tracksDataGridObject.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                            tracksDataGridObject.Price = "$" + track.price.ToString();
-                            tracksDataGridObject.PackageID = track.package_id;
-                            tracksDataGridObject.TrackID = track.track_id;
-                            tracksDataGridObject.Category = track.category;
-                            tracksDataGridObject.Series = seriesDataGridsList;
-                            tracksDataGridObject.Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length;
-                            tracksDataGridObject.Participations = 1;
-                            tracksDataGridObject.TrackLink = new Uri("https://members.iracing.com/membersite/member/TrackDetail.do?trkid=" + track.track_id);
-
-                            dgPurchaseGuideList.Add(tracksDataGridObject);
-                        }
-                        else
-                        {
-                            var obj = dgPurchaseGuideList.First(t => t.PackageID == track.package_id);
-                            obj.Participations++;
-                            obj.Series.Add(seriesDataGridsObject);
+                                dgPurchaseGuideList.Add(tracksDataGridObject);
+                            }
+                            else
+                            {
+                                var obj = dgPurchaseGuideList.First(t => t.PackageID == track.package_id);
+                                obj.Participations++;
+                                obj.Series.Add(seriesDataGridsObject);
+                            }
                         }
                     }
                 }
+                dgPurchaseGuideList.Sort((x, y) => y.Participations.CompareTo(x.Participations));
+                gridPurchaseGuide.ItemsSource = null;
+                gridPurchaseGuide.ItemsSource = dgPurchaseGuideList;
+                gridPurchaseGuide.UpdateLayout();
             }
-            dgPurchaseGuideList.Sort((x, y) => y.Participations.CompareTo(x.Participations));
-            gridPurchaseGuide.ItemsSource = null;
-            gridPurchaseGuide.ItemsSource = dgPurchaseGuideList;
-            gridPurchaseGuide.UpdateLayout();
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("Error creating purchases: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Error creating purchases: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private void generateRaceView()
         {
-            dgRaceOverviewList.Clear();
-            foreach (var serie in dgSeriesList)
+            try
             {
+                dgRaceOverviewList.Clear();
+                foreach (var serie in dgSeriesList)
+                {
 
-                List<tracks.TracksInSeries> tracksinserie = new List<tracks.TracksInSeries>();
-                tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
-                DateTime actualtime = DateTime.Now.ToUniversalTime();
-                DateTime firstracetime;
-                int daysoffset = 0;
-                int repeattimes;
-                bool over = false;
-                tracks.TracksInSeries actualweekofserie = new tracks.TracksInSeries();
-                tracksinserie.Sort((x, y) => x.SeasonSchedule.start_date.CompareTo(y.SeasonSchedule.start_date));
-                tracks.TracksInSeries lastseason = new tracks.TracksInSeries();
-                tracks.TracksInSeries nextseason = new tracks.TracksInSeries();
+                    List<tracks.TracksInSeries> tracksinserie = new List<tracks.TracksInSeries>();
+                    tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
+                    DateTime actualtime = DateTime.Now.ToUniversalTime();
+                    DateTime firstracetime;
+                    int daysoffset = 0;
+                    int repeattimes;
+                    bool over = false;
+                    tracks.TracksInSeries actualweekofserie = new tracks.TracksInSeries();
+                    tracksinserie.Sort((x, y) => x.SeasonSchedule.start_date.CompareTo(y.SeasonSchedule.start_date));
+                    tracks.TracksInSeries lastseason = new tracks.TracksInSeries();
+                    tracks.TracksInSeries nextseason = new tracks.TracksInSeries();
 
-                foreach (var season in tracksinserie)
-                {
-                    if (lastseason.SeasonSchedule == null)
+                    foreach (var season in tracksinserie)
                     {
-                        lastseason = season;
+                        if (lastseason.SeasonSchedule == null)
+                        {
+                            lastseason = season;
+                        }
+                        DateTime seasonStartDate = Convert.ToDateTime(season.SeasonSchedule.start_date);
+                        if (seasonStartDate <= actualtime.Date && seasonStartDate > Convert.ToDateTime(lastseason.SeasonSchedule.start_date))
+                        {
+                            lastseason = season;
+                        }
+                        if (seasonStartDate > actualtime.Date && seasonStartDate > Convert.ToDateTime(lastseason.SeasonSchedule.start_date) && (nextseason.SeasonSchedule == null || seasonStartDate < Convert.ToDateTime(nextseason.SeasonSchedule.start_date)))
+                        {
+                            nextseason = season;
+                        }
                     }
-                    DateTime seasonStartDate = Convert.ToDateTime(season.SeasonSchedule.start_date);
-                    if (seasonStartDate <= actualtime.Date && seasonStartDate > Convert.ToDateTime(lastseason.SeasonSchedule.start_date))
+                    if (tracksinserie.Count() > 0 && tracksinserie[0].SeasonSchedule.race_time_descriptors[0].repeating)
                     {
-                        lastseason = season;
-                    }
-                    if (seasonStartDate > actualtime.Date && seasonStartDate > Convert.ToDateTime(lastseason.SeasonSchedule.start_date) && (nextseason.SeasonSchedule == null || seasonStartDate < Convert.ToDateTime(nextseason.SeasonSchedule.start_date)))
-                    {
-                        nextseason = season;
-                    }
-                }
-                if (tracksinserie.Count() > 0 && tracksinserie[0].SeasonSchedule.race_time_descriptors[0].repeating)
-                {
-                    int index = tracksinserie[lastseason.week - 1].SeasonSchedule.race_time_descriptors[0].day_offset.Count();
-                    daysoffset = tracksinserie[lastseason.week - 1].SeasonSchedule.race_time_descriptors[0].day_offset[index - 1];
-                    if (Convert.ToDateTime(lastseason.SeasonSchedule.start_date).AddDays(daysoffset) >= actualtime.Date)
-                    {
-                        actualweekofserie = lastseason;
-                    }
-                    else if (nextseason.SeasonSchedule != null)
-                    {
-                        actualweekofserie = nextseason;
-                    }
-                    else
-                    {
-                        actualweekofserie = lastseason;
-                        over = true;
-                    }
-                    firstracetime = Convert.ToDateTime(actualweekofserie.SeasonSchedule.race_time_descriptors[0].first_session_time);
-                    repeattimes = actualweekofserie.SeasonSchedule.race_time_descriptors[0].repeat_minutes;
-                }
-                else
-                {
-                    if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
-                    {
-                        actualweekofserie = lastseason;
-                    }
-                    else if (nextseason.SeasonSchedule != null)
-                    {
-                        actualweekofserie = nextseason;
-                    }
-                    else
-                    {
-                        actualweekofserie = lastseason;
-                        over = true;
-                    }
-                    if (actualweekofserie.SeasonSchedule != null)
-                    {
-                        var nextrace = actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times.FirstOrDefault(s => s >= actualtime);
-                        firstracetime = nextrace;
+                        int index = tracksinserie[lastseason.week - 1].SeasonSchedule.race_time_descriptors[0].day_offset.Count();
+                        daysoffset = tracksinserie[lastseason.week - 1].SeasonSchedule.race_time_descriptors[0].day_offset[index - 1];
+                        if (Convert.ToDateTime(lastseason.SeasonSchedule.start_date).AddDays(daysoffset) >= actualtime.Date)
+                        {
+                            actualweekofserie = lastseason;
+                        }
+                        else if (nextseason.SeasonSchedule != null)
+                        {
+                            actualweekofserie = nextseason;
+                        }
+                        else
+                        {
+                            actualweekofserie = lastseason;
+                            over = true;
+                        }
+                        firstracetime = Convert.ToDateTime(actualweekofserie.SeasonSchedule.race_time_descriptors[0].first_session_time);
                         repeattimes = actualweekofserie.SeasonSchedule.race_time_descriptors[0].repeat_minutes;
                     }
                     else
                     {
-                        firstracetime = new DateTime();
-                        repeattimes = 0;
-                    }
-                }
-                foreach (var track in serie.Tracks)
-                {
-                    if (track.Week == actualweekofserie.week && !over)
-                    {
-                        track.WeekActive = true;
-                    }
-                    else
-                    {
-                        track.WeekActive = false;
-                    }
-                }
-                var racetime = helper.getNextRace(DateTime.SpecifyKind(firstracetime, DateTimeKind.Utc), repeattimes, actualtime).ToLocalTime();
-                dgObjects.RaceOverviewDataGrid _raceobj = new dgObjects.RaceOverviewDataGrid();
-                var tr = tracksList.FirstOrDefault(t => t.track_id == actualweekofserie.track_id);
-                if (tr != null)
-                {
-                    List<dgObjects.carsDataGrid> cars = new List<dgObjects.carsDataGrid>();
-                    foreach (var car in carsInSeries.Where(s => s.series_id == serie.SerieId))
-                    {
-                        cars.Add(dgCarsList.First(c => c.CarId == car.car_id));
-                    }
-                    _raceobj.Cars = cars;
-                    _raceobj.Track = dgTrackLayoutList.FirstOrDefault(t => t.PackageID == tr.package_id);
-                    _raceobj.Tracks = serie.Tracks;
-                    _raceobj.SerieId = serie.SerieId;
-                    _raceobj.Seriesimage = serie.Seriesimage;
-                    _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" : actualweekofserie.SeasonSchedule.race_time_limit.ToString() + " Min";
-                    _raceobj.SeriesName = serie.SeriesName;
-                    _raceobj.TrackName = tr.track_name;
-                    _raceobj.Serie = serie;
-                    _raceobj.TracksOwned = serie.Tracks.Count(t => t.Owned == checksymbol).ToString() + "/" + serie.Tracks.Count();
-                    _raceobj.NextRace = racetime;
-
-                    _raceobj.Timer = RaceAlarms.Any(a => a.SerieId == serie.SerieId) ? alarmClockSymbol : clockSymbol;
-                    if (racetime.Date == DateTime.Now.Date && racetime > DateTime.Now && !over)
-                    {
-                        _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
-
-                    }
-                    else if (racetime.Year == DateTime.Parse("01.01.0001").Year || over)
-                    {
-                        _raceobj.NextRaceTime = "Season is over.";
-                    }
-                    else
-                    {
-                        _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + ", " + CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
-                    }
-                    if(actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times != null)
-                    {
-                        List<DateTime> sessionTimes = new List<DateTime>();
-                        foreach(DateTime x in actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times)
+                        if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
                         {
-                            sessionTimes.Add(DateTime.SpecifyKind(x, DateTimeKind.Utc).ToLocalTime());
+                            actualweekofserie = lastseason;
                         }
-                        _raceobj.SessionTimes = String.Join(", ", sessionTimes);
-                    }
-                    else
-                    {
-                        _raceobj.SessionTimes = null;
-                    }
-                    _raceobj.FirstSessionTime = firstracetime.ToLocalTime().ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
-                    if(repeattimes > 0)
-                    {
-                        if(repeattimes >= 60)
+                        else if (nextseason.SeasonSchedule != null)
                         {
-                            _raceobj.Repeating = repeattimes >= 60 ? "Every " + repeattimes / 60 + " hours" : "Every " + repeattimes / 60 + " hour";
+                            actualweekofserie = nextseason;
                         }
                         else
                         {
-                            _raceobj.Repeating = "Every " + repeattimes + " minutes" ;
+                            actualweekofserie = lastseason;
+                            over = true;
+                        }
+                        if (actualweekofserie.SeasonSchedule != null)
+                        {
+                            var nextrace = actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times.FirstOrDefault(s => s >= actualtime);
+                            firstracetime = nextrace;
+                            repeattimes = actualweekofserie.SeasonSchedule.race_time_descriptors[0].repeat_minutes;
+                        }
+                        else
+                        {
+                            firstracetime = new DateTime();
+                            repeattimes = 0;
                         }
                     }
-                    else
+                    foreach (var track in serie.Tracks)
                     {
-                        _raceobj.Repeating = "Set times";
+                        if (track.Week == actualweekofserie.week && !over)
+                        {
+                            track.WeekActive = true;
+                        }
+                        else
+                        {
+                            track.WeekActive = false;
+                        }
                     }
-                    _raceobj.TrackOwned = User.track_packages.Any(t => t.package_id == tr.package_id) ? true : false;
-                    dgRaceOverviewList.Add(_raceobj);
+                    var racetime = helper.getNextRace(DateTime.SpecifyKind(firstracetime, DateTimeKind.Utc), repeattimes, actualtime).ToLocalTime();
+                    dgObjects.RaceOverviewDataGrid _raceobj = new dgObjects.RaceOverviewDataGrid();
+                    var tr = tracksList.FirstOrDefault(t => t.track_id == actualweekofserie.track_id);
+                    if (tr != null)
+                    {
+                        List<dgObjects.carsDataGrid> cars = new List<dgObjects.carsDataGrid>();
+                        foreach (var car in carsInSeries.Where(s => s.series_id == serie.SerieId))
+                        {
+                            cars.Add(dgCarsList.First(c => c.CarId == car.car_id));
+                        }
+                        _raceobj.Cars = cars;
+                        _raceobj.Track = dgTrackLayoutList.FirstOrDefault(t => t.PackageID == tr.package_id);
+                        _raceobj.Tracks = serie.Tracks;
+                        _raceobj.SerieId = serie.SerieId;
+                        _raceobj.Seriesimage = serie.Seriesimage;
+                        _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" : actualweekofserie.SeasonSchedule.race_time_limit.ToString() + " Min";
+                        _raceobj.SeriesName = serie.SeriesName;
+                        _raceobj.TrackName = tr.track_name;
+                        _raceobj.Serie = serie;
+                        _raceobj.TracksOwned = serie.Tracks.Count(t => t.Owned == checksymbol).ToString() + "/" + serie.Tracks.Count();
+                        _raceobj.NextRace = racetime;
+
+                        _raceobj.Timer = RaceAlarms.Any(a => a.SerieId == serie.SerieId) ? alarmClockSymbol : clockSymbol;
+                        if (racetime.Date == DateTime.Now.Date && racetime > DateTime.Now && !over)
+                        {
+                            _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+
+                        }
+                        else if (racetime.Year == DateTime.Parse("01.01.0001").Year || over)
+                        {
+                            _raceobj.NextRaceTime = "Season is over.";
+                        }
+                        else
+                        {
+                            _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + ", " + CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+                        }
+                        if (actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times != null)
+                        {
+                            List<DateTime> sessionTimes = new List<DateTime>();
+                            foreach (DateTime x in actualweekofserie.SeasonSchedule.race_time_descriptors[0].session_times)
+                            {
+                                sessionTimes.Add(DateTime.SpecifyKind(x, DateTimeKind.Utc).ToLocalTime());
+                            }
+                            _raceobj.SessionTimes = String.Join(", ", sessionTimes);
+                        }
+                        else
+                        {
+                            _raceobj.SessionTimes = null;
+                        }
+                        _raceobj.FirstSessionTime = firstracetime.ToLocalTime().ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+                        if (repeattimes > 0)
+                        {
+                            if (repeattimes >= 60)
+                            {
+                                _raceobj.Repeating = repeattimes >= 60 ? "Every " + repeattimes / 60 + " hours" : "Every " + repeattimes / 60 + " hour";
+                            }
+                            else
+                            {
+                                _raceobj.Repeating = "Every " + repeattimes + " minutes";
+                            }
+                        }
+                        else
+                        {
+                            _raceobj.Repeating = "Set times";
+                        }
+                        _raceobj.TrackOwned = User.track_packages.Any(t => t.package_id == tr.package_id) ? true : false;
+                        dgRaceOverviewList.Add(_raceobj);
+                    }
+                }
+                dgRaceOverviewList.Sort((x, y) => x.NextRace.CompareTo(y.NextRace));
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+
+                    gridRaces.ItemsSource = dgRaceOverviewList;
+
+                }));
+                filterRaces();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("Error creating races: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Error creating races: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            dgRaceOverviewList.Sort((x, y) => x.NextRace.CompareTo(y.NextRace));
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-
-                gridRaces.ItemsSource = dgRaceOverviewList;
-
-            }));
-            filterRaces();
         }
         private void filterRaces()
         {
-            List<dgObjects.RaceOverviewDataGrid> dgFilteredRaces = new List<dgObjects.RaceOverviewDataGrid>();
-            dgFilteredRaces.Clear();
-            //cbFilterInOfficial; cbFilterOfficial; cbFilterOpenSetup; cbFilterFixedSetup; cbFilterRoad; cbFilterOval; cbFilterDirt; cbFilterDirtOval; cbFilterR; cbFilterD; cbFilterC; cbFilterB; cbFilterA; cbFilterP
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
-                foreach (var race in dgRaceOverviewList)
+            try
+            {
+                List<dgObjects.RaceOverviewDataGrid> dgFilteredRaces = new List<dgObjects.RaceOverviewDataGrid>();
+                dgFilteredRaces.Clear();
+                //cbFilterInOfficial; cbFilterOfficial; cbFilterOpenSetup; cbFilterFixedSetup; cbFilterRoad; cbFilterOval; cbFilterDirt; cbFilterDirtOval; cbFilterR; cbFilterD; cbFilterC; cbFilterB; cbFilterA; cbFilterP
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    bool category = false;
-                    bool official = false;
-                    bool serieclass = false;
-                    bool favs = false;
-                    bool own = false;
-                    bool over = false;
-                    List<int> usercars = new List<int>();
-                    foreach (var content in User.car_packages)
+                    foreach (var race in dgRaceOverviewList)
                     {
-                        foreach(var id in content.content_ids)
+                        bool category = false;
+                        bool official = false;
+                        bool serieclass = false;
+                        bool favs = false;
+                        bool own = false;
+                        bool over = false;
+                        List<int> usercars = new List<int>();
+                        foreach (var content in User.car_packages)
                         {
-                            usercars.Add(id);
+                            foreach (var id in content.content_ids)
+                            {
+                                usercars.Add(id);
+                            }
                         }
-                    }
-                    if(cbFilterSeasonOver.IsChecked == true && race.NextRaceTime == "Season is over." ||
-                     race.NextRaceTime != "Season is over.")
-                    {
-                        over = true;
-                    }
-                    if ((cbFilterDirtOval.IsChecked == true && race.Serie.Category == "dirtoval") ||
-                        (cbFilterOval.IsChecked == true && race.Serie.Category == "oval") ||
-                        (cbFilterRoad.IsChecked == true && race.Serie.Category == "road") ||
-                        (cbFilterDirt.IsChecked == true && race.Serie.Category == "dirt"))
-                    {
-                        category = true;
-                    }
-                    if (((cbFilterOfficial.IsChecked == true && race.Serie.Season.official == true) ||
-                        (cbFilterInOfficial.IsChecked == true && race.Serie.Season.official == false)) &&
-                        ((cbFilterOpenSetup.IsChecked == true && race.Serie.Season.fixed_setup == false) ||
-                        (cbFilterFixedSetup.IsChecked == true && race.Serie.Season.fixed_setup == true)))
-                    {
-                        official = true;
-                    }
+                        if (cbFilterSeasonOver.IsChecked == true && race.NextRaceTime == "Season is over." ||
+                         race.NextRaceTime != "Season is over.")
+                        {
+                            over = true;
+                        }
+                        if ((cbFilterDirtOval.IsChecked == true && race.Serie.Category == "dirtoval") ||
+                            (cbFilterOval.IsChecked == true && race.Serie.Category == "oval") ||
+                            (cbFilterRoad.IsChecked == true && race.Serie.Category == "road") ||
+                            (cbFilterDirt.IsChecked == true && race.Serie.Category == "dirt"))
+                        {
+                            category = true;
+                        }
+                        if (((cbFilterOfficial.IsChecked == true && race.Serie.Season.official == true) ||
+                            (cbFilterInOfficial.IsChecked == true && race.Serie.Season.official == false)) &&
+                            ((cbFilterOpenSetup.IsChecked == true && race.Serie.Season.fixed_setup == false) ||
+                            (cbFilterFixedSetup.IsChecked == true && race.Serie.Season.fixed_setup == true)))
+                        {
+                            official = true;
+                        }
 
-                    if((cbFilterR.IsChecked == true && race.Serie.Class == "R") ||
-                        (cbFilterD.IsChecked == true && race.Serie.Class == "D") ||
-                        (cbFilterC.IsChecked == true && race.Serie.Class == "C") ||
-                        (cbFilterB.IsChecked == true && race.Serie.Class == "B") ||
-                        (cbFilterA.IsChecked == true && race.Serie.Class == "A") ||
-                        (cbFilterP.IsChecked == true && race.Serie.Class == "Pro"))
-                    {
-                        serieclass = true;
-                    }
-                    if(
-                        ((cbFilterFavSeries.IsChecked == true && race.Serie.Favourite == favsymbolSelected || cbFilterFavSeries.IsChecked == false) &&
-                        (cbFilterFavTracks.IsChecked == true && race.Track.Favourite == favsymbolSelected || cbFilterFavTracks.IsChecked == false) &&
-                        (cbFilterFavCars.IsChecked == true && race.Cars.Any(c => favoutireCars.Any(u => u.car_id == c.CarId)) || cbFilterFavCars.IsChecked == false) ||
-                        (cbFilterFavSeries.IsChecked == false && cbFilterFavTracks.IsChecked == false && cbFilterFavCars.IsChecked == false ))
-                      )
-                    {
-                        favs = true;
-                    }
+                        if ((cbFilterR.IsChecked == true && race.Serie.Class == "R") ||
+                            (cbFilterD.IsChecked == true && race.Serie.Class == "D") ||
+                            (cbFilterC.IsChecked == true && race.Serie.Class == "C") ||
+                            (cbFilterB.IsChecked == true && race.Serie.Class == "B") ||
+                            (cbFilterA.IsChecked == true && race.Serie.Class == "A") ||
+                            (cbFilterP.IsChecked == true && race.Serie.Class == "Pro"))
+                        {
+                            serieclass = true;
+                        }
+                        if (
+                            ((cbFilterFavSeries.IsChecked == true && race.Serie.Favourite == favsymbolSelected || cbFilterFavSeries.IsChecked == false) &&
+                            (cbFilterFavTracks.IsChecked == true && race.Track.Favourite == favsymbolSelected || cbFilterFavTracks.IsChecked == false) &&
+                            (cbFilterFavCars.IsChecked == true && race.Cars.Any(c => favoutireCars.Any(u => u.car_id == c.CarId)) || cbFilterFavCars.IsChecked == false) ||
+                            (cbFilterFavSeries.IsChecked == false && cbFilterFavTracks.IsChecked == false && cbFilterFavCars.IsChecked == false))
+                          )
+                        {
+                            favs = true;
+                        }
 
-                    if (cbFilterOwnBoth.IsChecked == true)
-                    {
-                        if (race.TrackOwned == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId)))
+                        if (cbFilterOwnBoth.IsChecked == true)
                         {
-                            own = true;
+                            if (race.TrackOwned == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId)))
+                            {
+                                own = true;
+                            }
+                        }
+                        else
+                        {
+                            if ((cbFilterOwnTracks.IsChecked == true && race.TrackOwned == true) ||
+                            (cbFilterOwnCars.IsChecked == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId))) ||
+                            (cbFilterOwnTracks.IsChecked == false && cbFilterOwnCars.IsChecked == false))
+                            {
+                                own = true;
+                            }
+                        }
+                        if (category && official && serieclass && favs && own && over)
+                        {
+                            dgFilteredRaces.Add(race);
                         }
                     }
-                    else
-                    {
-                        if ((cbFilterOwnTracks.IsChecked == true && race.TrackOwned == true) ||
-                        (cbFilterOwnCars.IsChecked == true && race.Cars.Any(c => usercars.Any(u => u == c.CarId))) ||
-                        (cbFilterOwnTracks.IsChecked == false && cbFilterOwnCars.IsChecked == false))
-                        {
-                            own = true;
-                        }
-                    }
-                    if (category && official && serieclass && favs && own && over)
-                    {
-                        dgFilteredRaces.Add(race);
-                    }
+                    gridRaces.ItemsSource = null;
+                    gridRaces.ItemsSource = dgFilteredRaces;
+                    gridRaces.UpdateLayout();
+                }));
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("Error filter races: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                gridRaces.ItemsSource = null;
-                gridRaces.ItemsSource = dgFilteredRaces;
-                gridRaces.UpdateLayout();
-            }));
+                else
+                {
+                    MessageBox.Show("Error filter races: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
         private void filterSeries()
         {
@@ -2085,7 +2261,7 @@ namespace RCRPlanner
             }
             catch (Exception ex)
             {
-                if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                if(ex.InnerException != null)
                 {
                     MessageBox.Show("App Update:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -2196,7 +2372,7 @@ namespace RCRPlanner
                     }
                     catch (Exception ex)
                     {
-                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        if(ex.InnerException != null)
                         {
                             MessageBox.Show("Participation stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
@@ -2238,7 +2414,7 @@ namespace RCRPlanner
                     }
                     catch (Exception ex)
                     {
-                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        if(ex.InnerException != null)
                         {
                             MessageBox.Show("iRating stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
@@ -2387,7 +2563,7 @@ namespace RCRPlanner
                         }
                         catch (Exception ex)
                         {
-                            if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                            if(ex.InnerException != null)
                             {
                                 MessageBox.Show("Loading iRating stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                             }

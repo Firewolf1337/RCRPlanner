@@ -66,7 +66,7 @@ namespace RCRPlanner
                     }
                     catch (Exception ex)
                     {
-                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        if(ex.InnerException != null)
                         {
                             MessageBox.Show("Existing connection: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
@@ -90,9 +90,9 @@ namespace RCRPlanner
                 }
                 catch (Exception ex)
                 {
-                    if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                    if(ex.InnerException != null)
                     {
-                        MessageBox.Show("Connection: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Connection:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -148,9 +148,16 @@ namespace RCRPlanner
             {
                 responseObject = JsonSerializer.Deserialize<memberInfo.Root>(contents);
             }
-            catch
+            catch (Exception ex)
             {
-
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("User data download:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("User data download:" + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             return responseObject;
         }
