@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         		UseLayoutRounding="True"
 		        SnapsToDevicePixels="True"
-        Title="MainWindow"
+        Title="RavenCreekRacing Planner"
         MinWidth="900" MinHeight="640"
         Width="1200" Height="800" 
         WindowStyle="None"
@@ -1352,8 +1352,8 @@
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition />
+                    <RowDefinition /> <!--Row 13 - Placeholder -->
+                    <RowDefinition Height="35"/>
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>

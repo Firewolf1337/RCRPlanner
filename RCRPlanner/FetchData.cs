@@ -60,6 +60,7 @@ namespace RCRPlanner
             }
             if (handler.CookieContainer.Count == 0 || forcelogin)
             {
+                handler = new HttpClientHandler();
                 handler.CookieContainer = cookie;
                 client = new HttpClient(handler);
                 string loginHash = EncryptPW(Email, Password);

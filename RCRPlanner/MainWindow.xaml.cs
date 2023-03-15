@@ -139,6 +139,7 @@ namespace RCRPlanner
         {
             main = this;
             this.InitializeComponent();
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight-2;
             if (Properties.Settings.Default.UpdateSettings)
             {
                 Properties.Settings.Default.Upgrade();
@@ -216,6 +217,7 @@ namespace RCRPlanner
         }
         private async void worker_DoWork(object sender, DoWorkEventArgs e)
         {
+            bool error = false;
             bool filemissing = false;
             if (!Directory.Exists(exePath+tracksLogo))
             {
@@ -343,6 +345,7 @@ namespace RCRPlanner
             }
             if (filemissing || reloadData)
             {
+
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     lblLoadingText.Content = "Fetching data from iRacion API due to missing files.";
@@ -354,30 +357,42 @@ namespace RCRPlanner
                         lblLoadingText.Content = "Credentials present. Conneting to API...";
                     }));
                     var status = fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),false);
-                    status.Wait();
-                    lastLoginResult = status.Result;
-                    if (status.Result == 401)
+                    try
                     {
-                        move_grid(gridLogin, "bottom", -250, moveAnimationDuration);
-                        mre.WaitOne();
-                    }
-                    if (status.Result == 503)
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        status.Wait();
+                        lastLoginResult = status.Result;
+
+                        if (status.Result == 401)
                         {
-                            lblLoadingText.Content = "iRacing is in maintenance mode!";
-                        }));
-                    }
-                    if (status.Result >= 200 && 210 >= status.Result)
-                    {
-                        try
-                        {
-                            Task<memberInfo.Root> getUser = fData.getMemberInfo();
-                            getUser.Wait();
-                            User = getUser.Result;
-                            helper.SerializeObject<memberInfo.Root>(User, userfile);
+                            move_grid(gridLogin, "bottom", -250, moveAnimationDuration);
+                            mre.WaitOne();
                         }
-                        catch { }
+                        if (status.Result == 503)
+                        {
+                            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+                                lblLoadingText.Content = "iRacing is in maintenance mode!";
+                            }));
+                        }
+                        if (status.Result >= 200 && 210 >= status.Result)
+                        {
+                            try
+                            {
+                                Task<memberInfo.Root> getUser = fData.getMemberInfo();
+                                getUser.Wait();
+                                User = getUser.Result;
+                                helper.SerializeObject<memberInfo.Root>(User, userfile);
+                            }
+                            catch { }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        {
+                            MessageBox.Show(ex.InnerException.Message,"Something went wrong." , MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        error = true;
                     }
                 }
                 else
@@ -390,88 +405,99 @@ namespace RCRPlanner
                     mre.WaitOne();
                 }
             }
-
-
-            if (!(lastLoginResult>= 200 && 210 >= lastLoginResult) && lastLoginResult != -1)
+            if (error == false)
             {
-                try
+                if (!(lastLoginResult >= 200 && 210 >= lastLoginResult) && lastLoginResult != -1)
                 {
+                    try
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "iRacing is down!";
+                        }));
+                    }
+                    catch { }
+                }
+                else
+                {
+                    try
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "Loading series information.";
+                        }));
+                    }
+                    catch { }
+                    seriesList = await fh.getSeriesList(seriesFile, reloadData);
+                    seriesAssetsList = await fh.getSeriesAssets(seriesAssetsFile, seriesLogos, reloadData);
+                    seriesSeasonList = await fh.getSeriesSeason(seriesSeasonFile, reloadData);
+
+                    try
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "Loading car information.";
+                        }));
+                    }
+                    catch (Exception ex) { }
+                    carsList = await fh.getCarList(carsFile, reloadData);
+                    carsAssetsList = await fh.getCarAssetsList(carsAssetsFile, carLogos, reloadData);
+                    carClassList = await fh.getCarClassList(carClassFile, reloadData);
+                    carClassesList = await fh.getCarClassesList(carsList, carClassList);
+                    carsInSeries = await fh.getCarsInSeries(carClassesList, seriesSeasonList);
+
+                    try
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "Loading track information.";
+                        }));
+                    }
+                    catch { }
+                    tracksList = await fh.getTracksList(tracksFile, reloadData);
+                    tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
+                    tracksInSeries = await fh.getTracksInSeries(tracksList, seriesSeasonList);
+                    fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
+                    try
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            lblLoadingText.Content = "Loading views.";
+                        }));
+                    }
+                    catch { }
+                    createDgData();
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        lblLoadingText.Content = "iRacing is down!";
-                    })); 
+                        gridSeries.ItemsSource = dgSeriesList;
+                        gridCars.ItemsSource = dgCarsList;
+                        gridTracksLayout.ItemsSource = dgTrackLayoutList;
+
+                        try
+                        {
+                            lblLoadingText.Content = "Done";
+                        }
+                        catch { }
+                    }));
                 }
-                catch { }
+                reloadData = false;
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    gridLoading.Visibility = Visibility.Hidden;
+                    gridLoadingBG.Visibility = Visibility.Hidden;
+                    gridMainwindow.Effect = null;
+                }));
             }
             else
             {
-                try
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        lblLoadingText.Content = "Loading series information.";
-                    }));
-                }
-                catch { }
-                seriesList = await fh.getSeriesList(seriesFile, reloadData);
-                seriesAssetsList = await fh.getSeriesAssets(seriesAssetsFile, seriesLogos, reloadData);
-                seriesSeasonList = await fh.getSeriesSeason(seriesSeasonFile, reloadData);
-                
-                try
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        lblLoadingText.Content = "Loading car information.";
-                    }));
-                }
-                catch (Exception ex) { }
-                carsList = await fh.getCarList(carsFile, reloadData);
-                carsAssetsList = await fh.getCarAssetsList(carsAssetsFile, carLogos, reloadData);
-                carClassList = await fh.getCarClassList(carClassFile, reloadData);
-                carClassesList = await fh.getCarClassesList(carsList, carClassList);
-                carsInSeries = await fh.getCarsInSeries(carClassesList, seriesSeasonList);
-
-                try
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        lblLoadingText.Content = "Loading track information.";
-                    }));
-                }
-                catch { }
-                tracksList = await fh.getTracksList(tracksFile, reloadData);
-                tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
-                tracksInSeries = await fh.getTracksInSeries(tracksList, seriesSeasonList);
-                fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
-                try
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        lblLoadingText.Content = "Loading views.";
-                    }));
-                }
-                catch { }
-                createDgData();
+                reloadData = false;
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-                    gridSeries.ItemsSource = dgSeriesList;
-                    gridCars.ItemsSource = dgCarsList;
-                    gridTracksLayout.ItemsSource = dgTrackLayoutList;
-                
-                try
-                {
-                    lblLoadingText.Content = "Done";                
-                }
-                catch{ }
+                    gridLoading.Visibility = Visibility.Hidden;
+                    gridLoadingBG.Visibility = Visibility.Hidden;
+                    gridMainwindow.Effect = null;
                 }));
             }
-            reloadData = false;
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                gridLoading.Visibility = Visibility.Hidden;
-                gridLoadingBG.Visibility = Visibility.Hidden;
-                gridMainwindow.Effect = null;
-            }));
         }
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -695,22 +721,30 @@ namespace RCRPlanner
                     password = tbLoginPasword.SecurePassword;
                 }
             }
-            var status = await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),true);
-
-            if (status >= 200 && 210 >= status)
+            try
             {
-                User = await fData.getMemberInfo();
-                helper.SerializeObject<memberInfo.Root>(User, userfile);
-                Style_ProfileIcon(User);
-                spHeaderMenuLogin_MouseDown(null, null);
-                lblLogin.Content = "";
-                mre.Set();
+                var status = await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), true);
+                if (status >= 200 && 210 >= status)
+                {
+                    User = await fData.getMemberInfo();
+                    helper.SerializeObject<memberInfo.Root>(User, userfile);
+                    Style_ProfileIcon(User);
+                    spHeaderMenuLogin_MouseDown(null, null);
+                    lblLogin.Content = "";
+                    mre.Set();
+                }
+                else
+                {
+                    lblLogin.Content = "Something went wrong. Please retry";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                lblLogin.Content = "Something went wrong. Please retry";
+                if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                {
+                    MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            
         }
         private void Style_ProfileIcon(memberInfo.Root info)
         {
@@ -2045,7 +2079,17 @@ namespace RCRPlanner
         }
         private async void btnProfileUpdate_Click(object sender, RoutedEventArgs e)
         {
-            await fData.getGithubLastRelease(Properties.Settings.Default.updateURL.ToString(), version.ToString());
+            try
+            {
+                await fData.getGithubLastRelease(Properties.Settings.Default.updateURL.ToString(), version.ToString());
+            }
+            catch (Exception ex)
+            {
+                if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                {
+                    MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
         private void gridAutoStartRemove_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -2105,78 +2149,101 @@ namespace RCRPlanner
                     generatePurchaseGuideView();
                     break;
                 case "gridPartStat":
-                    if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
+                    try
                     {
-                        if (ddMenu2.SelectedIndex != -1 && ddMenu3.SelectedIndex != -1 && ddMenu4.SelectedIndex != -1)
+                        if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
                         {
-                            int week = -1;
-                            if (ddMenu5.SelectedIndex != 0)
+                            if (ddMenu2.SelectedIndex != -1 && ddMenu3.SelectedIndex != -1 && ddMenu4.SelectedIndex != -1)
                             {
-                                week = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu5.SelectedValue).Name.Replace("w", ""));
-                            }
-                            try
-                            {
-                                DataTable dataTable = new DataTable();
-                                btnMenu1.Content = "Loading...";
-                                btnMenu1.IsEnabled = false;
-                                dataTable = await statistics.PaticipationStats(Convert.ToInt32(
-                                    ((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", "")),
-                                    Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")),
-                                    Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")),
-                                    week);
-                                gridPartStat.ItemsSource = null;
-                                gridPartStat.ItemsSource = dataTable.DefaultView;
-                                /*gridPartStat.DataContext = (await statistics.PaticipationStats(Convert.ToInt32(
-                                    ((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", "")),
-                                    Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")),
-                                    Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")),
-                                    week)).DefaultView;*/
-                                gridPartStat.UpdateLayout();
-                                btnMenu1.Content = "Get stat";
-                                btnMenu1.IsEnabled = true;
+                                int week = -1;
+                                if (ddMenu5.SelectedIndex != 0)
+                                {
+                                    week = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu5.SelectedValue).Name.Replace("w", ""));
+                                }
+                                try
+                                {
+                                    DataTable dataTable = new DataTable();
+                                    btnMenu1.Content = "Loading...";
+                                    btnMenu1.IsEnabled = false;
+                                    dataTable = await statistics.PaticipationStats(Convert.ToInt32(
+                                        ((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", "")),
+                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")),
+                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")),
+                                        week);
+                                    gridPartStat.ItemsSource = null;
+                                    gridPartStat.ItemsSource = dataTable.DefaultView;
+                                    /*gridPartStat.DataContext = (await statistics.PaticipationStats(Convert.ToInt32(
+                                        ((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", "")),
+                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")),
+                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")),
+                                        week)).DefaultView;*/
+                                    gridPartStat.UpdateLayout();
+                                    btnMenu1.Content = "Get stat";
+                                    btnMenu1.IsEnabled = true;
 
-                            }
-                            catch
-                            {
-                                btnMenu1.Content = "Get stat";
-                                btnMenu1.IsEnabled = true;
+                                }
+                                catch
+                                {
+                                    btnMenu1.Content = "Get stat";
+                                    btnMenu1.IsEnabled = true;
+                                }
                             }
                         }
+                        else
+                        {
+                            btnMenu1.Content = "Please relogin!";
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        btnMenu1.Content = "Please relogin!";
+                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        {
+                            MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        btnMenu1.Content = "Get stat";
+                        btnMenu1.IsEnabled = true;
                     }
                     break;
                 case "gridiRatingStat":
-
-                    if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
+                    try
                     {
-                        if (ddMenu2.SelectedIndex != -1 && ddMenu3.SelectedIndex != -1)
+                        if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
                         {
-                            try
+                            if (ddMenu2.SelectedIndex != -1 && ddMenu3.SelectedIndex != -1)
                             {
-                                btnMenu1.Content = "Loading...";
-                                btnMenu1.IsEnabled = false;
-                                dgiRaitingDataGridList = await statistics.DriverIratingPerSeries(
-                                    Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("s", "")),
-                                    Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("c", ""))
-                                    , iRatingStatUserIrating);
-                                gridiRatingStat.ItemsSource = null;
-                                gridiRatingStat.ItemsSource = dgiRaitingDataGridList;
-                                btnMenu1.Content = "Get stat";
-                                btnMenu1.IsEnabled = true;
-                            }
-                            catch
-                            {
-                                btnMenu1.Content = "Get stat";
-                                btnMenu1.IsEnabled = true;
+                                try
+                                {
+                                    btnMenu1.Content = "Loading...";
+                                    btnMenu1.IsEnabled = false;
+                                    dgiRaitingDataGridList = await statistics.DriverIratingPerSeries(
+                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("s", "")),
+                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("c", ""))
+                                        , iRatingStatUserIrating);
+                                    gridiRatingStat.ItemsSource = null;
+                                    gridiRatingStat.ItemsSource = dgiRaitingDataGridList;
+                                    btnMenu1.Content = "Get stat";
+                                    btnMenu1.IsEnabled = true;
+                                }
+                                catch
+                                {
+                                    btnMenu1.Content = "Get stat";
+                                    btnMenu1.IsEnabled = true;
+                                }
                             }
                         }
+                        else
+                        {
+                            btnMenu1.Content = "Please relogin!";
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        btnMenu1.Content = "Please relogin!";
+                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        {
+                            MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        btnMenu1.Content = "Get stat";
+                        btnMenu1.IsEnabled = true;
                     }
                     break;
             }
@@ -2277,42 +2344,52 @@ namespace RCRPlanner
                 case "gridiRatingStat":
                     if (ddMenu2.SelectedIndex != -1)
                     {
-                        if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
+                        try
                         {
-                            ddMenu3.Items.Clear();
-                            ddMenu4.Items.Clear();
-                            var selectedValue = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", ""));
-                            var seasons = await fData.getSeriesPastSeasons(selectedValue.ToString());
-                            switch (seasons.series.category)
+                            if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
                             {
-                                case "road":
-                                    iRatingStatUserIrating = User.licenses.road.irating;
-                                    break;
-                                case "oval":
-                                    iRatingStatUserIrating = User.licenses.oval.irating;
-                                    break;
-                                case "dirt_road":
-                                    iRatingStatUserIrating = User.licenses.dirt_road.irating;
-                                    break;
-                                case "dirt_oval":
-                                    iRatingStatUserIrating = User.licenses.dirt_oval.irating;
-                                    break;
-                            }
-                            List<seriesPastSeasons.CarClass> carclasses = new List<seriesPastSeasons.CarClass>();
-                            foreach (var season in seasons.series.seasons)
-                            {
-                                ddMenu3.Items.Add(new ComboBoxItem() { Content = season.season_short_name, Name = "s" + season.season_id.ToString() });
-                                foreach (var carclass in season.car_classes)
+                                ddMenu3.Items.Clear();
+                                ddMenu4.Items.Clear();
+                                var selectedValue = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", ""));
+                                var seasons = await fData.getSeriesPastSeasons(selectedValue.ToString());
+                                switch (seasons.series.category)
                                 {
-                                    if (carclasses.FirstOrDefault(c => c.car_class_id == carclass.car_class_id) == null)
+                                    case "road":
+                                        iRatingStatUserIrating = User.licenses.road.irating;
+                                        break;
+                                    case "oval":
+                                        iRatingStatUserIrating = User.licenses.oval.irating;
+                                        break;
+                                    case "dirt_road":
+                                        iRatingStatUserIrating = User.licenses.dirt_road.irating;
+                                        break;
+                                    case "dirt_oval":
+                                        iRatingStatUserIrating = User.licenses.dirt_oval.irating;
+                                        break;
+                                }
+                                List<seriesPastSeasons.CarClass> carclasses = new List<seriesPastSeasons.CarClass>();
+                                foreach (var season in seasons.series.seasons)
+                                {
+                                    ddMenu3.Items.Add(new ComboBoxItem() { Content = season.season_short_name, Name = "s" + season.season_id.ToString() });
+                                    foreach (var carclass in season.car_classes)
                                     {
-                                        carclasses.Add(carclass);
+                                        if (carclasses.FirstOrDefault(c => c.car_class_id == carclass.car_class_id) == null)
+                                        {
+                                            carclasses.Add(carclass);
+                                        }
                                     }
                                 }
+                                foreach (var carclass in carclasses)
+                                {
+                                    ddMenu4.Items.Add(new ComboBoxItem() { Content = carclass.name, Name = "c" + carclass.car_class_id.ToString() });
+                                }
                             }
-                            foreach (var carclass in carclasses)
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!String.IsNullOrEmpty(ex.InnerException.Message))
                             {
-                                ddMenu4.Items.Add(new ComboBoxItem() { Content = carclass.name, Name = "c" + carclass.car_class_id.ToString() });
+                                MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
                     }
