@@ -390,7 +390,7 @@ namespace RCRPlanner
                     {
                         if (!String.IsNullOrEmpty(ex.InnerException.Message))
                         {
-                            MessageBox.Show(ex.InnerException.Message,"Something went wrong." , MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Reload data: " + ex.InnerException.Message,"Something went wrong." , MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         error = true;
                     }
@@ -742,7 +742,7 @@ namespace RCRPlanner
             {
                 if (!String.IsNullOrEmpty(ex.InnerException.Message))
                 {
-                    MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Login: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -840,7 +840,7 @@ namespace RCRPlanner
                     _trackobj.Name = tr.track_name;
                     _trackobj.Layoutname = tr.config_name;
                     _trackobj.Corners = tr.corners_per_lap;
-                    _trackobj.Created = tr.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern);
+                    _trackobj.Created = tr.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
                     _trackobj.Length = isMetric ? Math.Round(tr.track_config_length * 1.60934, 3) : tr.track_config_length;
                     _trackobj.Owned = User.track_packages.Any(p => p.package_id == tr.package_id) ? checksymbol : "";
                     _trackobj.Pitlimit = isMetric ? Convert.ToInt32(tr.pit_road_speed_limit * 1.60934) : tr.pit_road_speed_limit;
@@ -850,7 +850,7 @@ namespace RCRPlanner
                     _trackobj.Category = tr.category;
                     _trackobj.TrackImage = new Uri("file:///" + exePath + tracksLogo + tr.track_id + ".png");
                     _trackobj.Week = track.SeasonSchedule.race_week_num+1;
-                    _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern);
+                    _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date, Thread.CurrentThread.CurrentUICulture).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
                     _trackobj.Racelenght = track.SeasonSchedule.race_lap_limit != null ? track.SeasonSchedule.race_lap_limit.ToString() +" Laps": track.SeasonSchedule.race_time_limit.ToString() + " Min";
                     tracks.Add(_trackobj);
                 }
@@ -899,7 +899,7 @@ namespace RCRPlanner
                 carsDataGridObject.Weight = isMetric ? Convert.ToInt32(car.car_weight * 0.453592) : car.car_weight;
                 carsDataGridObject.Price = "$" + car.price.ToString();
                 carsDataGridObject.Owned = User.car_packages.Any(p => p.package_id == car.package_id) ? checksymbol : "";
-                carsDataGridObject.Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern);
+                carsDataGridObject.Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
                 carsDataGridObject.Series = seriesDataGridsList;
                 carsDataGridObject.Series_Participations = seriesDataGridsList.Count;
                 carsDataGridObject.ForumLink = car.forum_url;
@@ -963,7 +963,7 @@ namespace RCRPlanner
                 newLayout.Layoutname = track.config_name;
                 newLayout.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
                 newLayout.Corners = track.corners_per_lap;
-                newLayout.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern);
+                newLayout.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
                 newLayout.Length = isMetric ? Math.Round(track.track_config_length * 1.60934,3) : track.track_config_length; ;
                 newLayout.Owned = User.track_packages.Any(p => p.package_id == track.package_id) ? checksymbol : "";
                 newLayout.Pitlimit = isMetric ? Convert.ToInt32(track.pit_road_speed_limit * 1.60934) : track.pit_road_speed_limit;
@@ -1003,7 +1003,7 @@ namespace RCRPlanner
                         _trackObj.Layouts.Add(track);
                         _trackObj.Layouts_count++;
                         _trackObj.Participations += track.Participations;
-                        _trackObj.Created = (DateTime.Parse(track.Created) < DateTime.Parse(_trackObj.Created)) ? track.Created : _trackObj.Created;
+                        _trackObj.Created = (DateTime.Parse(track.Created, Thread.CurrentThread.CurrentUICulture) < DateTime.Parse(_trackObj.Created, Thread.CurrentThread.CurrentUICulture)) ? track.Created : _trackObj.Created;
                     }
                     if (_trackObj.Name.Contains("[Retired]"))
                     {
@@ -1048,7 +1048,7 @@ namespace RCRPlanner
                             dgObjects.tracksDataGrid tracksDataGridObject = new dgObjects.tracksDataGrid();
                             tracksDataGridObject.Name = track.track_name;
                             tracksDataGridObject.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
-                            tracksDataGridObject.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern);
+                            tracksDataGridObject.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
                             tracksDataGridObject.Price = "$" + track.price.ToString();
                             tracksDataGridObject.PackageID = track.package_id;
                             tracksDataGridObject.TrackID = track.track_id;
@@ -2087,7 +2087,7 @@ namespace RCRPlanner
             {
                 if (!String.IsNullOrEmpty(ex.InnerException.Message))
                 {
-                    MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("App Update:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -2198,7 +2198,7 @@ namespace RCRPlanner
                     {
                         if (!String.IsNullOrEmpty(ex.InnerException.Message))
                         {
-                            MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Participation stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         btnMenu1.Content = "Get stat";
                         btnMenu1.IsEnabled = true;
@@ -2240,7 +2240,7 @@ namespace RCRPlanner
                     {
                         if (!String.IsNullOrEmpty(ex.InnerException.Message))
                         {
-                            MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("iRating stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         btnMenu1.Content = "Get stat";
                         btnMenu1.IsEnabled = true;
@@ -2389,7 +2389,7 @@ namespace RCRPlanner
                         {
                             if (!String.IsNullOrEmpty(ex.InnerException.Message))
                             {
-                                MessageBox.Show(ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("Loading iRating stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
                     }

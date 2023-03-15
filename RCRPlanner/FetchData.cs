@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Windows;
 
 
 namespace RCRPlanner
@@ -43,6 +44,7 @@ namespace RCRPlanner
         public static HttpClient client = new HttpClient();
         public bool loggedIn = false;
 
+
         public class iRacingLinks
         {
             public string link { get; set; }
@@ -51,29 +53,51 @@ namespace RCRPlanner
         public async Task<int> Login_API(byte[] Email, byte[] Password, bool forcelogin)
         {
             HttpResponseMessage response;
+
             foreach (Cookie cookie in cookie.GetCookies(new Uri("https://iracing.com")))
             {
                 if (cookie.Name == "authtoken_members" && cookie.Expires > DateTime.Now.AddMinutes(10) && forcelogin == false)
                 {
-                    response = await client.GetAsync(iracingDataDoc);
+                    try
+                    {
+                        response = await client.GetAsync(iracingDataDoc);
+                        return Convert.ToInt32(response.StatusCode);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                        {
+                            MessageBox.Show("Existing connection: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
                 }
             }
             if (handler.CookieContainer.Count == 0 || forcelogin)
             {
-                handler = new HttpClientHandler();
-                handler.CookieContainer = cookie;
-                client = new HttpClient(handler);
-                string loginHash = EncryptPW(Email, Password);
-                string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
-                var content = new StringContent(postBody, Encoding.UTF8, "application/json");
+                try
+                {
+                    handler = new HttpClientHandler();
+                    handler.CookieContainer = cookie;
+                    client = new HttpClient(handler);
+                    string loginHash = EncryptPW(Email, Password);
+                    string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
+                    var content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
-                response = await client.PostAsync(iracingAuthUrl, content);
+                    response = await client.PostAsync(iracingAuthUrl, content);
+                    response = await client.GetAsync(iracingDataDoc);
+                    return Convert.ToInt32(response.StatusCode);
+                }
+                catch (Exception ex)
+                {
+                    if (!String.IsNullOrEmpty(ex.InnerException.Message))
+                    {
+                        MessageBox.Show("Connection: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
             }
+            return 0;
 
-
-            response = await client.GetAsync(iracingDataDoc);
-
-            return Convert.ToInt32(response.StatusCode);
         }
         public async Task<string> getLink(string url)
         {
