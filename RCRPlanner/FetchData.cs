@@ -43,7 +43,14 @@ namespace RCRPlanner
         public HttpClientHandler handler = new HttpClientHandler();
         public static HttpClient client = new HttpClient();
         public bool loggedIn = false;
-
+        new Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings
+        {
+            Error = (se, ev) =>
+            {
+                MessageBox.Show("Deserialization: " + ev.ErrorContext.Error.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                ev.ErrorContext.Handled = true;
+            }
+        };
 
         public class iRacingLinks
         {
@@ -146,7 +153,8 @@ namespace RCRPlanner
             var responseObject = new memberInfo.Root();
             try
             {
-                responseObject = JsonSerializer.Deserialize<memberInfo.Root>(contents);
+                responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<memberInfo.Root>(contents,settings);
+                //responseObject = JsonSerializer.Deserialize<memberInfo.Root>(contents);
             }
             catch (Exception ex)
             {
@@ -168,7 +176,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<cars.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<cars.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<cars.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -178,7 +187,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<carClass.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<carClass.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<carClass.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -191,7 +201,8 @@ namespace RCRPlanner
             var responseObject = new List<carAssets>();
             try
             {
-                responseObject = (JsonSerializer.Deserialize<Dictionary<string, carAssets>>(contents)).Values.ToList();
+                //responseObject = (JsonSerializer.Deserialize<Dictionary<string, carAssets>>(contents)).Values.ToList();
+                responseObject = (Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, carAssets>>(contents, settings)).Values.ToList();
             }
             catch
             {
@@ -207,7 +218,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<series.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<series.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<series.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -220,7 +232,8 @@ namespace RCRPlanner
             var responseObject = new List<seriesAssets>();
             try
             {
-                responseObject = (JsonSerializer.Deserialize<Dictionary<string, seriesAssets>>(contents)).Values.ToList();
+                //responseObject = (JsonSerializer.Deserialize<Dictionary<string, seriesAssets>>(contents)).Values.ToList();
+                responseObject = (Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, seriesAssets>>(contents, settings)).Values.ToList();
             }
             catch
             {
@@ -234,7 +247,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<seriesSeason.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<seriesSeason.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<seriesSeason.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -244,7 +258,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<seriesPastSeasons.Root>(contents);
+            //var responseObject = JsonSerializer.Deserialize<seriesPastSeasons.Root>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<seriesPastSeasons.Root>(contents, settings);
 
             return responseObject;
         }
@@ -255,7 +270,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<tracks.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<tracks.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<tracks.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -268,7 +284,9 @@ namespace RCRPlanner
             var responseObject = new List<trackAssets.Root>();
             try
             {
-                responseObject = (JsonSerializer.Deserialize<Dictionary<string, trackAssets.Root>>(contents)).Values.ToList();
+                //responseObject = (JsonSerializer.Deserialize<Dictionary<string, trackAssets.Root>>(contents)).Values.ToList();
+                responseObject = (Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, trackAssets.Root>>(contents, settings)).Values.ToList();
+
             }
             catch
             {
@@ -309,7 +327,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<searchSerieResults.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<searchSerieResults.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<searchSerieResults.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -318,7 +337,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(link);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<List<seasonDriverStandings.Root>>(contents);
+            //var responseObject = JsonSerializer.Deserialize<List<seasonDriverStandings.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<seasonDriverStandings.Root>>(contents, settings);
 
             return responseObject;
         }
@@ -339,7 +359,8 @@ namespace RCRPlanner
             var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
-            var responseObject = JsonSerializer.Deserialize<githubLatestRelease.Root>(contents);
+            //var responseObject = JsonSerializer.Deserialize<githubLatestRelease.Root>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<githubLatestRelease.Root>(contents, settings);
             if (version != responseObject.tag_name)
             {
                 using (HttpResponseMessage zipResponse = await client.GetAsync(responseObject.assets[0].browser_download_url))
