@@ -21,6 +21,7 @@ ___
     * You need to manually refresh the data when the new season or "Week 13" starts or you purchase something.
 
 * **Please try to start with a fresh copy in an empty folder, if you have any problems after some time with the planner.**
+    * If there is still a problem additionaly delete the folders in %LocalAppData%\RCRPlanner\
 
 ## Overview
 #### Start and login
