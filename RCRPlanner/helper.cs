@@ -82,13 +82,13 @@ namespace RCRPlanner
     }
     class helper
     {
-        static Assembly _assembly = Assembly.GetExecutingAssembly();
-        static string resourceName = "RCRPlanner.salt.txt";
-        static Stream stream1 = _assembly.GetManifestResourceStream(resourceName);
-        static StreamReader reader = new StreamReader(stream1);
-        static string ent = reader.ReadToEnd();
+        //static Assembly _assembly = Assembly.GetExecutingAssembly();
+        //static string resourceName = "RCRPlanner.salt.txt";
+        //static Stream stream1 = _assembly.GetManifestResourceStream(resourceName);
+        //static StreamReader reader = new StreamReader(stream1);
+        //static string ent = reader.ReadToEnd();
 
-        static byte[] entropy = Encoding.Unicode.GetBytes(ent);
+        static byte[] entropy = null;
         public static byte[] CombineByte(byte[] first, byte[] second)
         {
             byte[] ret = new byte[first.Length + second.Length];

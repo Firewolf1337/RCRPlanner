@@ -23,8 +23,8 @@ namespace RCRPlanner
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         public class Account
         {
-            public int ir_dollars { get; set; }
-            public int ir_credits { get; set; }
+            public double ir_dollars { get; set; }
+            public double ir_credits { get; set; }
             public string status { get; set; }
         }
 
