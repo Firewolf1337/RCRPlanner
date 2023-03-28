@@ -622,6 +622,9 @@
 .fa-github:before {
   content: "\f09b";
 }
+.fa-discord:before {
+  content: "\f392";
+}
 .fa-unlock:before {
   content: "\f09c";
 }
