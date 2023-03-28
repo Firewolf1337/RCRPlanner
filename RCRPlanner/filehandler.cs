@@ -308,12 +308,16 @@ namespace RCRPlanner
                     FieldInfo[] fields = typeof(trackAssets.TrackMapLayers).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
                     foreach (var item in track.track_map_layers.GetType().GetProperties())
                     {
+
                         string name = item.Name;
-                        string url = svgpath + item.GetValue(track.track_map_layers);
-                        string content = Regex.Replace((await fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
-                        content = Regex.Replace(content, @"<!--.*?-->", "");
-                        string createDiv = "<div id=\"track-"+name+"\">";
-                        htmlcontent += createDiv + content + "</div>";
+                        if (item.GetValue(track.track_map_layers) != null)
+                        {
+                            string url = svgpath + item.GetValue(track.track_map_layers);
+                            string content = Regex.Replace((await fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
+                            content = Regex.Replace(content, @"<!--.*?-->", "");
+                            string createDiv = "<div id=\"track-" + name + "\">";
+                            htmlcontent += createDiv + content + "</div>";
+                        }
                     }
                     htmlcontent += "</div></body></html>";
                     File.WriteAllText(targetfolder + trackfile, htmlcontent);

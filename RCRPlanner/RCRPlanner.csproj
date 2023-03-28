@@ -225,7 +225,6 @@
     <None Include="oddCarImages.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="salt.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="favicon.ico" />
