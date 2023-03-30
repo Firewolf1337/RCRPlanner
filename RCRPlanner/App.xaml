@@ -263,6 +263,11 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Brush x:Key="ClassRed">#FF7777</Brush>
+        <Brush x:Key="ClassOrange">#FFC555</Brush>
+        <Brush x:Key="ClassYellow">#FFFF55</Brush>
+        <Brush x:Key="ClassGreen">#55FF55</Brush>
+        <Brush x:Key="ClassBlue">#5555FF</Brush>
         <Brush x:Key="BrushRed">#770000</Brush>
         <Color x:Key="ColorRed">#770000</Color>
         <Brush x:Key="BrushYellow">#f7ff40</Brush>

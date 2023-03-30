@@ -497,14 +497,7 @@ namespace RCRPlanner
                             MessageBox.Show("Error loading tracks: " + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
-                    try
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            lblLoadingText.Content = "Loading views.";
-                        }));
-                    }
-                    catch { }
+
                     createDgData();
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
@@ -890,9 +883,41 @@ namespace RCRPlanner
 
         private void createDgData()
         {
+            try
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    lblLoadingText.Content = "Loading series list.";
+                }));
+            }
+            catch { }
             generateSeriesView();
+            try
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    lblLoadingText.Content = "Loading car list.";
+                }));
+            }
+            catch { }
             generateCarView();
+            try
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    lblLoadingText.Content = "Loading track list.";
+                }));
+            }
+            catch { }
             generateTrackView();
+            try
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    lblLoadingText.Content = "Loading race list.";
+                }));
+            }
+            catch { }
             generateRaceView();
         }
         private void generateSeriesView()
@@ -912,8 +937,8 @@ namespace RCRPlanner
                                 Seriesimage = asset.logo != null ? new Uri("file:///" + exePath + seriesLogos + asset.logo.ToString()) : new Uri("about:blank"),
                                 SeriesName = series.series_name,
                                 Category = series.category,
-                                Class = new List<series.AllowedLicense>(series.allowed_licenses).Count > 1 ? ((new List<series.AllowedLicense>(series.allowed_licenses)[1]).group_name).Replace("Class ", "").Replace("ookie", "") : ((new List<series.AllowedLicense>(series.allowed_licenses)[0]).group_name).Replace("Class ", "").Replace("ookie", ""),
-                                License = ((new List<series.AllowedLicense>(series.allowed_licenses)[0]).group_name).Replace("Class ", "").Replace("ookie", "") + " " + (new List<series.AllowedLicense>(series.allowed_licenses)[0].min_license_level - ((new List<series.AllowedLicense>(series.allowed_licenses)[0]).license_group - 1) * 4).ToString("0.00"),
+                                Class = series.allowed_licenses[0].min_license_level >= series.allowed_licenses[0].max_license_level ? (series.allowed_licenses[1].group_name).Replace("Class ", "").Replace("ookie", "") : (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", ""),
+                                License = (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", "") + " " + (series.allowed_licenses[0].min_license_level - (series.allowed_licenses[0].license_group - 1) * 4).ToString("0.00"),
                                 Eligible = series.eligible == true ? checksymbol : "",
                                 Favourite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
                                 Official = alls?.official == true ? checksymbol : unchecksymbol,
@@ -1412,7 +1437,6 @@ namespace RCRPlanner
             {
                 List<dgObjects.RaceOverviewDataGrid> dgFilteredRaces = new List<dgObjects.RaceOverviewDataGrid>();
                 dgFilteredRaces.Clear();
-                //cbFilterInOfficial; cbFilterOfficial; cbFilterOpenSetup; cbFilterFixedSetup; cbFilterRoad; cbFilterOval; cbFilterDirt; cbFilterDirtOval; cbFilterR; cbFilterD; cbFilterC; cbFilterB; cbFilterA; cbFilterP
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
                     foreach (var race in dgRaceOverviewList)

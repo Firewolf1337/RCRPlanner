@@ -272,9 +272,6 @@
                                     <Setter Property="BorderBrush" Value="Transparent"/>
                                     <Setter Property="Foreground" Value="Black" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Class}" Value="B">
-                                            <Setter Property="Foreground" Value="White" />
-                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding Class}" Value="A">
                                             <Setter Property="Foreground" Value="White" />
                                         </DataTrigger>
@@ -289,19 +286,19 @@
                                                 <Setter Property="Background" Value="White"></Setter>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Class}" Value="R">
-                                                        <Setter Property="Background" Value="Red" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassRed}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Class}" Value="D">
-                                                        <Setter Property="Background" Value="Orange" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassOrange}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Class}" Value="C">
-                                                        <Setter Property="Background" Value="Yellow" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassYellow}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Class}" Value="B">
-                                                        <Setter Property="Background" Value="Green" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassGreen}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Class}" Value="A">
-                                                        <Setter Property="Background" Value="Blue" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassBlue}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -691,9 +688,6 @@
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="Black" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Serie.Class}" Value="B">
-                                            <Setter Property="Foreground" Value="White" />
-                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding Serie.Class}" Value="A">
                                             <Setter Property="Foreground" Value="White" />
                                         </DataTrigger>
@@ -708,19 +702,19 @@
                                                 <Setter Property="Background" Value="White"></Setter>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Serie.Class}" Value="R">
-                                                        <Setter Property="Background" Value="Red" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassRed}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Serie.Class}" Value="D">
-                                                        <Setter Property="Background" Value="Orange" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassOrange}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Serie.Class}" Value="C">
-                                                        <Setter Property="Background" Value="Yellow" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassYellow}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Serie.Class}" Value="B">
-                                                        <Setter Property="Background" Value="Green" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassGreen}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Serie.Class}" Value="A">
-                                                        <Setter Property="Background" Value="Blue" />
+                                                        <Setter Property="Background" Value="{StaticResource ClassBlue}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -1325,12 +1319,12 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <CheckBox x:Name="cbFilterR" Content="R" Grid.Row="0" Grid.Column="0"/>
-                    <CheckBox x:Name="cbFilterD" Content="D" Grid.Row="1" Grid.Column="0"/>
-                    <CheckBox x:Name="cbFilterC" Content="C" Grid.Row="2" Grid.Column="0"/>
-                    <CheckBox x:Name="cbFilterB" Content="B" Grid.Row="0" Grid.Column="1"/>
-                    <CheckBox x:Name="cbFilterA" Content="A" Grid.Row="1" Grid.Column="1"/>
-                    <CheckBox x:Name="cbFilterP" Content="P" Grid.Row="2" Grid.Column="1"/>
+                    <CheckBox x:Name="cbFilterR" Content="Rookie" Grid.Row="0" Grid.Column="0"/>
+                    <CheckBox x:Name="cbFilterD" Content="Class D" Grid.Row="1" Grid.Column="0"/>
+                    <CheckBox x:Name="cbFilterC" Content="Class C" Grid.Row="2" Grid.Column="0"/>
+                    <CheckBox x:Name="cbFilterB" Content="Class B" Grid.Row="0" Grid.Column="1"/>
+                    <CheckBox x:Name="cbFilterA" Content="Class A" Grid.Row="1" Grid.Column="1"/>
+                    <CheckBox x:Name="cbFilterP" Content="Pro" Grid.Row="2" Grid.Column="1"/>
                 </Grid>
             </Grid>
 
