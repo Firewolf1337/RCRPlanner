@@ -26,12 +26,34 @@
 
         <RadialGradientBrush x:Key="ProgressBarRadialGradientBrush"
 		GradientOrigin="0.1,0.5" Center="0.5,0.5" RadiusX="30" RadiusY="30"/>
-
+        <Brush x:Key="ClassRed">#FF7777</Brush>
+        <Brush x:Key="ClassOrange">#FFC555</Brush>
+        <Brush x:Key="ClassYellow">#FFFF55</Brush>
+        <Brush x:Key="ClassGreen">#55FF55</Brush>
+        <Brush x:Key="ClassBlue">#5555FF</Brush>
+        <Brush x:Key="BrushRed">#770000</Brush>
+        <Color x:Key="ColorRed">#770000</Color>
+        <Brush x:Key="BrushYellow">#f7ff40</Brush>
+        <Color x:Key="ColorYellow">#f7ff40</Color>
+        <Brush x:Key="BrushGridHighlightYellow">#22f7ff40</Brush>
+        <Brush x:Key="BrushLightGreen">#cdfff3</Brush>
+        <Color x:Key="ColorLightGreen">#cdfff3</Color>
+        <Brush x:Key="BrushMiddleGreen">#00dda7</Brush>
+        <Color x:Key="ColorMiddleGreen">#00dda7</Color>
+        <Brush x:Key="BrushDarkGreen">#00b287</Brush>
+        <Color x:Key="ColorDarkGreen">#00b287</Color>
+        <Color x:Key="ColorBlack">#121212</Color>
+        <Brush x:Key="BrushBlack">#121212</Brush>
+        <Brush x:Key="BrushTextWhite">#FFFFFF</Brush>
+        <Brush x:Key="BrushTextBlack">#000000</Brush>
+        <Brush x:Key="BrushDarkGray">#303030</Brush>
+        <Brush x:Key="BrushDefaultWindowBackground">#EE151515</Brush>
+        <Brush x:Key="DefaultBackgroundBrush">#08FFFFFF</Brush>
 
 
         <!--ScrollBars-->
         <Style TargetType="ScrollBar">
-            <Setter Property="Foreground" Value="#303030"/>
+            <Setter Property="Foreground" Value="{StaticResource BrushDarkGray}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Width" Value="6"/>
             <Setter Property="Template">
@@ -158,7 +180,7 @@
                             VerticalAlignment="Center" 
                             Margin="3,3,23,3"
                             Focusable="True" 
-                            Background="#101010"
+                            Background="{StaticResource BrushBlack}"
                             Foreground="Green"
                             Visibility="Hidden"
                             IsReadOnly="{TemplateBinding IsReadOnly}"/>
@@ -230,7 +252,7 @@
                                 <Setter TargetName="Border" Property="Background" Value="#00dda7"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="#00b287"/>
+                                <Setter Property="Foreground" Value="{StaticResource BrushDarkGreen}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -259,7 +281,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#00b287"/>
+                    <Setter Property="Background" Value="{StaticResource BrushDarkGreen}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="#77202020"/>
@@ -268,7 +290,7 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="ButtonHighlight" TargetType="Button">
-            <Setter Property="Background" Value="Yellow" />
+            <Setter Property="Background" Value="{StaticResource BrushYellow}" />
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Montserrat-Regular" />
             <Setter Property="Margin" Value="2,2,2,2"/>
@@ -305,27 +327,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Brush x:Key="ClassRed">#FF7777</Brush>
-        <Brush x:Key="ClassOrange">#FFC555</Brush>
-        <Brush x:Key="ClassYellow">#FFFF55</Brush>
-        <Brush x:Key="ClassGreen">#55FF55</Brush>
-        <Brush x:Key="ClassBlue">#5555FF</Brush>
-        <Brush x:Key="BrushRed">#770000</Brush>
-        <Color x:Key="ColorRed">#770000</Color>
-        <Brush x:Key="BrushYellow">#f7ff40</Brush>
-        <Color x:Key="ColorYellow">#f7ff40</Color>
-        <Brush x:Key="BrushGridHighlightYellow">#22f7ff40</Brush>
-        <Brush x:Key="BrushLightGreen">#cdfff3</Brush>
-        <Color x:Key="ColorLightGreen">#cdfff3</Color>
-        <Brush x:Key="BrushMiddleGreen">#00dda7</Brush>
-        <Color x:Key="ColorMiddleGreen">#00dda7</Color>
-        <Brush x:Key="BrushDarkGreen">#00b287</Brush>
-        <Color x:Key="ColorDarkGreen">#00b287</Color>
-        <Color x:Key="ColorBlack">#121212</Color>
-        <Brush x:Key="BrushBlack">#121212</Brush>
-        <Brush x:Key="BrushTextWhite">#FFFFFF</Brush>
-        <Brush x:Key="BrushDefaultWindowBackground">#EE151515</Brush>
-        <Brush x:Key="DefaultBackgroundBrush">#08FFFFFF</Brush>
+
         <Style x:Key="DefaultTextBlockStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Montserrat-Regular" />
@@ -336,8 +338,8 @@
 
         </Style>
         <Style TargetType="{x:Type CheckBox}">
-            <Setter Property="Background" Value="#101010" />
-            <Setter Property="BorderBrush" Value="#303030"/>
+            <Setter Property="Background" Value="{StaticResource BrushBlack}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BrushDarkGray}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Template">
@@ -345,16 +347,16 @@
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" >
                             <Border BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" Width="15" Height="15">
-                                <Path Stretch="Uniform" Width="15" Height="10" Fill="#f7ff40" Name="eliCheck" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Visibility="Collapsed"/>
+                                <Path Stretch="Uniform" Width="15" Height="10" Fill="{StaticResource BrushYellow}" Name="eliCheck" Data="F1 M 9.97498,1.22334L 4.6983,9.09834L 4.52164,9.09834L 0,5.19331L 1.27664,3.52165L 4.255,6.08833L 8.33331,1.52588e-005L 9.97498,1.22334 Z " Visibility="Collapsed"/>
                             </Border>
                             <TextBlock Margin="5,0,0,0"  VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" Text="{TemplateBinding Content}"></TextBlock>
                         </StackPanel>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#00dda7" />
+                                <Setter Property="Background" Value="{StaticResource BrushMiddleGreen}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#00b287" />
+                                <Setter Property="Background" Value="{StaticResource BrushDarkGreen}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Background" Value="LightGray" />
@@ -395,7 +397,7 @@
             <Setter Property="Ellipse.Width" Value="26" />
             <Setter Property="Ellipse.VerticalAlignment" Value="Center" />
             <Setter Property="Ellipse.HorizontalAlignment" Value="Right" />
-            <Setter Property="Ellipse.Stroke" Value="#00dda7" />
+            <Setter Property="Ellipse.Stroke" Value="{StaticResource BrushMiddleGreen}" />
 
         </Style>
         <Style x:Key="XIconTextSytle" TargetType="TextBlock">
@@ -435,9 +437,9 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Background" Value="#101010"/>
-            <Setter Property="BorderBrush" Value="#303030"/>
-            <Setter Property="SelectionBrush" Value="#00b287"/>
+            <Setter Property="Background" Value="{StaticResource BrushBlack}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BrushDarkGray}"/>
+            <Setter Property="SelectionBrush" Value="{StaticResource BrushDarkGreen}"/>
             <Setter Property="Foreground" Value="White" />
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
@@ -454,7 +456,7 @@
                                 <Setter Property="BorderBrush" TargetName="border" Value="#00dda7"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="true">
-                                <Setter Property="BorderBrush" TargetName="border" Value="#f7ff40"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource BrushYellow}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -470,9 +472,9 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="DefaultPasswordBoxStyle" TargetType="PasswordBox">
-            <Setter Property="Background" Value="#101010"/>
-            <Setter Property="BorderBrush" Value="#303030"/>
-            <Setter Property="SelectionBrush" Value="#00b287"/>
+            <Setter Property="Background" Value="{StaticResource BrushBlack}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BrushDarkGray}"/>
+            <Setter Property="SelectionBrush" Value="{StaticResource BrushDarkGreen}"/>
             <Setter Property="Foreground" Value="White" />
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
@@ -489,7 +491,7 @@
                                 <Setter Property="BorderBrush" TargetName="border" Value="#00dda7"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="true">
-                                <Setter Property="BorderBrush" TargetName="border" Value="#f7ff40"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource BrushYellow}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -498,16 +500,16 @@
         </Style>
         <LinearGradientBrush x:Key="DefautlHeaderBrush" StartPoint="0,0" EndPoint="1,0" Opacity="0.2">
             <GradientStop Color="{StaticResource ColorYellow}" Offset="0.2" />
-            <GradientStop Color="#cdfff3" Offset="0.4" />
-            <GradientStop Color="#00dda7" Offset="0.6" />
-            <GradientStop Color="#00b287" Offset="0.8" />
+            <GradientStop Color="{StaticResource ColorLightGreen}" Offset="0.4" />
+            <GradientStop Color="{StaticResource ColorMiddleGreen}" Offset="0.6" />
+            <GradientStop Color="{StaticResource ColorDarkGreen}" Offset="0.8" />
         </LinearGradientBrush>
 
         <LinearGradientBrush x:Key="DefaultBorderBrush" StartPoint="0.5,1" EndPoint="0.5,0">
-            <GradientStop Color="#f7ff40" Offset="0.2" />
-            <GradientStop Color="#cdfff3" Offset="0.4" />
-            <GradientStop Color="#00dda7" Offset="0.6" />
-            <GradientStop Color="#00b287" Offset="0.8" />
+            <GradientStop Color="{StaticResource ColorYellow}" Offset="0.2" />
+            <GradientStop Color="{StaticResource ColorLightGreen}" Offset="0.4" />
+            <GradientStop Color="{StaticResource ColorMiddleGreen}" Offset="0.6" />
+            <GradientStop Color="{StaticResource ColorDarkGreen}" Offset="0.8" />
         </LinearGradientBrush>
         <Style x:Key="DefaultBorderStyle" TargetType="Border">
             <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderBrush}"/>

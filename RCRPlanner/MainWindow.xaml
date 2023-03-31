@@ -270,7 +270,7 @@
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Height" Value="50"/>
                                     <Setter Property="BorderBrush" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter Property="Foreground" Value="{StaticResource BrushTextBlack}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Class}" Value="A">
                                             <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
@@ -686,7 +686,7 @@
                         <DataGridTemplateColumn Header="Class" IsReadOnly="True" MinWidth="60" Width="Auto" SortMemberPath="Serie.Class"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter Property="Foreground" Value="{StaticResource BrushTextBlack }" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Serie.Class}" Value="A">
                                             <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
@@ -817,7 +817,7 @@
                                     <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Timer}" Value="⏰">
-                                            <Setter Property="Foreground" Value="Yellow" />
+                                            <Setter Property="Foreground" Value="{StaticResource BrushYellow}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -1518,8 +1518,8 @@
             <Button x:Name="btnLogin" Content="Login" Grid.Column="1" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="30" FontSize="18" Margin="0,2,2,0" Click="btnLogin_Click"/>
             <Label x:Name="lblLogin" Content="" Grid.Column="1" Grid.Row="5" FontFamily="{StaticResource Montserrat Light}" Foreground="{StaticResource BrushTextWhite}"/>
         </Grid>
-        <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="Black" Opacity="0.5" Visibility="Hidden"/>
-        <Grid x:Name="gridLoading" Background="Black" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="50,50" Visibility="Hidden">
+        <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource BrushBlack}" Opacity="0.5" Visibility="Hidden"/>
+        <Grid x:Name="gridLoading" Background="{StaticResource BrushBlack}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="50,50" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition/>
@@ -1531,7 +1531,7 @@
                 <RowDefinition/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="3" Background="Black">
+            <Border Grid.Row="0" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{StaticResource BrushBlack}">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="150" ShadowDepth="0" Color="{StaticResource ColorYellow}" Direction="0" Opacity="0.5" RenderingBias="Quality" ></DropShadowEffect>
                 </Border.Effect>
