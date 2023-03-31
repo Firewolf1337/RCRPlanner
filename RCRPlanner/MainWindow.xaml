@@ -18,7 +18,7 @@
         SizeChanged="Window_SizeChanged"
         MouseDown="Window_MouseDown"
         Background="Transparent">
-    <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" BorderThickness="1" Background="#EE151515">
+    <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" BorderThickness="1" Background="{StaticResource BrushDefaultWindowBackground}">
     <Grid x:Name="gridMainwindow">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -115,11 +115,11 @@
                     <TextBlock x:Name="tbDetail6" Text="" Grid.Column="4" Grid.Row="3" Style="{StaticResource DefaultTextBlockStyle}"/>
                     <Label x:Name="lblDetails7" Grid.Column="1" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
                     <TextBlock x:Name="tbDetail7" Grid.Column="2" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
-                        <Hyperlink x:Name="tbDetail7Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="White">Left click open / Right click copy</Hyperlink>
+                        <Hyperlink x:Name="tbDetail7Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="{StaticResource BrushTextWhite}">Left click open / Right click copy</Hyperlink>
                      </TextBlock>
                     <Label x:Name="lblDetails8" Grid.Column="3" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
                     <TextBlock x:Name="tbDetail8" Grid.Column="4" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
-                        <Hyperlink x:Name="tbDetail8Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="White">Left click open / Right click copy</Hyperlink>
+                        <Hyperlink x:Name="tbDetail8Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="{StaticResource BrushTextWhite}">Left click open / Right click copy</Hyperlink>
                     </TextBlock>
                     <DataGrid x:Name="gridCarDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30"  GridLinesVisibility="Horizontal" Visibility="Visible" 
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" BorderBrush="{StaticResource DefaultBorderBrush}">
@@ -273,7 +273,7 @@
                                     <Setter Property="Foreground" Value="Black" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Class}" Value="A">
-                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -370,7 +370,7 @@
                                             </DataGridTemplateColumn.CellTemplate>
                                             <DataGridTemplateColumn.CellStyle>
                                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Owned}" Value="🗸">
                                                             <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
@@ -387,7 +387,7 @@
                                             </DataGridTemplateColumn.CellTemplate>
                                             <DataGridTemplateColumn.CellStyle>
                                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Owned}" Value="🗸">
                                                             <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
@@ -506,21 +506,21 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="250" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="230" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding CarName}" TextTrimming="WordEllipsis"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" SortMemberPath="Series_Participations" MinWidth="50" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" SortMemberPath="Series_Participations" MinWidth="40" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Series_Participations}" HorizontalAlignment="Center" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" SortMemberPath="Price" MinWidth="50"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" SortMemberPath="Price" MinWidth="40"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
@@ -570,7 +570,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="45" SortMemberPath="Participations"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="40" SortMemberPath="Participations"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Participations}" HorizontalAlignment="Center" />
@@ -662,7 +662,7 @@
                         <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="80" Width="Auto" SortMemberPath="Track.Name"  CanUserSort="True">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding TrackOwned}" Value="true">
                                             <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
@@ -689,7 +689,7 @@
                                     <Setter Property="Foreground" Value="Black" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Serie.Class}" Value="A">
-                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -814,7 +814,7 @@
                         <DataGridTemplateColumn Header="Alarm" IsReadOnly="false" MinWidth="60" Width="Auto" SortMemberPath="Timer"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Timer}" Value="⏰">
                                             <Setter Property="Foreground" Value="Yellow" />
@@ -849,7 +849,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding WeekActive}" Value="true">
                                                     <Setter Property="FontWeight" Value="ExtraBold"/>
-                                                    <Setter Property="Background" Value="#22f7ff40"/>
+                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -1205,8 +1205,8 @@
                 </Grid.ColumnDefinitions>
                 <Border CornerRadius="0"  Grid.Column="0" Grid.ColumnSpan="10" BorderThickness="0"  Background="{StaticResource DefautlHeaderBrush}"></Border>
 
-                <TextBlock Text="RCR Planner" Panel.ZIndex="10" Grid.ColumnSpan="10" Foreground="#00dda7" FontSize="24" FontFamily="{StaticResource Sui Generis}"  VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <TextBlock Text="RCR Planner" Panel.ZIndex="1" Grid.ColumnSpan="10"  Foreground="#cdfff3" Opacity="0.7" FontSize="24" FontFamily="{StaticResource Sui Generis}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="RCR Planner" Panel.ZIndex="10" Grid.ColumnSpan="10" Foreground="{StaticResource BrushMiddleGreen}" FontSize="24" FontFamily="{StaticResource Sui Generis}"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <TextBlock Text="RCR Planner" Panel.ZIndex="1" Grid.ColumnSpan="10"  Foreground="{StaticResource BrushLightGreen}" Opacity="0.7" FontSize="24" FontFamily="{StaticResource Sui Generis}" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock.Effect>
                         <BlurEffect KernelType="Box" Radius="3"/>
                     </TextBlock.Effect>
@@ -1216,10 +1216,10 @@
                 </StackPanel>
 
                 <!-- Profile Elements -->
-                <Ellipse x:Name="elHeaderMenuProfileColor1" Fill="#f7ff40" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="36" Height="36" Panel.ZIndex="10" MouseDown="elHeaderMenuProfileColor1_MouseDown"  />
-                <Ellipse x:Name="elHeaderMenuProfileColor2" Fill="#00dda7" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="32" Height="32" Panel.ZIndex="20" />
-                <Ellipse x:Name="elHeaderMenuProfileColor3" Fill="#00b287" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="28" Height="28" Panel.ZIndex="30" />
-                <Label x:Name="tbHeaderMenuProfileName"  Content="RCR" Foreground="White" Grid.Column="6"  FontSize="8" FontFamily="{StaticResource Sui Generis}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  Width="32" Height="32" Panel.ZIndex="40" MouseDown="elHeaderMenuProfileColor1_MouseDown" />
+                <Ellipse x:Name="elHeaderMenuProfileColor1" Fill="{StaticResource BrushYellow}" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="36" Height="36" Panel.ZIndex="10" MouseDown="elHeaderMenuProfileColor1_MouseDown"  />
+                <Ellipse x:Name="elHeaderMenuProfileColor2" Fill="{StaticResource BrushMiddleGreen}" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="32" Height="32" Panel.ZIndex="20" />
+                <Ellipse x:Name="elHeaderMenuProfileColor3" Fill="{StaticResource BrushDarkGreen}" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="28" Height="28" Panel.ZIndex="30" />
+                <Label x:Name="tbHeaderMenuProfileName"  Content="RCR" Foreground="{StaticResource BrushTextWhite}" Grid.Column="6"  FontSize="8" FontFamily="{StaticResource Sui Generis}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  Width="32" Height="32" Panel.ZIndex="40" MouseDown="elHeaderMenuProfileColor1_MouseDown" />
 
                 <!-- Close Elements -->
                 <Ellipse  Style="{StaticResource HeaderMenuIconEllipseStyle}" Grid.Column="8" Panel.ZIndex="1" Margin="0,0,70,0" />
@@ -1228,15 +1228,16 @@
                 <TextBlock Style="{StaticResource XIconTextSytle}" Grid.Column="8" Panel.ZIndex="10" MouseDown="Close_MouseDown" Margin="0,3,3,0"/>
                 <Ellipse  Style="{StaticResource HeaderMenuIconEllipseStyle}" Grid.Column="8" Panel.ZIndex="1" Margin="0,0,35,0" />
                 <TextBlock Style="{StaticResource MaxIconTextSytle}" Grid.Column="8" Panel.ZIndex="10" MouseDown="MaxMin_MouseDown" Margin="0,-2,33,0"/>
-                <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="10"  Opacity="0" Fill="Red" MouseDown="stackPanelMenu_MouseDown"/>
+                <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="10"  Opacity="0" Fill="{StaticResource BrushRed}" MouseDown="stackPanelMenu_MouseDown"/>
                 <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="1" Style="{StaticResource MenuIconStyle}" VerticalAlignment="Top" />
                 <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="1" Style="{StaticResource MenuIconStyle}" VerticalAlignment="Center" />
                 <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="1" Style="{StaticResource MenuIconStyle}" VerticalAlignment="Bottom" />
+                <Ellipse x:Name="MenuNotification" Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="2" Width="13" Height="13" Fill="{DynamicResource BrushMiddleGreen}" Margin="22,22,0,0" IsEnabled="False" />
 
             </Grid>
 
 
-            <Grid x:Name="gridFilter" Background="#121212"  Grid.Column="0" Panel.ZIndex="90" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="1" Margin="0,0,0,0"  Width="500" Height="0" HorizontalAlignment="Center" VerticalAlignment="Top" >
+            <Grid x:Name="gridFilter" Background="{StaticResource BrushBlack}"  Grid.Column="0" Panel.ZIndex="90" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="1" Margin="0,0,0,0"  Width="500" Height="0" HorizontalAlignment="Center" VerticalAlignment="Top" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="100"/>
@@ -1254,7 +1255,7 @@
                 </Grid.RowDefinitions>
                 <Border Grid.ColumnSpan="4" Grid.RowSpan="7" Style="{StaticResource DefaultBorderStyle}"></Border>
                 <StackPanel x:Name="stackPanelFilterClose" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" Height="35" VerticalAlignment="Center" Width="30" MouseDown="stackPanelFilterClose_MouseDown" >
-                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" Foreground="White" FontSize="30"/>
+                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
                 </StackPanel>
                 <Label Content="Official/Fixed:" Grid.Row="1" Grid.Column="1" Style="{StaticResource DefaultLabelStyle}"/>
                 <Label Content="Content:" Grid.Row="2" Grid.Column="1" Style="{StaticResource DefaultLabelStyle}"/>
@@ -1353,14 +1354,14 @@
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0" Grid.RowSpan="17" CornerRadius="0">
                     <Border.Background>
-                        <SolidColorBrush Color="#121212" Opacity="0.95"/>
+                        <SolidColorBrush Color="{StaticResource ColorBlack}" Opacity="0.95"/>
                     </Border.Background>
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="1" Color="#121212" Direction="0" Opacity="0.5" RenderingBias="Performance" ></DropShadowEffect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="1" Color="{StaticResource ColorBlack}" Direction="0" Opacity="0.5" RenderingBias="Performance" ></DropShadowEffect>
                     </Border.Effect>
                 </Border>
                 <StackPanel x:Name="stackPanelMenuClose" Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Height="35" VerticalAlignment="Center" Width="30" MouseDown="stackPanelMenuClose_MouseDown" Margin="10,0,0,0" >
-                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" Foreground="White" FontSize="30"/>
+                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
                 </StackPanel>
                 <Button x:Name="btnLoadRaces" Grid.Row="1" Grid.Column="0" Content="Races" Click="btnLoadRaces_Click"/>
                 <Button x:Name="btnLoadSeries" Grid.Row="2" Grid.Column="0" Content="Series" Click="btnLoadSeries_Click"/>
@@ -1394,10 +1395,10 @@
                 </Grid.RowDefinitions>
                 <Border Grid.ColumnSpan="3" Grid.RowSpan="3">
                     <Border.Background>
-                        <SolidColorBrush Color="#121212" Opacity="0.9"/>
+                        <SolidColorBrush Color="{StaticResource ColorBlack}" Opacity="0.9"/>
                     </Border.Background>
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="#121212" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="{StaticResource ColorBlack}" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
                     </Border.Effect>
                 </Border>
                 <Grid x:Name="gridUserRating" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" >
@@ -1414,8 +1415,8 @@
                         <RowDefinition Height="200"/>
                         <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="lblUsername" Content="" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="White"/>
-                    <Label x:Name="lblCustId" Content="User ID" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="White"/>
+                    <Label x:Name="lblUsername" Content="" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
+                    <Label x:Name="lblCustId" Content="User ID" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="70"/>
@@ -1425,12 +1426,12 @@
                         </Grid.RowDefinitions>
                         <xrpb:RadialProgressBar x:Name="progressOval" VerticalAlignment="Center" HorizontalAlignment="Center" Width="70" Height="70" Background="Transparent" ArcRotationDegree="135"/>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource Montserrat-Regular}"
-				           FontWeight="Bold" FontSize="13" Foreground="White">
+				           FontWeight="Bold" FontSize="13" Foreground="{StaticResource BrushTextWhite}">
 							<Run x:Name="textProgressOval"/>
                         </TextBlock>
-                        <Label Content="Oval" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lbliRatingOval" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lblCpiOval" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
+                        <Label Content="Oval" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lbliRatingOval" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lblCpiOval" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="2">
                         <Grid.RowDefinitions>
@@ -1441,12 +1442,12 @@
                         </Grid.RowDefinitions>
                         <xrpb:RadialProgressBar x:Name="progressRoad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="70" Height="70" Background="Transparent" ArcRotationDegree="135"/>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource Montserrat-Regular}"
-				           FontWeight="Bold" FontSize="13" Foreground="White">
+				           FontWeight="Bold" FontSize="13" Foreground="{StaticResource BrushTextWhite}">
 							<Run x:Name="textProgressRoad"/>
                         </TextBlock>
-                        <Label Content="Road" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lbliRatingRoad" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lblCpiRoad" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
+                        <Label Content="Road" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lbliRatingRoad" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lblCpiRoad" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="3">
                         <Grid.RowDefinitions>
@@ -1457,12 +1458,12 @@
                         </Grid.RowDefinitions>
                         <xrpb:RadialProgressBar x:Name="progressDirtOval" VerticalAlignment="Center" HorizontalAlignment="Center" Width="70" Height="70" Background="Transparent" ArcRotationDegree="135"/>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource Montserrat-Regular}"
-				           FontWeight="Bold" FontSize="13" Foreground="White">
+				           FontWeight="Bold" FontSize="13" Foreground="{StaticResource BrushTextWhite}">
 							<Run x:Name="textProgressDirtOval"/>
                         </TextBlock>
-                        <Label Content="Dirt Oval" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lbliRatingDirtOval" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lblCpiDirtOval" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
+                        <Label Content="Dirt Oval" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lbliRatingDirtOval" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lblCpiDirtOval" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="4">
                         <Grid.RowDefinitions>
@@ -1473,12 +1474,12 @@
                         </Grid.RowDefinitions>
                         <xrpb:RadialProgressBar x:Name="progressDirtRoad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="70" Height="70" Background="Transparent" ArcRotationDegree="135"/>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource Montserrat-Regular}"
-				           FontWeight="Bold" FontSize="13" Foreground="White">
+				           FontWeight="Bold" FontSize="13" Foreground="{StaticResource BrushTextWhite}">
 							<Run x:Name="textProgressDirtRoad"/>
                         </TextBlock>
-                        <Label Content="Dirt Road" Margin="0,-10,0,0" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Foreground="White"/>
-                        <Label x:Name="lbliRatingDirtRoad" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
-                        <Label x:Name="lblCpiDirtRoad" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="White"/>
+                        <Label Content="Dirt Road" Margin="0,-10,0,0" Grid.Row="1" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lbliRatingDirtRoad" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
+                        <Label x:Name="lblCpiDirtRoad" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                     </Grid>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="35" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" >
@@ -1503,19 +1504,19 @@
             </Grid.RowDefinitions>
             <Border Grid.ColumnSpan="3" Grid.RowSpan="6" BorderBrush="{DynamicResource DefaultBorderBrush}" BorderThickness="1">
                 <Border.Background>
-                    <SolidColorBrush Color="#121212" Opacity="0.9"/>
+                    <SolidColorBrush Color="{StaticResource ColorBlack}" Opacity="0.9"/>
                 </Border.Background>
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="#121212" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="{StaticResource ColorBlack}" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
                 </Border.Effect>
             </Border>
             <TextBlock Text="Name:"  Style="{StaticResource DefaultTextStyle}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"/>
             <TextBlock Text="Password:"  Style="{StaticResource DefaultTextStyle}" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
             <TextBox x:Name="tbLoginName" Style="{StaticResource DefaultTextBoxStyle}" Grid.Column="1" Grid.Row="1" Margin="2" CharacterCasing="Lower"/>
             <PasswordBox  x:Name="tbLoginPasword" Style="{StaticResource DefaultPasswordBoxStyle}" Grid.Column="1" Grid.Row="2" Margin="2" />
-            <CheckBox x:Name="cbSaveLogin" Content="Save Login" IsChecked="False" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="White" FontFamily="{StaticResource Montserrat Light}" />
+            <CheckBox x:Name="cbSaveLogin" Content="Save Login" IsChecked="False" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource BrushTextWhite}" FontFamily="{StaticResource Montserrat Light}" />
             <Button x:Name="btnLogin" Content="Login" Grid.Column="1" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="30" FontSize="18" Margin="0,2,2,0" Click="btnLogin_Click"/>
-            <Label x:Name="lblLogin" Content="" Grid.Column="1" Grid.Row="5" FontFamily="{StaticResource Montserrat Light}" Foreground="White"/>
+            <Label x:Name="lblLogin" Content="" Grid.Column="1" Grid.Row="5" FontFamily="{StaticResource Montserrat Light}" Foreground="{StaticResource BrushTextWhite}"/>
         </Grid>
         <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="Black" Opacity="0.5" Visibility="Hidden"/>
         <Grid x:Name="gridLoading" Background="Black" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="50,50" Visibility="Hidden">
@@ -1532,7 +1533,7 @@
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="3" Background="Black">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="150" ShadowDepth="0" Color="#f7ff40" Direction="0" Opacity="0.5" RenderingBias="Quality" ></DropShadowEffect>
+                    <DropShadowEffect BlurRadius="150" ShadowDepth="0" Color="{StaticResource ColorYellow}" Direction="0" Opacity="0.5" RenderingBias="Quality" ></DropShadowEffect>
                 </Border.Effect>
             </Border>
                 <Image Source="/256.png" Grid.Column="1" Grid.Row="1" Width="256" Height="256" RenderOptions.BitmapScalingMode="HighQuality"/>

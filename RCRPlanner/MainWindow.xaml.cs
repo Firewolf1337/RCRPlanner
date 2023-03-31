@@ -537,6 +537,7 @@ namespace RCRPlanner
                 try
                 {
                     Style_ProfileIcon(User);
+                    checkNewRelease();
                 }
                 catch (Exception ex)
                 {
@@ -627,6 +628,7 @@ namespace RCRPlanner
         private void stackPanelMenu_MouseDown(object sender, MouseButtonEventArgs e)
         {
             resize_Grid(gridMenu, "width", 250, moveAnimationDuration);
+            MenuNotification.Visibility = Visibility.Hidden;
         }
         private void stackPanelMenuClose_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -2291,6 +2293,30 @@ namespace RCRPlanner
                 }
             }
         }
+        private async void checkNewRelease()
+        {
+            try
+            {
+                var gitrelease = await fData.getGithubActualReleaseinfo(Properties.Settings.Default.updateURL.ToString());
+                Version releaseVersion = new Version(gitrelease.tag_name);
+                DateTime releaseDate = new DateTime(2000, 1, 1).AddDays(releaseVersion.Build).AddSeconds(releaseVersion.Revision * 2);
+                if (releaseDate > buildDate)
+                {
+                    btnProfileUpdate.IsEnabled = true;
+                    btnProfileUpdate.Style = (Style)FindResource("ButtonHighlight");
+                    btnProfileUpdate.ToolTip = gitrelease.body;
+                    MenuNotification.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnProfileUpdate.IsEnabled = false;
+                    MenuNotification.Visibility = Visibility.Hidden;
+                }
+            }
+            catch (Exception ex) { }
+
+        }
+
         private void gridAutoStartRemove_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (((System.Windows.Controls.TextBlock)sender).Text == unchecksymbol)

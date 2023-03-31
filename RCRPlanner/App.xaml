@@ -261,6 +261,48 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#00b287"/>
                 </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#77202020"/>
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ButtonHighlight" TargetType="Button">
+            <Setter Property="Background" Value="Yellow" />
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Montserrat-Regular" />
+            <Setter Property="Margin" Value="2,2,2,2"/>
+            <Setter Property="Height" Value="Auto" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0,0,0,2" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="BorderThickness" Value="0,0,0,2" />
+                    <Trigger.EnterActions>
+                        <BeginStoryboard x:Name="sb1">
+                            <BeginStoryboard.Storyboard>
+                                <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                    <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" From="#f7ff40" To="#444400" Duration="0:0:1"/>
+                                </Storyboard>
+                            </BeginStoryboard.Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <StopStoryboard BeginStoryboardName="sb1"/>
+                    </Trigger.ExitActions>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Background" Value="LightYellow"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
         <Brush x:Key="ClassRed">#FF7777</Brush>
@@ -272,12 +314,17 @@
         <Color x:Key="ColorRed">#770000</Color>
         <Brush x:Key="BrushYellow">#f7ff40</Brush>
         <Color x:Key="ColorYellow">#f7ff40</Color>
+        <Brush x:Key="BrushGridHighlightYellow">#22f7ff40</Brush>
         <Brush x:Key="BrushLightGreen">#cdfff3</Brush>
         <Color x:Key="ColorLightGreen">#cdfff3</Color>
         <Brush x:Key="BrushMiddleGreen">#00dda7</Brush>
         <Color x:Key="ColorMiddleGreen">#00dda7</Color>
         <Brush x:Key="BrushDarkGreen">#00b287</Brush>
         <Color x:Key="ColorDarkGreen">#00b287</Color>
+        <Color x:Key="ColorBlack">#121212</Color>
+        <Brush x:Key="BrushBlack">#121212</Brush>
+        <Brush x:Key="BrushTextWhite">#FFFFFF</Brush>
+        <Brush x:Key="BrushDefaultWindowBackground">#EE151515</Brush>
         <Brush x:Key="DefaultBackgroundBrush">#08FFFFFF</Brush>
         <Style x:Key="DefaultTextBlockStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>

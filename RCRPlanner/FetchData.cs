@@ -393,5 +393,15 @@ namespace RCRPlanner
 
             return responseObject;
         }
+        public async Task<githubLatestRelease.Root> getGithubActualReleaseinfo(string url)
+        {
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("RCRPlanner");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github.v3+json");
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var contents = await response.Content.ReadAsStringAsync();
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<githubLatestRelease.Root>(contents, settings);
+            return responseObject;
+        }
     }
 }
