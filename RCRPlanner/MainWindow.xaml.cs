@@ -2314,7 +2314,11 @@ namespace RCRPlanner
                     MenuNotification.Visibility = Visibility.Hidden;
                 }
             }
-            catch{ }
+            catch
+            {
+                btnProfileUpdate.IsEnabled = false;
+                MenuNotification.Visibility = Visibility.Hidden;
+            }
 
         }
 
