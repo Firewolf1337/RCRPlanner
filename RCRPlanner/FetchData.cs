@@ -26,7 +26,7 @@ namespace RCRPlanner
         string iracingCarsGet = "https://members-ng.iracing.com/data/car/get";
         string iracingCarAssets = "https://members-ng.iracing.com/data/car/assets";
         string iracingCarClassGet = "https://members-ng.iracing.com/data/carclass/get";
-        string iracingCarPics = "https://ir-core-sites.iracing.com/members/member_images/cars/carid_401/profile.jpg";
+        //string iracingCarPics = "https://ir-core-sites.iracing.com/members/member_images/cars/carid_401/profile.jpg";
 
         string iracingMemberInfo = "https://members-ng.iracing.com/data/member/info";
         string iracingSeriesGet = "https://members-ng.iracing.com/data/series/get";
@@ -37,13 +37,13 @@ namespace RCRPlanner
         string iracingTracksGet = "https://members-ng.iracing.com/data/track/get";
         string iracingTacksAssets = "https://members-ng.iracing.com/data/track/assets";
 
-        string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
+        //string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
 
         private CookieContainer cookie = new CookieContainer();
         public HttpClientHandler handler = new HttpClientHandler();
         public static HttpClient client = new HttpClient();
         public bool loggedIn = false;
-        new Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings
+        Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings
         {
             Error = (se, ev) =>
             {
@@ -342,7 +342,7 @@ namespace RCRPlanner
 
             return responseObject;
         }
-        public async Task<string> getTrackSVG(string url)
+        public string getTrackSVG(string url)
         {
             string download = "";
             using (WebClient downloader = new WebClient())

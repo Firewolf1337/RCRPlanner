@@ -16,17 +16,14 @@ namespace RCRPlanner
     class filehandler
     {
         //MainWindow mw = new MainWindow();
-        string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
-        string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
-
-
-
-        RCRPlanner.FetchData fData = new RCRPlanner.FetchData();
-        string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+        readonly string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
+        readonly string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
+        readonly RCRPlanner.FetchData fData = new RCRPlanner.FetchData();
+        readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
         public async Task<List<seriesAssets>> getSeriesAssets(string filestring, string logofolder, bool reload)
         {
             List<seriesAssets> seriesAssetsList = new List<seriesAssets>();
-            Dictionary<string, string> datafiles = new Dictionary<string, string>();
+            //Dictionary<string, string> datafiles = new Dictionary<string, string>();
 
             //Load base series information
 
@@ -84,10 +81,7 @@ namespace RCRPlanner
         }
         public async Task<List<series.Root>> getSeriesList(string filestring, bool reload)
         {
-            
             List<series.Root> seriesList = new List<series.Root>();
-
-            Dictionary<string, string> datafiles = new Dictionary<string, string>();
             //Load base series information
             string file = exePath + filestring;
 
@@ -106,7 +100,7 @@ namespace RCRPlanner
             }
             return seriesList;
         }
-        public async Task<List<cars.CarsInSeries>> getCarsInSeries(List<carClass.CarInClassId> cars, List<seriesSeason.Root> series )
+        public List<cars.CarsInSeries> getCarsInSeries(List<carClass.CarInClassId> cars, List<seriesSeason.Root> series )
         {
             List<cars.CarsInSeries> carsInSeries = new List<cars.CarsInSeries>();
             foreach(var car in cars)
@@ -222,7 +216,7 @@ namespace RCRPlanner
             }
             return carClassList;
         }
-        public async Task<List<carClass.CarInClassId>> getCarClassesList(List<cars.Root> carsList, List<carClass.Root> carClassList)
+        public List<carClass.CarInClassId> getCarClassesList(List<cars.Root> carsList, List<carClass.Root> carClassList)
         {
             List<carClass.CarInClassId> carClassesList = new List<carClass.CarInClassId>();
             foreach (var car in carsList)
@@ -288,7 +282,7 @@ namespace RCRPlanner
 
             return trackAssetsList;
         }
-        public async void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
+        public void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
         {
             int counter = 0;
             if(!File.Exists(targetfolder + "track.css"))
@@ -313,7 +307,7 @@ namespace RCRPlanner
                         if (item.GetValue(track.track_map_layers) != null)
                         {
                             string url = svgpath + item.GetValue(track.track_map_layers);
-                            string content = Regex.Replace((await fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
+                            string content = Regex.Replace((fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
                             content = Regex.Replace(content, @"<!--.*?-->", "");
                             string createDiv = "<div id=\"track-" + name + "\">";
                             htmlcontent += createDiv + content + "</div>";
@@ -333,10 +327,12 @@ namespace RCRPlanner
         {
             var th = new Thread(() =>
             {
-                var webBrowser = new WebBrowser();
-                webBrowser.ScrollBarsEnabled = false;
-                webBrowser.IsWebBrowserContextMenuEnabled = true;
-                webBrowser.AllowNavigation = true;
+                var webBrowser = new WebBrowser
+                {
+                    ScrollBarsEnabled = false,
+                    IsWebBrowserContextMenuEnabled = true,
+                    AllowNavigation = true
+                };
                 webBrowser.DocumentCompleted += webBrowser_DocumentCompleted;
                 webBrowser.Url = new Uri(String.Format(source));
                 webBrowser.AccessibleDescription = target;
@@ -368,7 +364,7 @@ namespace RCRPlanner
             Application.Exit();
         }
 
-        public async Task<List<tracks.TracksInSeries>> getTracksInSeries(List<tracks.Root> tracks, List<seriesSeason.Root> series)
+        public List<tracks.TracksInSeries> getTracksInSeries(List<tracks.Root> tracks, List<seriesSeason.Root> series)
         {
             List<tracks.TracksInSeries> tracksInSeries = new List<tracks.TracksInSeries>();
             foreach (var track in tracks)

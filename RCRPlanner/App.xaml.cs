@@ -19,7 +19,7 @@ namespace RCRPlanner
             MainWindow mainWindow = new MainWindow();
             // Application is running
             // Process command line args
-            bool startMinimized = false;
+            //bool startMinimized = false;
             for (int i = 0; i != e.Args.Length; ++i)
             {
                 if (e.Args[i] == "/startMinimized")

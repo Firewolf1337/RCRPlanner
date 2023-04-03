@@ -223,7 +223,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding Seriesimage}" RenderOptions.BitmapScalingMode="HighQuality"  Width="100" Height="50"/>
@@ -492,7 +492,7 @@
                      AutoGenerateColumns="False" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False"
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" HorizontalAlignment="Stretch">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <Image Source="{Binding CarLogo}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
@@ -600,7 +600,7 @@
                                   SelectionMode="Extended" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Layouts}" SelectionChanged="dataGrid_SelectionChanged"
                                   PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn IsReadOnly="True">
+                                        <DataGridTemplateColumn IsReadOnly="True" Header="Track" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
                                                     <Image Source="{Binding TrackImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
@@ -638,14 +638,14 @@
                 <!-- Raceweeks overview -->
                 <DataGrid x:Name="gridRaces" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10"  Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
+                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10" Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn IsReadOnly="True" CanUserResize="False">
+                        <DataGridTemplateColumn IsReadOnly="True" CanUserResize="False" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding Serie.Seriesimage}" RenderOptions.BitmapScalingMode="Fant" Height="30" Width="100"/>
@@ -986,7 +986,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn IsReadOnly="True" Header="Track" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <Image Source="{Binding TrackImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
@@ -1041,12 +1041,19 @@
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
                             <DockPanel Background="{StaticResource DefaultBackgroundBrush}">
-                                <DataGrid x:Name="dgSeriesInCars" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource SubDataGridStyle}" 
+                                <DataGrid x:Name="dgSeriesInCars" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Style="{StaticResource SubDataGridStyle}" 
                                   AutoGenerateColumns="False" MinColumnWidth="50" 
                                   SelectionMode="Extended" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Series}"
                                   PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn IsReadOnly="True">
+                                        <DataGridTemplateColumn IsReadOnly="True" CanUserResize="False" CanUserSort="False" Width="100" CanUserReorder="False" MinWidth="1">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <Image Source="{Binding Seriesimage}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="100"/>

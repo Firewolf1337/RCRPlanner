@@ -88,7 +88,7 @@ namespace RCRPlanner
         //static StreamReader reader = new StreamReader(stream1);
         //static string ent = reader.ReadToEnd();
 
-        static byte[] entropy = null;
+        static readonly byte[] entropy = null;
         public static byte[] CombineByte(byte[] first, byte[] second)
         {
             byte[] ret = new byte[first.Length + second.Length];
@@ -188,9 +188,9 @@ namespace RCRPlanner
 
         public static T DeSerializeObject<T>(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName)) { return default(T); }
+            if (string.IsNullOrEmpty(fileName)) { return default; }
 
-            T objectOut = default(T);
+            T objectOut = default;
 
             try
             {
@@ -209,7 +209,7 @@ namespace RCRPlanner
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
 

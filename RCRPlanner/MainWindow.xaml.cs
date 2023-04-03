@@ -29,7 +29,6 @@ using System.Timers;
 using System.Media;
 using System.Windows.Controls.Primitives;
 using System.Runtime.CompilerServices;
-using System.Reflection;
 
 
 namespace RCRPlanner
@@ -48,92 +47,92 @@ namespace RCRPlanner
             set { Dispatcher.Invoke(new Action(() => { lblLoadingText.Content = value; })); }
         }
 
-        double moveAnimationDuration = 0.3;
-        RCRPlanner.FetchData fData = new RCRPlanner.FetchData();
-        RCRPlanner.filehandler fh = new RCRPlanner.filehandler();
-        RCRPlanner.statistics statistics = new RCRPlanner.statistics();
-        private static readonly HttpClient client = new HttpClient();
+        readonly double moveAnimationDuration = 0.3;
+        private readonly FetchData fData = new FetchData();
+        private readonly filehandler fh = new filehandler();
+        private readonly statistics statistics = new statistics();
+        //private static readonly HttpClient client = new HttpClient();
         memberInfo.Root User = new memberInfo.Root();
         string username;
         SecureString password;
-        string userfile = @"user.xml";
-        bool isMetric = new RegionInfo(CultureInfo.CurrentCulture.Name).IsMetric;
-        string favsymbolSelected = "★";
-        string favsymbolUnselected = "✰";
-        string checksymbol = "🗸";
-        string unchecksymbol = "×";
-        string alarmClockSymbol = "⏰";
-        string clockSymbol = "🕙";
+        readonly string userfile = @"user.xml";
+        readonly bool isMetric = new RegionInfo(CultureInfo.CurrentCulture.Name).IsMetric;
+        readonly string favsymbolSelected = "★";
+        readonly string favsymbolUnselected = "✰";
+        readonly string checksymbol = "🗸";
+        readonly string unchecksymbol = "×";
+        readonly string alarmClockSymbol = "⏰";
+        readonly string clockSymbol = "🕙";
+        readonly string magnifier = "🔍";
         string activeGrid = "";
-        string magnifier = "🔍";
         bool reloadData = false;
         int lastLoginResult = -1;
         bool savelogin = false;
         int iRatingStatUserIrating = -1;
-        System.Timers.Timer alarmTimer = new System.Timers.Timer();
+        readonly System.Timers.Timer alarmTimer = new System.Timers.Timer();
 
-        static Version version = Assembly.GetExecutingAssembly().GetName().Version;
-        static DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
-        string displayableVersion = $"{version} ({buildDate})";
+        readonly static Version version = Assembly.GetExecutingAssembly().GetName().Version;
+        readonly static DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+        readonly string displayableVersion = $"{version} ({buildDate})";
 
-        string favSeriesfile = @"\favouriteSeries.xml";
-        string favCarsfile = @"\favouriteCars.xml";
-        string favTracksfile = @"\favouriteTracks.xml";
+        readonly string favSeriesfile = @"\favouriteSeries.xml";
+        readonly string favCarsfile = @"\favouriteCars.xml";
+        readonly string favTracksfile = @"\favouriteTracks.xml";
         List<memberInfo.FavoutireCars> favoutireCars = new List<memberInfo.FavoutireCars>();
         List<memberInfo.FavoutireSeries> favoutireSeries = new List<memberInfo.FavoutireSeries>();
         List<memberInfo.FavoutireTracks> favoutireTracks = new List<memberInfo.FavoutireTracks>();
 
-        string autostartfile = @"\autostart.xml";
+        readonly string autostartfile = @"\autostart.xml";
         autoStart.Root autoStartApps = new autoStart.Root();
         public bool autostartsuppress;
-        List<int> pIDs = new List<int>();
-        List<dgObjects.autoStartDataGrid> dgAutoStartList = new List<dgObjects.autoStartDataGrid>();
+        private readonly List<int> pIDs = new List<int>();
+        private readonly List<dgObjects.autoStartDataGrid> dgAutoStartList = new List<dgObjects.autoStartDataGrid>();
 
         private readonly BackgroundWorker bwPresetLoader = new BackgroundWorker();
-        private static ManualResetEvent mre = new ManualResetEvent(false);
+        private static readonly ManualResetEvent mre = new ManualResetEvent(false);
 
         List<series.Root> seriesList = new List<series.Root>();
         List<seriesAssets> seriesAssetsList = new List<seriesAssets>();
         List<seriesSeason.Root> seriesSeasonList = new List<seriesSeason.Root>();
-        Dictionary<string, string> datafiles = new Dictionary<string, string>();
+        //Dictionary<string, string> datafiles = new Dictionary<string, string>();
         List<dgObjects.seriesDataGrid> dgSeriesList = new List<dgObjects.seriesDataGrid>();
-        string seriesFile = @"\static\series.xml";
-        string seriesSeasonFile = @"\static\seriesSeason.xml";
-        string seriesAssetsFile = @"\static\seriesAssets.xml";
-        string seriesLogos = @"\static\series\";
-        string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
+        private readonly string seriesFile = @"\static\series.xml";
+        private readonly string seriesSeasonFile = @"\static\seriesSeason.xml";
+        private readonly string seriesAssetsFile = @"\static\seriesAssets.xml";
+        private readonly string seriesLogos = @"\static\series\";
+        //string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
 
-        List<cars.Root> carsList = new List<cars.Root>();
-        List<carAssets> carsAssetsList = new List<carAssets>();
-        List<carClass.Root> carClassList = new List<carClass.Root>();
-        List<carClass.CarInClassId> carClassesList = new List<carClass.CarInClassId>();
-        List<cars.CarsInSeries> carsInSeries = new List<cars.CarsInSeries>();
-        List<dgObjects.carsDataGrid> dgCarsList = new List<dgObjects.carsDataGrid>();
-        string carsFile = @"\static\cars.xml";
-        string carsAssetsFile = @"\static\carsAssets.xml";
-        string carClassFile = @"\static\carClass.xml";
-        string carLogos = @"\static\cars\";
-        string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
+        private List<cars.Root> carsList = new List<cars.Root>();
+        private List<carAssets> carsAssetsList = new List<carAssets>();
+        private List<carClass.Root> carClassList = new List<carClass.Root>();
+        private List<carClass.CarInClassId> carClassesList = new List<carClass.CarInClassId>();
+        private List<cars.CarsInSeries> carsInSeries = new List<cars.CarsInSeries>();
+        readonly List<dgObjects.carsDataGrid> dgCarsList = new List<dgObjects.carsDataGrid>();
+        private readonly string carsFile = @"\static\cars.xml";
+        private readonly string carsAssetsFile = @"\static\carsAssets.xml";
+        private readonly string carClassFile = @"\static\carClass.xml";
+        private readonly string carLogos = @"\static\cars\";
+        //private readonly string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
 
-        List<tracks.Root> tracksList = new List<tracks.Root>();
-        List<trackAssets.Root> tracksAssetsList = new List<trackAssets.Root>();
-        List<dgObjects.tracksDataGrid> dgTracksList = new List<dgObjects.tracksDataGrid>();
-        List<dgObjects.tracksLayoutsDataGrid> dgTrackLayoutList = new List<dgObjects.tracksLayoutsDataGrid>();
-        List<tracks.TracksInSeries> tracksInSeries = new List<tracks.TracksInSeries>();
-        string tracksFile = @"\static\tracks.xml";
-        string tracksAssetsFile = @"\static\tracksAssets.xml";
-        string tracksLogo = @"\static\tracks\";
+        private List<tracks.Root> tracksList = new List<tracks.Root>();
+        private List<trackAssets.Root> tracksAssetsList = new List<trackAssets.Root>();
+        private readonly List<dgObjects.tracksDataGrid> dgTracksList = new List<dgObjects.tracksDataGrid>();
+        private readonly List<dgObjects.tracksLayoutsDataGrid> dgTrackLayoutList = new List<dgObjects.tracksLayoutsDataGrid>();
+        private List<tracks.TracksInSeries> tracksInSeries = new List<tracks.TracksInSeries>();
+        private readonly string tracksFile = @"\static\tracks.xml";
+        private readonly string tracksAssetsFile = @"\static\tracksAssets.xml";
+        private readonly string tracksLogo = @"\static\tracks\";
         int selectedTrack = -1;
 
-        List<dgObjects.tracksDataGrid> dgPurchaseGuideList = new List<dgObjects.tracksDataGrid>();
-        List<dgObjects.RaceOverviewDataGrid> dgRaceOverviewList = new List<dgObjects.RaceOverviewDataGrid>();
-        List<dgObjects.iRaitingDataGrid> dgiRaitingDataGridList = new List<dgObjects.iRaitingDataGrid>();
+        private readonly List<dgObjects.tracksDataGrid> dgPurchaseGuideList = new List<dgObjects.tracksDataGrid>();
+        private readonly List<dgObjects.RaceOverviewDataGrid> dgRaceOverviewList = new List<dgObjects.RaceOverviewDataGrid>();
+        private List<dgObjects.iRaitingDataGrid> dgiRaitingDataGridList = new List<dgObjects.iRaitingDataGrid>();
         public List<Alarms> RaceAlarms = new List<Alarms>();
-        MediaPlayer mediaPlayer = new MediaPlayer();
+        private readonly MediaPlayer mediaPlayer = new MediaPlayer();
 
-        string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+        private readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
-        string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterRoad;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
+        private readonly string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterRoad;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
 
         public MainWindow()
         {
@@ -195,8 +194,7 @@ namespace RCRPlanner
         }
         private void yourFilter(object sender, FilterEventArgs e)
         {
-            series.Root obj = e.Item as series.Root;
-            if (obj != null)
+            if (e.Item is series.Root obj)
             {
                 if (obj.category.Contains("road"))
                     e.Accepted = true;
@@ -460,8 +458,8 @@ namespace RCRPlanner
                         carsList = await fh.getCarList(carsFile, reloadData);
                         carsAssetsList = await fh.getCarAssetsList(carsAssetsFile, carLogos, reloadData);
                         carClassList = await fh.getCarClassList(carClassFile, reloadData);
-                        carClassesList = await fh.getCarClassesList(carsList, carClassList);
-                        carsInSeries = await fh.getCarsInSeries(carClassesList, seriesSeasonList);
+                        carClassesList = fh.getCarClassesList(carsList, carClassList);
+                        carsInSeries = fh.getCarsInSeries(carClassesList, seriesSeasonList);
                     }
                     catch (Exception ex)
                     {
@@ -483,7 +481,7 @@ namespace RCRPlanner
 
                         tracksList = await fh.getTracksList(tracksFile, reloadData);
                         tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
-                        tracksInSeries = await fh.getTracksInSeries(tracksList, seriesSeasonList);
+                        tracksInSeries = fh.getTracksInSeries(tracksList, seriesSeasonList);
                         fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
                     }
                     catch (Exception ex)
@@ -719,24 +717,22 @@ namespace RCRPlanner
         }
         private void resize_Grid(Grid grid, string direction, int size, double duration)
         {
-            //grid.Dispatcher.Invoke(new Action(() =>{
-                DoubleAnimation animation = new DoubleAnimation();
-                switch (direction)
-                {
-                    case "width":
-                        animation.From = grid.Width;
-                        animation.To = size;
-                        animation.Duration = new Duration(TimeSpan.FromSeconds(duration));
-                        grid.BeginAnimation(WidthProperty, animation);
-                        break;
-                    case "height":
-                        animation.From = grid.Height;
-                        animation.To = size;
-                        animation.Duration = new Duration(TimeSpan.FromSeconds(duration));
-                        grid.BeginAnimation(HeightProperty, animation);
-                        break;
-                }
-            //}));
+            DoubleAnimation animation = new DoubleAnimation();
+            switch (direction)
+            {
+                case "width":
+                    animation.From = grid.Width;
+                    animation.To = size;
+                    animation.Duration = new Duration(TimeSpan.FromSeconds(duration));
+                    grid.BeginAnimation(WidthProperty, animation);
+                    break;
+                case "height":
+                    animation.From = grid.Height;
+                    animation.To = size;
+                    animation.Duration = new Duration(TimeSpan.FromSeconds(duration));
+                    grid.BeginAnimation(HeightProperty, animation);
+                    break;
+            }
         }
         private void move_grid(Grid grid, string direction, int position, double duration)
         {
@@ -1022,27 +1018,29 @@ namespace RCRPlanner
                         }
 
                     }
-                    dgObjects.carsDataGrid carsDataGridObject = new dgObjects.carsDataGrid();
-                    carsDataGridObject.Favourite = favoutireCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected;
-                    carsDataGridObject.CarId = car.car_id;
-                    carsDataGridObject.CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png");
-                    carsDataGridObject.CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png");
-                    carsDataGridObject.CarName = car.car_name;
-                    carsDataGridObject.Category = string.Join(",", car.categories);
-                    carsDataGridObject.Horsepower = isMetric ? Convert.ToInt32(car.hp * 1.01387) : car.hp;
-                    carsDataGridObject.Weight = isMetric ? Convert.ToInt32(car.car_weight * 0.453592) : car.car_weight;
-                    carsDataGridObject.Price = "$" + car.price.ToString();
-                    carsDataGridObject.Owned = User.car_packages.Any(p => p.package_id == car.package_id) ? checksymbol : "";
-                    carsDataGridObject.Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                    carsDataGridObject.Series = seriesDataGridsList;
-                    carsDataGridObject.Series_Participations = seriesDataGridsList.Count;
-                    carsDataGridObject.ForumLink = car.forum_url;
+                    dgObjects.carsDataGrid carsDataGridObject = new dgObjects.carsDataGrid
+                    {
+                        Favourite = favoutireCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected,
+                        CarId = car.car_id,
+                        CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png"),
+                        CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png"),
+                        CarName = car.car_name,
+                        Category = string.Join(",", car.categories),
+                        Horsepower = isMetric ? Convert.ToInt32(car.hp * 1.01387) : car.hp,
+                        Weight = isMetric ? Convert.ToInt32(car.car_weight * 0.453592) : car.car_weight,
+                        Price = "$" + car.price.ToString(),
+                        Owned = User.car_packages.Any(p => p.package_id == car.package_id) ? checksymbol : "",
+                        Created = car.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture),
+                        Series = seriesDataGridsList,
+                        Series_Participations = seriesDataGridsList.Count,
+                        ForumLink = car.forum_url
+                    };
                     dgCarsList.Add(carsDataGridObject);
                 }
                 dgCarsList.Sort((x, y) => x.CarName.CompareTo(y.CarName));
                 foreach (var serie in dgSeriesList)
                 {
-                    var cars = dgCarsList.FindAll(c => c.Series.Any(s => s != null ? s.SerieId == serie.SerieId : false));
+                    var cars = dgCarsList.FindAll(c => c.Series.Any(s => s != null && s.SerieId == serie.SerieId));
                     if (serie.Cars == null)
                     {
                         serie.Cars = cars;
@@ -1077,7 +1075,7 @@ namespace RCRPlanner
                     List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
                     foreach (var tracksinseries in tracksInSeries)
                     {
-                        if (tracksinseries.track_id == track.track_id && !seriesDataGridsList.Any(s => s != null ? s.SerieId == tracksinseries.series_id : false))
+                        if (tracksinseries.track_id == track.track_id && !seriesDataGridsList.Any(s => s != null && s.SerieId == tracksinseries.series_id))
                         {
 
                             var seriesDataGridsObject = (from serie in dgSeriesList
@@ -1096,9 +1094,9 @@ namespace RCRPlanner
                                                          }).FirstOrDefault();
                             seriesDataGridsList.Add(seriesDataGridsObject);
                         }
-                        else if (tracksinseries.track_id == track.track_id && seriesDataGridsList.Any(s => s != null ? s.SerieId == tracksinseries.series_id : false))
+                        else if (tracksinseries.track_id == track.track_id && seriesDataGridsList.Any(s => s != null && s.SerieId == tracksinseries.series_id))
                         {
-                            var _trackObj = seriesDataGridsList.FirstOrDefault(t => t != null ? t.SerieId == tracksinseries.series_id : false);
+                            var _trackObj = seriesDataGridsList.FirstOrDefault(t => t != null && t.SerieId == tracksinseries.series_id);
                             if (_trackObj != null)
                             {
                                 _trackObj.Weeks += ", " + tracksinseries.week;
@@ -1106,21 +1104,23 @@ namespace RCRPlanner
                         }
                     }
 
-                    dgObjects.tracksDataGrid newLayout = new dgObjects.tracksDataGrid();
-                    newLayout.Name = track.track_name;
-                    newLayout.Layoutname = track.config_name;
-                    newLayout.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
-                    newLayout.Corners = track.corners_per_lap;
-                    newLayout.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                    newLayout.Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length; ;
-                    newLayout.Owned = User.track_packages.Any(p => p.package_id == track.package_id) ? checksymbol : "";
-                    newLayout.Pitlimit = isMetric ? Convert.ToInt32(track.pit_road_speed_limit * 1.60934) : track.pit_road_speed_limit;
-                    newLayout.Price = "$" + track.price.ToString();
-                    newLayout.PackageID = track.package_id;
-                    newLayout.TrackID = track.track_id;
-                    newLayout.Category = track.category;
-                    newLayout.Series = seriesDataGridsList;
-                    newLayout.Participations = seriesDataGridsList.Count;
+                    dgObjects.tracksDataGrid newLayout = new dgObjects.tracksDataGrid
+                    {
+                        Name = track.track_name,
+                        Layoutname = track.config_name,
+                        TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png"),
+                        Corners = track.corners_per_lap,
+                        Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture),
+                        Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length,
+                        Owned = User.track_packages.Any(p => p.package_id == track.package_id) ? checksymbol : "",
+                        Pitlimit = isMetric ? Convert.ToInt32(track.pit_road_speed_limit * 1.60934) : track.pit_road_speed_limit,
+                        Price = "$" + track.price.ToString(),
+                        PackageID = track.package_id,
+                        TrackID = track.track_id,
+                        Category = track.category,
+                        Series = seriesDataGridsList,
+                        Participations = seriesDataGridsList.Count
+                    };
                     dgTracksList.Add(newLayout);
                 }
                 dgTrackLayoutList.Clear();
@@ -1129,18 +1129,20 @@ namespace RCRPlanner
                     if (!dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
                     {
                         List<dgObjects.tracksDataGrid> layout = new List<dgObjects.tracksDataGrid>() { track };
-                        dgObjects.tracksLayoutsDataGrid newTrack = new dgObjects.tracksLayoutsDataGrid();
-                        newTrack.Layouts = layout;
-                        newTrack.Created = track.Created;
-                        newTrack.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.TrackID + ".png");
-                        newTrack.Name = track.Name;
-                        newTrack.Owned = track.Owned;
-                        newTrack.PackageID = track.PackageID;
-                        newTrack.Price = track.Price;
-                        newTrack.Layouts_count = 1;
-                        newTrack.Participations = track.Participations;
-                        newTrack.Favourite = favoutireTracks.Any(x => x.track_id == track.PackageID) ? favsymbolSelected : favsymbolUnselected;
-                        newTrack.TrackID = track.TrackID;
+                        dgObjects.tracksLayoutsDataGrid newTrack = new dgObjects.tracksLayoutsDataGrid
+                        {
+                            Layouts = layout,
+                            Created = track.Created,
+                            TrackImage = new Uri("file:///" + exePath + tracksLogo + track.TrackID + ".png"),
+                            Name = track.Name,
+                            Owned = track.Owned,
+                            PackageID = track.PackageID,
+                            Price = track.Price,
+                            Layouts_count = 1,
+                            Participations = track.Participations,
+                            Favourite = favoutireTracks.Any(x => x.track_id == track.PackageID) ? favsymbolSelected : favsymbolUnselected,
+                            TrackID = track.TrackID
+                        };
                         dgTrackLayoutList.Add(newTrack);
                     }
                     else if (dgTrackLayoutList.Any(l => l.PackageID == track.PackageID))
@@ -1202,23 +1204,24 @@ namespace RCRPlanner
                                                          OwnTracks = serie.Tracks.Count(t => t.Owned == checksymbol),
                                                      }).FirstOrDefault();
                         seriesDataGridsList.Add(seriesDataGridsObject);
-                        //var serie = seriesList.First(s => s.series_id == item.series_id);
                         if (seriesDataGridsObject.OwnTracks < 8 || cbMenu2.IsChecked == false)
                         {
                             if (!dgPurchaseGuideList.Any(t => t.PackageID == track.package_id))
                             {
-                                dgObjects.tracksDataGrid tracksDataGridObject = new dgObjects.tracksDataGrid();
-                                tracksDataGridObject.Name = track.track_name;
-                                tracksDataGridObject.TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png");
-                                tracksDataGridObject.Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                                tracksDataGridObject.Price = "$" + track.price.ToString();
-                                tracksDataGridObject.PackageID = track.package_id;
-                                tracksDataGridObject.TrackID = track.track_id;
-                                tracksDataGridObject.Category = track.category;
-                                tracksDataGridObject.Series = seriesDataGridsList;
-                                tracksDataGridObject.Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length;
-                                tracksDataGridObject.Participations = 1;
-                                tracksDataGridObject.TrackLink = new Uri("https://members.iracing.com/membersite/member/TrackDetail.do?trkid=" + track.track_id);
+                                dgObjects.tracksDataGrid tracksDataGridObject = new dgObjects.tracksDataGrid
+                                {
+                                    Name = track.track_name,
+                                    TrackImage = new Uri("file:///" + exePath + tracksLogo + track.track_id + ".png"),
+                                    Created = track.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture),
+                                    Price = "$" + track.price.ToString(),
+                                    PackageID = track.package_id,
+                                    TrackID = track.track_id,
+                                    Category = track.category,
+                                    Series = seriesDataGridsList,
+                                    Length = isMetric ? Math.Round(track.track_config_length * 1.60934, 3) : track.track_config_length,
+                                    Participations = 1,
+                                    TrackLink = new Uri("https://members.iracing.com/membersite/member/TrackDetail.do?trkid=" + track.track_id)
+                                };
 
                                 dgPurchaseGuideList.Add(tracksDataGridObject);
                             }
@@ -1413,11 +1416,9 @@ namespace RCRPlanner
                     }
                 }
                 dgRaceOverviewList.Sort((x, y) => x.NextRace.CompareTo(y.NextRace));
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(new Action(() =>
                 {
-
                     gridRaces.ItemsSource = dgRaceOverviewList;
-
                 }));
                 filterRaces();
             }
@@ -1676,9 +1677,11 @@ namespace RCRPlanner
             {
                 foreach (var prog in autoStartApps.Programs)
                 {
-                    dgObjects.autoStartDataGrid autoStartData = new dgObjects.autoStartDataGrid();
-                    autoStartData.ID = prog.ID;
-                    autoStartData.Path = prog.Path;
+                    dgObjects.autoStartDataGrid autoStartData = new dgObjects.autoStartDataGrid
+                    {
+                        ID = prog.ID,
+                        Path = prog.Path
+                    };
 
                     var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(prog.Path);
                     var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(sysicon.Handle, System.Windows.Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
@@ -1790,7 +1793,6 @@ namespace RCRPlanner
                             {
                                 tbDetail7.Visibility = Visibility.Hidden;
                             }
-                            //gridTrackDetail.ItemsSource = ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((DataGrid)sender).SelectedItem).Layouts;
                         }
                         break;
                     case "gridSeries":
@@ -1850,8 +1852,7 @@ namespace RCRPlanner
             {
                 return;
             }
-            Control control = sender as Control;
-            if (control == null)
+            if (!(sender is Control control))
             {
                 return;
             }
@@ -2313,7 +2314,7 @@ namespace RCRPlanner
                     MenuNotification.Visibility = Visibility.Hidden;
                 }
             }
-            catch (Exception ex) { }
+            catch{ }
 
         }
 
@@ -2335,8 +2336,10 @@ namespace RCRPlanner
             switch (activeGrid)
             {
                 case "gridAutoStart":
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    openFileDialog.Filter = "Programs (*.exe)| *.exe";
+                    OpenFileDialog openFileDialog = new OpenFileDialog
+                    {
+                        Filter = "Programs (*.exe)| *.exe"
+                    };
                     string path = null;
                     if (openFileDialog.ShowDialog() == true)
                     {
@@ -2345,8 +2348,10 @@ namespace RCRPlanner
                     if (path != null)
                     {
                         var prog = new autoStart.Programs { ID = autoStartApps.Programs != null ? autoStartApps.Programs.Count + 1 : 1, Path = path };
-                        List<autoStart.Programs> progs = new List<autoStart.Programs>();
-                        progs.Add(prog);
+                        List<autoStart.Programs> progs = new List<autoStart.Programs>
+                        {
+                            prog
+                        };
                         if (autoStartApps.Programs == null)
                         {
                             autoStartApps.Programs = progs;
@@ -2398,11 +2403,6 @@ namespace RCRPlanner
                                         week);
                                     gridPartStat.ItemsSource = null;
                                     gridPartStat.ItemsSource = dataTable.DefaultView;
-                                    /*gridPartStat.DataContext = (await statistics.PaticipationStats(Convert.ToInt32(
-                                        ((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", "")),
-                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")),
-                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")),
-                                        week)).DefaultView;*/
                                     gridPartStat.UpdateLayout();
                                     btnMenu1.Content = "Get stat";
                                     btnMenu1.IsEnabled = true;
