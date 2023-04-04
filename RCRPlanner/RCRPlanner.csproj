@@ -155,6 +155,7 @@
     <Compile Include="dgObjects.cs" />
     <Compile Include="filehandler.cs" />
     <Compile Include="githubLatestRelease.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="oddCarImages.cs" />
     <Compile Include="searchSerieResults.cs" />
     <Compile Include="searchSeries.cs" />

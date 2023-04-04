@@ -39,7 +39,7 @@ namespace RCRPlanner
             }
             try
             {
-
+                int minStarter = MainWindow.main.partStatMinStarters;
                 int min = statistics.partMin;
                 int max = statistics.partMax;
                 int tenpC = (max - min) / 10;
@@ -48,17 +48,17 @@ namespace RCRPlanner
                 {
                     cellval = System.Convert.ToInt32(input);
                 }
-                if (cellval < 8) { color = "#770000"; }
-                if (cellval >= 8) { color = "#002800"; }
-                if (cellval >= tenpC && tenpC > 8) { color = "#00330e"; }
-                if (cellval >= tenpC * 2 && tenpC * 2 > 8) { color = "#00431d"; }
-                if (cellval >= tenpC * 3 && tenpC * 3 > 8) { color = "#00552c"; }
-                if (cellval >= tenpC * 4 && tenpC * 4 > 8) { color = "#00673c"; }
-                if (cellval >= tenpC * 5 && tenpC * 5 > 8) { color = "#007a4d"; }
-                if (cellval >= tenpC * 6 && tenpC * 6 > 8) { color = "#008d5e"; }
-                if (cellval >= tenpC * 7 && tenpC * 7 > 8) { color = "#00a06f"; }
-                if (cellval >= tenpC * 8 && tenpC * 8 > 8) { color = "#00b481"; }
-                if (cellval >= tenpC * 9 && tenpC * 9 > 8) { color = "#00c994"; }
+                if (cellval < minStarter) { color = "#770000"; }
+                if (cellval >= minStarter) { color = "#002800"; }
+                if (cellval >= tenpC && tenpC > minStarter) { color = "#00330e"; }
+                if (cellval >= tenpC * 2 && tenpC * 2 > minStarter) { color = "#00431d"; }
+                if (cellval >= tenpC * 3 && tenpC * 3 > minStarter) { color = "#00552c"; }
+                if (cellval >= tenpC * 4 && tenpC * 4 > minStarter) { color = "#00673c"; }
+                if (cellval >= tenpC * 5 && tenpC * 5 > minStarter) { color = "#007a4d"; }
+                if (cellval >= tenpC * 6 && tenpC * 6 > minStarter) { color = "#008d5e"; }
+                if (cellval >= tenpC * 7 && tenpC * 7 > minStarter) { color = "#00a06f"; }
+                if (cellval >= tenpC * 8 && tenpC * 8 > minStarter) { color = "#00b481"; }
+                if (cellval >= tenpC * 9 && tenpC * 9 > minStarter) { color = "#00c994"; }
 
             }
             catch { return color; }
@@ -69,6 +69,16 @@ namespace RCRPlanner
         {
             throw new NotSupportedException();
         }
+    }
+    public class actualWeek
+    {
+        public int seriesId { get; set; }
+        public int week { get; set; }
+    }
+    public class comboBox
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
     public class fileInfo
     {

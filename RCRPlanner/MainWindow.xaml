@@ -51,7 +51,7 @@
                 </DockPanel>
                 <DockPanel x:Name="dpMenu2" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu2"  Style="{StaticResource DefaultLabelStyle}"/>
-                    <ComboBox x:Name="ddMenu2" Height="25" Width="100" SelectionChanged="ddMenu2_SelectionChanged" ItemsSource="{Binding}">
+                    <ComboBox x:Name="ddMenu2" Height="25" Width="100" SelectionChanged="ddMenu2_SelectionChanged" ItemsSource="{Binding}" DisplayMemberPath="Name" SelectedValuePath="Value">
                         <ComboBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel />
@@ -62,17 +62,35 @@
                 <CheckBox x:Name="cbMenu3" Grid.Column="2" Grid.Row="0" Height="30" Click="cbMenu3_Click"/>
                 <DockPanel x:Name="dpMenu3" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu3"  Style="{StaticResource DefaultLabelStyle}"/>
-                    <ComboBox x:Name="ddMenu3" Height="25" Width="100" SelectionChanged="ddMenu3_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="ddMenu3" Height="25" Width="100" SelectionChanged="ddMenu3_SelectionChanged">
+                        <ComboBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ComboBox.ItemsPanel>
+                    </ComboBox>
                 </DockPanel>
                 <CheckBox x:Name="cbMenu4" Grid.Column="3" Grid.Row="0" Height="30" Click="cbMenu4_Click"/>
                 <DockPanel x:Name="dpMenu4" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu4"  Style="{StaticResource DefaultLabelStyle}"/>
-                    <ComboBox x:Name="ddMenu4" Height="25" Width="100" SelectionChanged="ddMenu4_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="ddMenu4" Height="25" Width="100" SelectionChanged="ddMenu4_SelectionChanged">
+                        <ComboBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ComboBox.ItemsPanel>
+                    </ComboBox>
                 </DockPanel>
                 <CheckBox x:Name="cbMenu5" Grid.Column="4" Grid.Row="0" Height="30" Click="cbMenu5_Click" ToolTipService.IsEnabled="True" ToolTip="Test"/>
                 <DockPanel x:Name="dpMenu5" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu5"  Style="{StaticResource DefaultLabelStyle}"/>
-                    <ComboBox x:Name="ddMenu5" Height="25" Width="100" SelectionChanged="ddMenu5_SelectionChanged"></ComboBox>
+                    <ComboBox x:Name="ddMenu5" Height="25" Width="100" SelectionChanged="ddMenu5_SelectionChanged">
+                        <ComboBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ComboBox.ItemsPanel>
+                    </ComboBox>
                 </DockPanel>
                 <Button x:Name="btnMenu6" Grid.Column="5" Grid.Row="0" Height="30" Width="Auto" Click="btnMenu6_Click"/>
                 <TextBlock x:Name="tbMenu6" Grid.Column="5" Grid.Row="0" Height="30" Text="⟳" Style="{StaticResource DefaultTextBlockStyle}" FontSize="30" HorizontalAlignment="Right" Margin="0,0,20,0" MouseDown="tbMenu6_MouseDown" />
@@ -1140,9 +1158,17 @@
 
                         </Style>
                     </UserControl.Resources>
-                    <DataGrid x:Name="gridPartStat" CellStyle="{StaticResource CellStyle}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding}" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="True" RowHeight="25" MinColumnWidth="22" GridLinesVisibility="Horizontal" IsReadOnly="true" Visibility="Hidden">
+                    <DataGrid x:Name="gridPartStat" CellStyle="{StaticResource CellStyle}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding}" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="True" RowHeight="25" MinColumnWidth="30" GridLinesVisibility="Horizontal" IsReadOnly="true" Visibility="Hidden">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DefaultHeaderStyle}">
+                                <Setter Property="Width">
+                                    <Setter.Value>
+                                        45
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="HorizontalContentAlignment">
+                                    <Setter.Value>Center</Setter.Value>
+                                </Setter>
                                 <Setter Property="LayoutTransform">
                                     <Setter.Value>
                                         <RotateTransform Angle="270" />

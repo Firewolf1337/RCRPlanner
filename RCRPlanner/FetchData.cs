@@ -20,22 +20,22 @@ namespace RCRPlanner
 {
     class FetchData
     {
-        string iracingAuthUrl = "https://members-ng.iracing.com/auth";
-        string iracingDataDoc = "https://members-ng.iracing.com/data/doc";
+        readonly string iracingAuthUrl = "https://members-ng.iracing.com/auth";
+        readonly string iracingDataDoc = "https://members-ng.iracing.com/data/doc";
 
-        string iracingCarsGet = "https://members-ng.iracing.com/data/car/get";
-        string iracingCarAssets = "https://members-ng.iracing.com/data/car/assets";
-        string iracingCarClassGet = "https://members-ng.iracing.com/data/carclass/get";
+        readonly string iracingCarsGet = "https://members-ng.iracing.com/data/car/get";
+        readonly string iracingCarAssets = "https://members-ng.iracing.com/data/car/assets";
+        readonly string iracingCarClassGet = "https://members-ng.iracing.com/data/carclass/get";
         //string iracingCarPics = "https://ir-core-sites.iracing.com/members/member_images/cars/carid_401/profile.jpg";
 
-        string iracingMemberInfo = "https://members-ng.iracing.com/data/member/info";
-        string iracingSeriesGet = "https://members-ng.iracing.com/data/series/get";
-        string iracingSeriesAssets = "https://members-ng.iracing.com/data/series/assets";
-        string iracingSeriesSeason = "https://members-ng.iracing.com/data/series/seasons";
-        string iracingSeriesPastSeasons = "https://members-ng.iracing.com/data/series/past_seasons?series_id=";
+        readonly string iracingMemberInfo = "https://members-ng.iracing.com/data/member/info";
+        readonly string iracingSeriesGet = "https://members-ng.iracing.com/data/series/get";
+        readonly string iracingSeriesAssets = "https://members-ng.iracing.com/data/series/assets";
+        readonly string iracingSeriesSeason = "https://members-ng.iracing.com/data/series/seasons";
+        readonly string iracingSeriesPastSeasons = "https://members-ng.iracing.com/data/series/past_seasons?series_id=";
 
-        string iracingTracksGet = "https://members-ng.iracing.com/data/track/get";
-        string iracingTacksAssets = "https://members-ng.iracing.com/data/track/assets";
+        readonly string iracingTracksGet = "https://members-ng.iracing.com/data/track/get";
+        readonly string iracingTacksAssets = "https://members-ng.iracing.com/data/track/assets";
 
         //string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
 
@@ -84,8 +84,10 @@ namespace RCRPlanner
             {
                 try
                 {
-                    handler = new HttpClientHandler();
-                    handler.CookieContainer = cookie;
+                    handler = new HttpClientHandler
+                    {
+                        CookieContainer = cookie
+                    };
                     client = new HttpClient(handler);
                     string loginHash = EncryptPW(Email, Password);
                     string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
@@ -121,18 +123,6 @@ namespace RCRPlanner
             byte[] fileBytes = await client.GetByteArrayAsync(url);
             File.WriteAllBytes(outputPath, fileBytes);
 
-        }
-        public async Task<string> getLinklist()
-        {
-            var response = await client.GetAsync(iracingDataDoc);
-            response.EnsureSuccessStatusCode();
-            var contents = await response.Content.ReadAsStringAsync();
-            var jsonfile = JsonSerializer.Deserialize<List<DataDoc.Root>>(contents);
-            foreach (DataDoc.Root item in jsonfile)
-            {
-                string link = item.car.get.link;
-            }
-            return contents;
         }
         public string EncryptPW(byte[] Email, byte[] Password)
         {

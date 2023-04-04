@@ -14,7 +14,7 @@ namespace RCRPlanner
     {
         public static int partMin;
         public static int partMax;
-        RCRPlanner.FetchData fData = new RCRPlanner.FetchData();
+        private readonly FetchData fData = new FetchData();
         public async Task<DataTable> PaticipationStats(int seriesId, int year, int season, int week)
         {
             string url = "https://members-ng.iracing.com/data/results/search_series?season_year=" + year + "&season_quarter=" + season + "&series_id=" + seriesId + "&event_types=5";
@@ -116,7 +116,7 @@ namespace RCRPlanner
                 }
                 for(irange = 0; (dgIratings[irange].iRatingInt < res.license.irating && irange < dgIratings.Count()-1); irange++) { }
                 var dgData = dgIratings.FirstOrDefault(r => r.iRatingInt == dgIratings[irange].iRatingInt);
-                dgData.DriverCount = dgData.DriverCount + 1;
+                dgData.DriverCount++;
                 driverCount++;
                 iratingsum += res.license.irating;
                 highestiRating = highestiRating < res.license.irating ? res.license.irating : highestiRating;
@@ -129,8 +129,8 @@ namespace RCRPlanner
                 double percent = Math.Round(data.DriverCount / onepercent, 2);
                 while(i < percent)
                 {
-                    diagram = diagram + "|";
-                    i = i + 0.1;
+                    diagram += "|";
+                    i += 0.1;
                 }
                 data.Diagram = diagram;
             }

@@ -69,6 +69,7 @@ namespace RCRPlanner
         int lastLoginResult = -1;
         bool savelogin = false;
         int iRatingStatUserIrating = -1;
+        public int partStatMinStarters = 8;
         readonly System.Timers.Timer alarmTimer = new System.Timers.Timer();
 
         readonly static Version version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -94,13 +95,12 @@ namespace RCRPlanner
         List<series.Root> seriesList = new List<series.Root>();
         List<seriesAssets> seriesAssetsList = new List<seriesAssets>();
         List<seriesSeason.Root> seriesSeasonList = new List<seriesSeason.Root>();
-        //Dictionary<string, string> datafiles = new Dictionary<string, string>();
+        List<actualWeek> actualWeeks = new List<actualWeek>();
         List<dgObjects.seriesDataGrid> dgSeriesList = new List<dgObjects.seriesDataGrid>();
         private readonly string seriesFile = @"\static\series.xml";
         private readonly string seriesSeasonFile = @"\static\seriesSeason.xml";
         private readonly string seriesAssetsFile = @"\static\seriesAssets.xml";
         private readonly string seriesLogos = @"\static\series\";
-        //string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
 
         private List<cars.Root> carsList = new List<cars.Root>();
         private List<carAssets> carsAssetsList = new List<carAssets>();
@@ -112,7 +112,6 @@ namespace RCRPlanner
         private readonly string carsAssetsFile = @"\static\carsAssets.xml";
         private readonly string carClassFile = @"\static\carClass.xml";
         private readonly string carLogos = @"\static\cars\";
-        //private readonly string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
 
         private List<tracks.Root> tracksList = new List<tracks.Root>();
         private List<trackAssets.Root> tracksAssetsList = new List<trackAssets.Root>();
@@ -124,10 +123,20 @@ namespace RCRPlanner
         private readonly string tracksLogo = @"\static\tracks\";
         int selectedTrack = -1;
 
+        private seriesPastSeasons.Root pastSeasons = new seriesPastSeasons.Root();
         private readonly List<dgObjects.tracksDataGrid> dgPurchaseGuideList = new List<dgObjects.tracksDataGrid>();
         private readonly List<dgObjects.RaceOverviewDataGrid> dgRaceOverviewList = new List<dgObjects.RaceOverviewDataGrid>();
+        private List<comboBox> cbSeries = new List<comboBox>();
         private List<dgObjects.iRaitingDataGrid> dgiRaitingDataGridList = new List<dgObjects.iRaitingDataGrid>();
         public List<Alarms> RaceAlarms = new List<Alarms>();
+        private List<comboBox> cbAlarms = new List<comboBox>(){
+            new comboBox() { Name = "No Offset", Value = "i0" },
+            new comboBox() { Name = "1 Minute", Value = "i1" },
+            new comboBox() { Name = "2 Minutes", Value = "i2" },
+            new comboBox() { Name = "5 Minutes", Value = "i5" },
+            new comboBox() { Name = "10 Minutes", Value = "i10" },
+            new comboBox() { Name = "15 Minutes", Value = "i15" }
+        };
         private readonly MediaPlayer mediaPlayer = new MediaPlayer();
 
         private readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
@@ -162,7 +171,6 @@ namespace RCRPlanner
             alarmTimer.Interval = 10000;
             alarmTimer.Enabled = true;
             lblVersion.Content = displayableVersion;
-
         }
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
@@ -177,8 +185,6 @@ namespace RCRPlanner
                         mediaPlayer.Open(new Uri(exePath + "\\alarm.wav"));
                         mediaPlayer.Play();
                         toRemove.Add(alarm);
-                        
-
                     }
                 }
                 RaceAlarms = RaceAlarms.Except(toRemove).ToList<Alarms>();
@@ -188,10 +194,7 @@ namespace RCRPlanner
                 }
             }));
         }
-        private class bwProgress
-        {
-            public string StatusText { get; set; }
-        }
+
         private void yourFilter(object sender, FilterEventArgs e)
         {
             if (e.Item is series.Root obj)
@@ -497,37 +500,17 @@ namespace RCRPlanner
                     }
 
                     createDgData();
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        gridSeries.ItemsSource = dgSeriesList;
-                        gridCars.ItemsSource = dgCarsList;
-                        gridTracksLayout.ItemsSource = dgTrackLayoutList;
 
-                        try
-                        {
-                            lblLoadingText.Content = "Done";
-                        }
-                        catch { }
-                    }));
                 }
-                reloadData = false;
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    gridLoading.Visibility = Visibility.Hidden;
-                    gridLoadingBG.Visibility = Visibility.Hidden;
-                    gridMainwindow.Effect = null;
-                }));
             }
-            else
+
+            reloadData = false;
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                reloadData = false;
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    gridLoading.Visibility = Visibility.Hidden;
-                    gridLoadingBG.Visibility = Visibility.Hidden;
-                    gridMainwindow.Effect = null;
-                }));
-            }
+                gridLoading.Visibility = Visibility.Hidden;
+                gridLoadingBG.Visibility = Visibility.Hidden;
+                gridMainwindow.Effect = null;
+            }));
         }
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -539,7 +522,7 @@ namespace RCRPlanner
                 }
                 catch (Exception ex)
                 {
-                    if(ex.InnerException != null)
+                    if (ex.InnerException != null)
                     {
                         MessageBox.Show("Style user profile: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
@@ -699,7 +682,6 @@ namespace RCRPlanner
             }
 
             resize_Grid(gridProfile, "height", position, moveAnimationDuration);
-            //move_grid(gridProfile, "right", 0, moveAnimationDuration);
         }
         private void spHeaderMenuLogin_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -883,98 +865,89 @@ namespace RCRPlanner
         {
             try
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    lblLoadingText.Content = "Loading series list.";
-                }));
+                Status = "Loading series list.";
             }
             catch { }
             generateSeriesView();
             try
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    lblLoadingText.Content = "Loading car list.";
-                }));
+                Status = "Loading car list.";
             }
             catch { }
             generateCarView();
             try
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    lblLoadingText.Content = "Loading track list.";
-                }));
+                Status = "Loading tracks list.";
             }
             catch { }
             generateTrackView();
             try
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    lblLoadingText.Content = "Loading race list.";
-                }));
+                Status = "Loading races list.";
             }
             catch { }
             generateRaceView();
         }
         private void generateSeriesView()
         {
-            try { 
-            //Generate series information
-            dgSeriesList.Clear();
-            dgSeriesList = (from series in seriesList
-                            join asset in seriesAssetsList on series.series_id equals asset.series_id
-                            join season in seriesSeasonList on series.series_id equals season.series_id into _ssL
-                            from alls in _ssL.DefaultIfEmpty()
-                            join fav in favoutireSeries on series.series_id equals fav.series_id into ser
-                            from allseries in ser.DefaultIfEmpty()
-                            select new dgObjects.seriesDataGrid()
-                            {
-                                SerieId = series.series_id,
-                                Seriesimage = asset.logo != null ? new Uri("file:///" + exePath + seriesLogos + asset.logo.ToString()) : new Uri("about:blank"),
-                                SeriesName = series.series_name,
-                                Category = series.category,
-                                Class = series.allowed_licenses[0].min_license_level >= series.allowed_licenses[0].max_license_level ? (series.allowed_licenses[1].group_name).Replace("Class ", "").Replace("ookie", "") : (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", ""),
-                                License = (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", "") + " " + (series.allowed_licenses[0].min_license_level - (series.allowed_licenses[0].license_group - 1) * 4).ToString("0.00"),
-                                Eligible = series.eligible == true ? checksymbol : "",
-                                Favourite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
-                                Official = alls?.official == true ? checksymbol : unchecksymbol,
-                                Fixed = alls?.fixed_setup == true ? checksymbol : unchecksymbol,
-                                Season = alls != null ? alls : new seriesSeason.Root(),
-                                ForumLink = series.forum_url,
-                            }).ToList<dgObjects.seriesDataGrid>();
-           foreach(var serie in dgSeriesList)
+            try
             {
-                List<tracks.TracksInSeries> tracksinserie = new List<tracks.TracksInSeries>();
-                tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
-                List<dgObjects.tracksDataGrid> tracks = new List<dgObjects.tracksDataGrid>();
-                foreach (var track in tracksinserie)
+                //Generate series information
+                dgSeriesList.Clear();
+                dgSeriesList = (from series in seriesList
+                                join asset in seriesAssetsList on series.series_id equals asset.series_id
+                                join season in seriesSeasonList on series.series_id equals season.series_id into _ssL
+                                from alls in _ssL.DefaultIfEmpty()
+                                join fav in favoutireSeries on series.series_id equals fav.series_id into ser
+                                from allseries in ser.DefaultIfEmpty()
+                                select new dgObjects.seriesDataGrid()
+                                {
+                                    SerieId = series.series_id,
+                                    Seriesimage = asset.logo != null ? new Uri("file:///" + exePath + seriesLogos + asset.logo.ToString()) : new Uri("about:blank"),
+                                    SeriesName = series.series_name,
+                                    Category = series.category,
+                                    Class = series.allowed_licenses[0].min_license_level >= series.allowed_licenses[0].max_license_level ? (series.allowed_licenses[1].group_name).Replace("Class ", "").Replace("ookie", "") : (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", ""),
+                                    License = (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", "") + " " + (series.allowed_licenses[0].min_license_level - (series.allowed_licenses[0].license_group - 1) * 4).ToString("0.00"),
+                                    Eligible = series.eligible == true ? checksymbol : "",
+                                    Favourite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
+                                    Official = alls?.official == true ? checksymbol : unchecksymbol,
+                                    Fixed = alls?.fixed_setup == true ? checksymbol : unchecksymbol,
+                                    Season = alls != null ? alls : new seriesSeason.Root(),
+                                    ForumLink = series.forum_url,
+                                }).ToList<dgObjects.seriesDataGrid>();
+                foreach (var serie in dgSeriesList)
                 {
-                    dgObjects.tracksDataGrid _trackobj = new dgObjects.tracksDataGrid();
-                    var tr = tracksList.FirstOrDefault(t => t.track_id == track.track_id);
-                    _trackobj.Name = tr.track_name;
-                    _trackobj.Layoutname = tr.config_name;
-                    _trackobj.Corners = tr.corners_per_lap;
-                    _trackobj.Created = tr.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                    _trackobj.Length = isMetric ? Math.Round(tr.track_config_length * 1.60934, 3) : tr.track_config_length;
-                    _trackobj.Owned = User.track_packages.Any(p => p.package_id == tr.package_id) ? checksymbol : "";
-                    _trackobj.Pitlimit = isMetric ? Convert.ToInt32(tr.pit_road_speed_limit * 1.60934) : tr.pit_road_speed_limit;
-                    _trackobj.Price = "$" + tr.price.ToString();
-                    _trackobj.PackageID = tr.package_id;
-                    _trackobj.TrackID = tr.track_id;
-                    _trackobj.Category = tr.category;
-                    _trackobj.TrackImage = new Uri("file:///" + exePath + tracksLogo + tr.track_id + ".png");
-                    _trackobj.Week = track.SeasonSchedule.race_week_num+1;
-                    _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date, Thread.CurrentThread.CurrentUICulture).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                    _trackobj.Racelenght = track.SeasonSchedule.race_lap_limit != null ? track.SeasonSchedule.race_lap_limit.ToString() +" Laps": track.SeasonSchedule.race_time_limit.ToString() + " Min";
-                    tracks.Add(_trackobj);
+                    cbSeries.Add(new comboBox() { Name = serie.SeriesName, Value = "s" + serie.SerieId.ToString() });
+                    List<tracks.TracksInSeries> tracksinserie = new List<tracks.TracksInSeries>();
+                    tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
+                    List<dgObjects.tracksDataGrid> tracks = new List<dgObjects.tracksDataGrid>();
+                    foreach (var track in tracksinserie)
+                    {
+                        dgObjects.tracksDataGrid _trackobj = new dgObjects.tracksDataGrid();
+                        var tr = tracksList.FirstOrDefault(t => t.track_id == track.track_id);
+                        _trackobj.Name = tr.track_name;
+                        _trackobj.Layoutname = tr.config_name;
+                        _trackobj.Corners = tr.corners_per_lap;
+                        _trackobj.Created = tr.created.ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
+                        _trackobj.Length = isMetric ? Math.Round(tr.track_config_length * 1.60934, 3) : tr.track_config_length;
+                        _trackobj.Owned = User.track_packages.Any(p => p.package_id == tr.package_id) ? checksymbol : "";
+                        _trackobj.Pitlimit = isMetric ? Convert.ToInt32(tr.pit_road_speed_limit * 1.60934) : tr.pit_road_speed_limit;
+                        _trackobj.Price = "$" + tr.price.ToString();
+                        _trackobj.PackageID = tr.package_id;
+                        _trackobj.TrackID = tr.track_id;
+                        _trackobj.Category = tr.category;
+                        _trackobj.TrackImage = new Uri("file:///" + exePath + tracksLogo + tr.track_id + ".png");
+                        _trackobj.Week = track.SeasonSchedule.race_week_num + 1;
+                        _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date, Thread.CurrentThread.CurrentUICulture).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
+                        _trackobj.Racelenght = track.SeasonSchedule.race_lap_limit != null ? track.SeasonSchedule.race_lap_limit.ToString() + " Laps" : track.SeasonSchedule.race_time_limit.ToString() + " Min";
+                        tracks.Add(_trackobj);
+                    }
+                    tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
+                    serie.Weeks = tracks.Where(t => t.Owned == checksymbol).Count() + "/" + tracks.Count();
+                    serie.Tracks = tracks;
                 }
-                tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
-                serie.Weeks = tracks.Where(t => t.Owned == checksymbol).Count() + "/" + tracks.Count();
-                serie.Tracks = tracks;
-            }
-            dgSeriesList.Sort((x, y) => x.SeriesName.CompareTo(y.SeriesName));
+                dgSeriesList.Sort((x, y) => x.SeriesName.CompareTo(y.SeriesName));
+                cbSeries.Sort((x, y) => x.Name.CompareTo(y.Name));
             }
             catch (Exception ex)
             {
@@ -1259,9 +1232,9 @@ namespace RCRPlanner
                 dgRaceOverviewList.Clear();
                 foreach (var serie in dgSeriesList)
                 {
-
                     List<tracks.TracksInSeries> tracksinserie = new List<tracks.TracksInSeries>();
-                    tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
+                    tracksinserie = tracksInSeries.Where(t => t.series_id == serie.SerieId).ToList<tracks.TracksInSeries>();
+                    //tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
                     DateTime actualtime = DateTime.Now.ToUniversalTime();
                     DateTime firstracetime;
                     int daysoffset = 0;
@@ -1346,6 +1319,7 @@ namespace RCRPlanner
                             track.WeekActive = false;
                         }
                     }
+                    actualWeeks.Add(new actualWeek { seriesId = serie.SerieId, week = actualweekofserie.week });
                     var racetime = helper.getNextRace(DateTime.SpecifyKind(firstracetime, DateTimeKind.Utc), repeattimes, actualtime).ToLocalTime();
                     dgObjects.RaceOverviewDataGrid _raceobj = new dgObjects.RaceOverviewDataGrid();
                     var tr = tracksList.FirstOrDefault(t => t.track_id == actualweekofserie.track_id);
@@ -1411,15 +1385,11 @@ namespace RCRPlanner
                         {
                             _raceobj.Repeating = "Set times";
                         }
-                        _raceobj.TrackOwned = User.track_packages.Any(t => t.package_id == tr.package_id) ? true : false;
+                        _raceobj.TrackOwned = User.track_packages.Any(t => t.package_id == tr.package_id);
                         dgRaceOverviewList.Add(_raceobj);
                     }
                 }
                 dgRaceOverviewList.Sort((x, y) => x.NextRace.CompareTo(y.NextRace));
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    gridRaces.ItemsSource = dgRaceOverviewList;
-                }));
                 filterRaces();
             }
             catch (Exception ex)
@@ -1985,6 +1955,7 @@ namespace RCRPlanner
             cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridSeries }, false);
+            filterSeries();
         }
 
         private void btnLoadRaces_Click(object sender, RoutedEventArgs e)
@@ -2006,13 +1977,7 @@ namespace RCRPlanner
             btnMenu1.Content = "Show filter";
             btnMenu1.Width = 100;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
-            ddMenu2.Items.Clear();
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "No Offset", Name = "i0" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "1 Minute", Name = "i1" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "2 Minutes", Name = "i2" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "5 Minutes", Name = "i5" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "10 Minutes", Name = "i10" });
-            ddMenu2.Items.Add(new ComboBoxItem() { Content = "15 Minutes", Name = "i15" });
+            ddMenu2.ItemsSource = cbAlarms;
             ddMenu2.SelectedIndex = Properties.Settings.Default.defaultTimer;
             lbMenu2.Content = "Alarm offset:";
 
@@ -2040,27 +2005,15 @@ namespace RCRPlanner
             btnMenu1.Width = 100;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
             btnMenu1.IsEnabled = false;
-            ddMenu2.Items.Clear();
+            ddMenu2.SelectedIndex = -1;
             ddMenu3.Items.Clear();
             ddMenu4.Items.Clear();
             lbMenu2.Content = "Serie:";
             lbMenu3.Content = "Year:";
             lbMenu4.Content = "Season:";
             lbMenu5.Content = "Week:";
-            ddMenu4.Items.Add(new ComboBoxItem() { Content = "S1", Name = "s1" });
-            ddMenu4.Items.Add(new ComboBoxItem() { Content = "S2", Name = "s2" });
-            ddMenu4.Items.Add(new ComboBoxItem() { Content = "S3", Name = "s3" });
-            ddMenu4.Items.Add(new ComboBoxItem() { Content = "S4", Name = "s4" });
             ddMenu5.Items.Clear();
-            foreach (var serie in dgSeriesList)
-            {
-                ddMenu2.Items.Add(new ComboBoxItem() { Content = serie.SeriesName, Name = "s" + serie.SerieId.ToString() });
-            }
-            for(int i=2007; i <= DateTime.Now.Year; i++)
-            {
-                ddMenu3.Items.Add(new ComboBoxItem() { Content = i, Name = "y" + i });
-            }
-            ddMenu3.SelectedIndex = ddMenu3.Items.IndexOf(ddMenu3.Items.OfType<ComboBoxItem>().FirstOrDefault(x => x.Content.ToString() == DateTime.Now.Year.ToString()));
+            ddMenu2.ItemsSource = cbSeries;
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridPartStat }, false);
             btnMenu1.Content = "Get stat";
@@ -2086,16 +2039,13 @@ namespace RCRPlanner
             btnMenu1.Width = 80;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
             btnMenu1.IsEnabled = false;
-            ddMenu2.Items.Clear();
+            ddMenu2.SelectedIndex = -1;
             ddMenu3.Items.Clear();
             ddMenu4.Items.Clear();
             lbMenu2.Content = "Serie:";
             lbMenu3.Content = "Season:";
             lbMenu4.Content = "Car class:";
-            foreach (var serie in dgSeriesList)
-            {
-                ddMenu2.Items.Add(new ComboBoxItem() { Content = serie.SeriesName, Name = "s" + serie.SerieId.ToString() });
-            }
+            ddMenu2.ItemsSource = cbSeries;
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridiRatingStat }, false);
             btnMenu1.Content = "Get stat";
@@ -2197,7 +2147,7 @@ namespace RCRPlanner
 
         private void gridRacesAlarm_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            int offset = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.ToString().Replace("i", ""));
+            int offset = Convert.ToInt32(ddMenu2.SelectedValue.ToString().Replace("i", ""));
             if (((System.Windows.Controls.TextBlock)sender).Text != alarmClockSymbol)
             {
                 dgRaceOverviewList.First(r => r.SerieId == ((RCRPlanner.dgObjects.RaceOverviewDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId).Timer = alarmClockSymbol;
@@ -2390,21 +2340,21 @@ namespace RCRPlanner
                         {
                             if (ddMenu2.SelectedIndex != -1 && ddMenu3.SelectedIndex != -1 && ddMenu4.SelectedIndex != -1)
                             {
-                                int week = -1;
+                                int _week = -1;
                                 if (ddMenu5.SelectedIndex != 0)
                                 {
-                                    week = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu5.SelectedValue).Name.Replace("w", ""));
+                                    _week = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu5.SelectedValue).Name.Replace("w", ""));
                                 }
                                 try
                                 {
+                                    int _serId = Convert.ToInt32(ddMenu2.SelectedValue.ToString().Replace("s", ""));
+                                    int _year = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", ""));
+                                    int _season = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", ""));
                                     DataTable dataTable = new DataTable();
                                     btnMenu1.Content = "Loading...";
                                     btnMenu1.IsEnabled = false;
-                                    dataTable = await statistics.PaticipationStats(Convert.ToInt32(
-                                        ((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", "")),
-                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")),
-                                        Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")),
-                                        week);
+                                    partStatMinStarters = (seriesList.Find(x => x.series_id == _serId)).min_starters;
+                                    dataTable = await statistics.PaticipationStats(_serId,_year,_season,_week);
                                     gridPartStat.ItemsSource = null;
                                     gridPartStat.ItemsSource = dataTable.DefaultView;
                                     gridPartStat.UpdateLayout();
@@ -2560,15 +2510,37 @@ namespace RCRPlanner
                 case "gridPartStat":
                     if (ddMenu2.SelectedIndex != -1)
                     {
-                        var selectedValue = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s",""));
-                        int weeks = dgSeriesList.FirstOrDefault(s => s.SerieId == selectedValue).Tracks.Count();
-                        ddMenu5.Items.Clear();
-                        ddMenu5.Items.Add(new ComboBoxItem() { Content = "All", Name = "" });
-                        ddMenu5.SelectedIndex = 0;
-                        for(int i = 1; i <= weeks; i++)
+                        try
                         {
-                            ddMenu5.Items.Add(new ComboBoxItem() { Content = i, Name = "w" + i });
+                            if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
+                            {
+                                ddMenu3.Items.Clear();
+                                ddMenu4.Items.Clear();
+                                ddMenu5.Items.Clear();
+                                var selectedValue = Convert.ToInt32(ddMenu2.SelectedValue.ToString().Replace("s", ""));
+                                pastSeasons = await fData.getSeriesPastSeasons(selectedValue.ToString());
+                                List<int> years = new List<int>();
+
+                                foreach (var season in pastSeasons.series.seasons)
+                                {
+                                    years.Add(season.season_year);
+                                }
+                                foreach (int _year in years.Distinct())
+                                {
+                                    ddMenu3.Items.Add(new ComboBoxItem() { Content = _year, Name = "y" + _year });
+                                }
+                                ddMenu3.SelectedIndex = 0;
+                            }
                         }
+                        catch (Exception ex)
+                        {
+                            if (ex.InnerException != null)
+                            {
+                                MessageBox.Show("Loading iRating stats: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+
+
                     }
                     break;
                 case "gridiRatingStat":
@@ -2580,9 +2552,9 @@ namespace RCRPlanner
                             {
                                 ddMenu3.Items.Clear();
                                 ddMenu4.Items.Clear();
-                                var selectedValue = Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu2.SelectedValue).Name.Replace("s", ""));
-                                var seasons = await fData.getSeriesPastSeasons(selectedValue.ToString());
-                                switch (seasons.series.category)
+                                var selectedValue = Convert.ToInt32((ddMenu2.SelectedValue).ToString().Replace("s", ""));
+                                pastSeasons = await fData.getSeriesPastSeasons(selectedValue.ToString());
+                                switch (pastSeasons.series.category)
                                 {
                                     case "road":
                                         iRatingStatUserIrating = User.licenses.road.irating;
@@ -2598,21 +2570,11 @@ namespace RCRPlanner
                                         break;
                                 }
                                 List<seriesPastSeasons.CarClass> carclasses = new List<seriesPastSeasons.CarClass>();
-                                foreach (var season in seasons.series.seasons)
+                                foreach (var season in pastSeasons.series.seasons)
                                 {
                                     ddMenu3.Items.Add(new ComboBoxItem() { Content = season.season_short_name, Name = "s" + season.season_id.ToString() });
-                                    foreach (var carclass in season.car_classes)
-                                    {
-                                        if (carclasses.FirstOrDefault(c => c.car_class_id == carclass.car_class_id) == null)
-                                        {
-                                            carclasses.Add(carclass);
-                                        }
-                                    }
                                 }
-                                foreach (var carclass in carclasses)
-                                {
-                                    ddMenu4.Items.Add(new ComboBoxItem() { Content = carclass.name, Name = "c" + carclass.car_class_id.ToString() });
-                                }
+                                ddMenu3.SelectedIndex = 0;
                             }
                         }
                         catch (Exception ex)
@@ -2631,6 +2593,45 @@ namespace RCRPlanner
             switch (activeGrid)
             {
                 case "gridPartStat":
+                    if (ddMenu3.SelectedIndex != -1)
+                    {
+                        ddMenu4.Items.Clear();
+                        ddMenu5.Items.Clear();
+                        if (ddMenu2.SelectedIndex != -1)
+                        {
+                            foreach (var season in pastSeasons.series.seasons.Where(x => x.season_year == Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", ""))))
+                            {
+                                ddMenu4.Items.Add(new ComboBoxItem() { Content = "S" + season.season_quarter, Name = "s" + season.season_quarter.ToString() });
+                            }
+                        }
+                        ddMenu4.SelectedIndex = 0;
+                    }
+                    break;
+                case "gridiRatingStat":
+                    if (ddMenu3.SelectedIndex != -1)
+                    {
+                        ddMenu4.Items.Clear();
+                        ddMenu5.Items.Clear();
+                        if (ddMenu2.SelectedIndex != -1)
+                        {
+                            List<seriesPastSeasons.CarClass> carclasses = new List<seriesPastSeasons.CarClass>();
+                            foreach (var season in pastSeasons.series.seasons.Where(x => x.season_short_name == ((ContentControl)ddMenu3.SelectedValue).Content.ToString()))
+                            {
+                                foreach (var carclass in season.car_classes)
+                                {
+                                    if (carclasses.FirstOrDefault(c => c.car_class_id == carclass.car_class_id) == null)
+                                    {
+                                        carclasses.Add(carclass);
+                                    }
+                                }
+                            }
+                            foreach (var carclass in carclasses)
+                            {
+                                ddMenu4.Items.Add(new ComboBoxItem() { Content = carclass.name, Name = "c" + carclass.car_class_id.ToString() });
+                            }
+                        }
+                        ddMenu4.SelectedIndex = 0;
+                    }
                     break;
             }
         }
@@ -2640,6 +2641,45 @@ namespace RCRPlanner
             switch (activeGrid)
             {
                 case "gridPartStat":
+                    if (ddMenu4.SelectedIndex != -1)
+                    {
+                        if (ddMenu3.SelectedIndex != -1)
+                        {
+                            if (ddMenu2.SelectedIndex != -1)
+                            {
+                                ddMenu5.Items.Clear();
+                                ddMenu5.Items.Add(new ComboBoxItem() { Content = "All", Name = "" });
+                                ddMenu5.SelectedIndex = 0;
+                                try
+                                {
+                                    int weeks = 0;
+                                    foreach (var season in pastSeasons.series.seasons)
+                                    {
+                                        if (season.season_year == Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu3.SelectedValue).Name.Replace("y", "")) && season.season_quarter == Convert.ToInt32(((System.Windows.FrameworkElement)ddMenu4.SelectedValue).Name.Replace("s", "")))
+                                        {
+
+
+                                            if (season.active)
+                                            {
+                                                weeks = actualWeeks.First(x => x.seriesId == season.series_id).week;
+                                            }
+                                            else
+                                            {
+                                                weeks = season.race_weeks.Count();
+                                            }
+                                        }
+                                    }
+                                    for (int i = 0; i < weeks; i++)
+                                    {
+                                        ddMenu5.Items.Add(new ComboBoxItem() { Content = i+1, Name = "w" + i });
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    break;
+                case "gridiRatingStat":
                     break;
             }
         }
