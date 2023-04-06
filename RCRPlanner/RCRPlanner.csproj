@@ -156,7 +156,9 @@
     <Compile Include="filehandler.cs" />
     <Compile Include="githubLatestRelease.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="jpegResizing.cs" />
     <Compile Include="oddCarImages.cs" />
+    <Compile Include="pngResizing.cs" />
     <Compile Include="searchSerieResults.cs" />
     <Compile Include="searchSeries.cs" />
     <Compile Include="seasonDriverStandings.cs" />
@@ -203,6 +205,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="TransparentPics.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Resource Include="Fonts\Montserrat-Light.otf" />
     <None Include="Properties\app.manifest" />
     <Resource Include="Fonts\Montserrat-Regular.otf" />
@@ -233,7 +238,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 und x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

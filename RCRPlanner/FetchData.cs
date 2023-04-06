@@ -15,6 +15,10 @@ using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Windows;
 
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
+
 
 namespace RCRPlanner
 {
@@ -118,12 +122,44 @@ namespace RCRPlanner
 
             return link;
         }
-        public async Task getImage(string url, string outputPath)
+        public async Task getImage(string url, string outputPath, bool resize, int sizePerC = 100)
         {
             byte[] fileBytes = await client.GetByteArrayAsync(url);
-            File.WriteAllBytes(outputPath, fileBytes);
-
+            if (resize)
+            {
+                System.IO.MemoryStream stream = new System.IO.MemoryStream(fileBytes, false);
+                Bitmap source = new Bitmap(stream);
+                int newWidth = (source.Width / 100) * sizePerC;
+                int newHight = (source.Height / 100) * sizePerC;
+                string fileextension = Path.GetExtension(outputPath);
+                if (fileextension == ".jpg" || fileextension == ".jpeg")
+                {
+                    new jpegResizing(fileBytes)
+                        .Resize(newWidth, newHight)
+                        .Quality(100)
+                        .Save(outputPath);
+                }
+                else if (fileextension == ".png")
+                {
+                    new pngResizing(fileBytes)
+                        .Resize(newWidth, newHight)
+                        .Save(outputPath);
+                }
+                else
+                {
+                    new jpegResizing(fileBytes)
+                        .Resize(newWidth, newHight)
+                        .Quality(100)
+                        .Save(outputPath);
+                }
+                source.Dispose();
+            }
+            else
+            {
+                File.WriteAllBytes(outputPath, fileBytes);
+            }
         }
+
         public string EncryptPW(byte[] Email, byte[] Password)
         {
             byte[] logindata = helper.CombineByte(Password, Email);

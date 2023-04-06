@@ -53,7 +53,7 @@ namespace RCRPlanner
                 {
                     try
                     {
-                        await fData.getImage(iracingSeriesImages + logo.logo, file);
+                        await fData.getImage(iracingSeriesImages + logo.logo, file, true, 75);
                     }
                     catch { }
                 }
@@ -176,11 +176,11 @@ namespace RCRPlanner
                     {
                         if (oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id) != null)
                         {
-                            await fData.getImage(oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id).imageUrl, file);
+                            await fData.getImage(oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id).imageUrl, file, false);
                         }
                         else
                         {
-                            await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file);
+                            await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file, false);
                         }
                     }
                     catch { }
@@ -190,9 +190,9 @@ namespace RCRPlanner
                 {
                     try
                     {
-                        await fData.getImage(iracingCarImages[2] + logo.folder + "/" + logo.small_image, file);
+                        await fData.getImage(iracingCarImages[2] + logo.folder + "/" + logo.small_image, file, true, 50);
                     }
-                    catch { }
+                    catch (Exception ex) { }
                 }
             }
             return carsAssetsList;
