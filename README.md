@@ -15,13 +15,21 @@ ___
 <br /><a href="https://www.buymeacoffee.com/RCRacing" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 162px !important;" ></a>
 
 ## Handling and Troubleshooting 
+
 * **Most of the table rows are clickable and will show more information.**
    * To close the opend row again press crtl + left mouse button.
-* **There is no auto refresh of the data.**
-    * You need to manually refresh the data when the new season or "Week 13" starts or you purchase something.
 
-* **Please try to start with a fresh copy in an empty folder, if you have any problems after some time with the planner.**
+* **There is no auto refresh of the data. In case of missing cars, tracks, series, races or the new season starts reload the data from iRacing.**
+    * Click on the Profile -> "Reload data"
+
+* **Please try to start with a fresh copy in an empty folder, if you have any problems while starting the planner.**
     * If there is still a problem additionaly delete the folders in %LocalAppData%\RCRPlanner\
+
+* **For transparent backgrounds of the car and track pictures.** 
+    * Start the Planner and wait for the Pictures to download.
+    * Install [ImageMagick](https://imagemagick.org/)
+    * Run the TransparentPics.ps1 file with powershell.
+        * has to be run again when new cars or tracks will be released.
 
 ## Overview
 #### Start and login
