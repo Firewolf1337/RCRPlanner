@@ -550,6 +550,37 @@ namespace RCRPlanner
                 }
             }
         }
+        private void stopPrograms()
+        {
+            if (autoStartApps.Kill)
+            {
+                if (autoStartApps.KillByName)
+                {
+                    foreach (var pname in autoStartApps.Programs)
+                    {
+                        foreach (var pro in Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(pname.Path)))
+                        {
+                            try
+                            {
+                                Process.GetProcessById(pro.Id).Kill();
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var pid in pIDs)
+                    {
+                        try
+                        {
+                            Process.GetProcessById(pid).Kill();
+                        }
+                        catch { }
+                    }
+                }
+            }
+        }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -560,34 +591,7 @@ namespace RCRPlanner
             if (e.ChangedButton == MouseButton.Left)
             {
                 alarmTimer.Stop();
-                if (autoStartApps.Kill)
-                {
-                    if (autoStartApps.KillByName)
-                    {
-                        foreach (var pname in autoStartApps.Programs)
-                        {
-                            foreach (var pro in Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(pname.Path)))
-                            {
-                                try
-                                {
-                                    Process.GetProcessById(pro.Id).Kill();
-                                }
-                                catch { }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var pid in pIDs)
-                        {
-                            try
-                            {
-                                Process.GetProcessById(pid).Kill();
-                            }
-                            catch { }
-                        }
-                    }
-                }
+                stopPrograms();
                 this.Close();
             }
         }
@@ -2089,6 +2093,11 @@ namespace RCRPlanner
         {
             startPrograms();
         }
+
+        private void btnstopPrograms_Click(object sender, RoutedEventArgs e)
+        {
+            stopPrograms();
+        }
         private void gridSeriesFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
@@ -2782,5 +2791,6 @@ namespace RCRPlanner
                 cbFilterOwnTracks.IsEnabled = true;
             }
         }
+
     }
 }
