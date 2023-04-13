@@ -49,6 +49,7 @@
         <Brush x:Key="BrushDarkGray">#303030</Brush>
         <Brush x:Key="BrushDefaultWindowBackground">#EE151515</Brush>
         <Brush x:Key="DefaultBackgroundBrush">#08FFFFFF</Brush>
+        <Brush x:Key="BrushOddBackground">#11888888</Brush>
 
 
         <!--ScrollBars-->

@@ -161,5 +161,16 @@ namespace RCRPlanner
             public string Diagram { get; set; }
 
         }
+        public class seasonOverviewDataGrid
+        {
+            public int SerieId { get; set; }
+            public Uri Seriesimage { get; set; }
+            public string SeriesName { get; set; }
+            public DateTime StartTime { get; set; }
+            public int Week { get; set; }
+            public string Track { get; set; }
+            public string TrackOwned { get; set; }
+
+        }
     }
 }

@@ -1668,6 +1668,147 @@ namespace RCRPlanner
             gridAutoStart.ItemsSource = null;
             gridAutoStart.ItemsSource = dgAutoStartList;
         }
+        private DataTable generateSeasonOverview()
+        {
+            var dgSeriesL = dgSeriesList.Where(x => x.Favourite.Contains(favsymbolSelected)).ToList();
+            List<dgObjects.seasonOverviewDataGrid> dgSeasonOverview = new List<dgObjects.seasonOverviewDataGrid>();
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("Day");
+            foreach (var ser in dgSeriesL)
+            {
+                dataTable.Columns.Add(ser.SeriesName);
+                foreach (var tr in ser.Tracks)
+                {
+                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate), Track = tr.Name, TrackOwned = tr.Owned , Week = tr.Week });
+                }
+            }
+            dataTable.Columns.Add("Races in Week");
+            DataRow row = dataTable.NewRow();
+            row[0] = "";
+            dataTable.Rows.Add(row);
+            row = dataTable.NewRow();
+            row[0] = "";
+            dataTable.Rows.Add(row);
+            foreach (var ser in dgSeriesL)
+            {
+                dataTable.Rows[0][ser.SeriesName] = new BitmapImage(new Uri(ser.Seriesimage.AbsoluteUri));
+                dataTable.Rows[1][ser.SeriesName] = ser.SeriesName;
+            }
+
+            List<DateTime> Weektimes = dgSeasonOverview.Select(d => d.StartTime).Distinct().ToList();
+            Weektimes.Sort((x, y) => x.CompareTo(y));
+            foreach (var week in (Weektimes))
+            {
+                row = dataTable.NewRow();
+                row[0] = week.Date.ToShortDateString();
+                foreach(var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
+                {
+                    row[seasonweek.SeriesName] = seasonweek.Track;
+                }
+                dataTable.Rows.Add(row);
+            }
+            return dataTable;
+        }
+        private void generateSeasonOverview2()
+        {
+            DataTable view = generateSeasonOverview();
+
+            gridSeasonOverview.Children.Clear();
+            Grid grid = new Grid();
+            grid.ShowGridLines = false;
+            Border border = new Border();
+            ColumnDefinition column1 = new ColumnDefinition();
+            RowDefinition row1 = new RowDefinition();
+            TextBlock cell1 = new TextBlock();
+            int cols = 0;
+            var tracklist = dgTracksList.Where(t => t.Owned == checksymbol).ToList();
+
+            foreach(var line in view.Rows)
+            {
+                if (((System.Data.DataRow)line).ItemArray.Length > cols) { cols = ((System.Data.DataRow)line).ItemArray.Length; }
+            }
+            for (int c = 0; c < cols; c++)
+            {
+                column1 = new ColumnDefinition();
+                if (c == cols-1) {
+                    column1.Width = new GridLength(80, GridUnitType.Star);
+                }
+                grid.ColumnDefinitions.Add(column1);
+
+            }
+            int rowcount = 0;
+            foreach (var line in view.Rows)
+            {
+                row1 = new RowDefinition();
+                grid.RowDefinitions.Add(row1);
+                int colcount = 0;
+                foreach(var cell in ((System.Data.DataRow)line).ItemArray) 
+                {
+                    if (cell.ToString().StartsWith("file:"))
+                    {
+                        Image logo = new Image();
+                        logo.Source = new BitmapImage(new Uri(cell.ToString()));
+                        logo.Width = 100;
+                        RenderOptions.SetBitmapScalingMode(logo, BitmapScalingMode.HighQuality);
+                        Grid.SetColumn(logo, colcount);
+                        Grid.SetRow(logo, rowcount);
+                        grid.Children.Add(logo);
+                    }
+                    else
+                    {
+                        border = new Border();
+                        border.BorderBrush = Brushes.Black;
+                        border.MinWidth = 80;
+                        if (colcount != cols-1) {
+                            border.MaxWidth = 180;
+                        }
+
+                        if (rowcount < 1)
+                        {
+                            border.BorderThickness = new Thickness(0, 0, 0, 0);
+                        }
+                        else
+                        {
+                            border.BorderThickness = new Thickness(0, 0, 0, 1);
+                        }
+                        border.Height = 30;
+                        if(rowcount%2 == 0 && rowcount > 1 )
+                        {
+                            border.Background = Application.Current.Resources["BrushOddBackground"] as SolidColorBrush;
+                        }
+                        cell1 = new TextBlock();
+                        cell1.Text = cell.ToString();
+                        cell1.TextTrimming = TextTrimming.WordEllipsis;
+                        cell1.Margin = new Thickness(3, 0, 3, 0);
+                        cell1.TextAlignment = TextAlignment.Center;
+                        cell1.VerticalAlignment = VerticalAlignment.Center;
+                        border.Child = cell1;
+
+                        if (tracklist.Any(t => t.Name.Equals(cell.ToString())))
+                        {
+                            cell1.Foreground = Application.Current.Resources["BrushMiddleGreen"] as SolidColorBrush;
+
+                        }
+                        else
+                        {
+                            cell1.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                        }
+                        Grid.SetColumn(border, colcount);
+                        Grid.SetRow(border, rowcount);
+                        grid.Children.Add(border);
+                    }
+
+                    colcount++;
+                }
+                rowcount++;
+            }
+            row1 = new RowDefinition();
+            row1.Height = new GridLength(30, GridUnitType.Star);
+            grid.RowDefinitions.Add(row1);
+            gridSeasonOverview.Children.Add(grid);
+        }
+
+
         private void clearDetails()
         {
             lblDetails1.Content = "";
@@ -1843,6 +1984,8 @@ namespace RCRPlanner
         private void btnLoadCars_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridCars";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
             tbMenu2.Visibility = Visibility.Visible;
@@ -1876,6 +2019,8 @@ namespace RCRPlanner
         private void btnLoadTracks_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridTracksLayout";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
             tbMenu2.Visibility = Visibility.Visible;
@@ -1908,6 +2053,8 @@ namespace RCRPlanner
         private void btnLoadPurchase_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridPurchaseGuide";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Visible;
             tbMenu2.Visibility = Visibility.Hidden;
@@ -1934,6 +2081,8 @@ namespace RCRPlanner
         private void btnLoadSeries_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridSeries";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
             tbMenu2.Visibility = Visibility.Visible;
@@ -1965,6 +2114,8 @@ namespace RCRPlanner
         private void btnLoadRaces_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridRaces";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Hidden;
             tbMenu2.Visibility = Visibility.Hidden;
@@ -1992,6 +2143,8 @@ namespace RCRPlanner
         private void btnPartStats_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridPartStat";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
@@ -2026,6 +2179,8 @@ namespace RCRPlanner
         private void btniRatingStats_Click(object sender, RoutedEventArgs e)
         {
             activeGrid = "gridiRatingStat";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
@@ -2057,7 +2212,10 @@ namespace RCRPlanner
         }
         private void btnLoadAutoStart_Click(object sender, RoutedEventArgs e)
         {
+
             activeGrid = "gridAutoStart";
+            gridSeasonOverview.Visibility = Visibility.Hidden;
+            scrollSeasonOverview.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
             cbMenu2.Visibility = Visibility.Visible;
             tbMenu2.Visibility = Visibility.Hidden;
@@ -2089,6 +2247,30 @@ namespace RCRPlanner
             generateAutoStartView();
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridAutoStart }, true);
         }
+        private void btnLoadSeasonOverview_Click(object sender, RoutedEventArgs e)
+        {
+            activeGrid = "gridSeasonOverview";
+            btnMenu1.Visibility = Visibility.Hidden;
+            cbMenu2.Visibility = Visibility.Hidden;
+            tbMenu2.Visibility = Visibility.Hidden;
+            dpMenu2.Visibility = Visibility.Hidden;
+            lbMenu2.Visibility = Visibility.Hidden;
+            cbMenu3.Visibility = Visibility.Hidden;
+            dpMenu3.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Hidden;
+            dpMenu4.Visibility = Visibility.Hidden;
+            dpMenu5.Visibility = Visibility.Hidden;
+            tbMenu6.Visibility = Visibility.Hidden;
+            btnMenu6.Visibility = Visibility.Hidden;
+            generateSeasonOverview2();
+            stackPanelMenuClose_MouseDown(null, null);
+            generateSeasonOverview();
+            switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { null }, false);
+            gridSeasonOverview.Visibility = Visibility.Visible;
+            scrollSeasonOverview.Visibility = Visibility.Visible;
+        }
+
         private void btnstartPrograms_Click(object sender, RoutedEventArgs e)
         {
             startPrograms();
@@ -2434,6 +2616,9 @@ namespace RCRPlanner
                         btnMenu1.Content = "Get stat";
                         btnMenu1.IsEnabled = true;
                     }
+                    break;
+                case "gridSeasonOverview":
+
                     break;
             }
         }
@@ -2791,6 +2976,5 @@ namespace RCRPlanner
                 cbFilterOwnTracks.IsEnabled = true;
             }
         }
-
     }
 }

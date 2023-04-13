@@ -1227,7 +1227,19 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+                
+                <!-- Season overview-->
+                <ScrollViewer x:Name="scrollSeasonOverview" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Visibility="Hidden">
+                    <Grid x:Name="gridSeasonOverview" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" MinHeight="500"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    </Grid>
+                </ScrollViewer>
+                <!--<DataGrid x:Name="gridSeasonOverview" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="True" GridLinesVisibility="Horizontal" IsReadOnly="true" Visibility="Hidden">
+
+                    </DataGrid> -->
             </Grid>
+        
+
+
 
 
             <Grid x:Name="headerMenuGrid" Grid.ColumnSpan="2" Background="Transparent">
@@ -1404,17 +1416,18 @@
                     <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
                 </StackPanel>
                 <Button x:Name="btnLoadRaces" Grid.Row="1" Grid.Column="0" Content="Races" Click="btnLoadRaces_Click" ToolTip="View upcomming races"/>
-                <Button x:Name="btnLoadSeries" Grid.Row="2" Grid.Column="0" Content="Series" Click="btnLoadSeries_Click" ToolTip="View series"/>
-                <Button x:Name="btnLoadCars" Grid.Row="3" Grid.Column="0" Content="Cars" Click="btnLoadCars_Click" ToolTip="View cars"/>
-                <Button x:Name="btnLoadTracks" Grid.Row="4" Grid.Column="0" Content="Tracks" Click="btnLoadTracks_Click" ToolTip="View tracks"/>
-                <Button x:Name="btnLoadPurchase" Grid.Row="5" Grid.Column="0" Content="Purchase Guide" Click="btnLoadPurchase_Click" ToolTip="View suggested track purchases"/>
-                <DockPanel Grid.Row="6" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" LastChildFill="True" >
+                <Button x:Name="btnLoadSeasonOverview" Grid.Row="2" Grid.Column="0" Content="Season overview" Click="btnLoadSeasonOverview_Click" ToolTip="View a season overview of favorite series."/>
+                <Button x:Name="btnLoadSeries" Grid.Row="3" Grid.Column="0" Content="Series" Click="btnLoadSeries_Click" ToolTip="View series"/>
+                <Button x:Name="btnLoadCars" Grid.Row="4" Grid.Column="0" Content="Cars" Click="btnLoadCars_Click" ToolTip="View cars"/>
+                <Button x:Name="btnLoadTracks" Grid.Row="5" Grid.Column="0" Content="Tracks" Click="btnLoadTracks_Click" ToolTip="View tracks"/>
+                <Button x:Name="btnLoadPurchase" Grid.Row="6" Grid.Column="0" Content="Purchase Guide" Click="btnLoadPurchase_Click" ToolTip="View suggested track purchases"/>
+                <DockPanel Grid.Row="7" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" LastChildFill="True" >
                     <Button x:Name="btnstopPrograms" Content="✖" Width="50" DockPanel.Dock="Right"  Click="btnstopPrograms_Click" ToolTip="Stop programs"/>
                     <Button x:Name="btnstartPrograms" Content="⟳" Width="50" DockPanel.Dock="Right" FontSize="30" Click="btnstartPrograms_Click" ToolTip="Start programs"/>
                     <Button x:Name="btnLoadAutoStart"  Content="Autostart Programs" DockPanel.Dock="Left" Click="btnLoadAutoStart_Click" ToolTip="Configure autostart programs" />
                 </DockPanel>
-                <Button x:Name="btnPartStats" Grid.Row="8" Grid.Column="0" Content="Participation Statistics" Click="btnPartStats_Click" ToolTip="Create view of participation in a series."/>
-                <Button x:Name="btniRatingStats" Grid.Row="9" Grid.Column="0" Content="iRating Statistics" Click="btniRatingStats_Click" ToolTip="Create view of iratings in a series."/>
+                <Button x:Name="btnPartStats" Grid.Row="9" Grid.Column="0" Content="Participation Statistics" Click="btnPartStats_Click" ToolTip="Create view of participation in a series."/>
+                <Button x:Name="btniRatingStats" Grid.Row="10" Grid.Column="0" Content="iRating Statistics" Click="btniRatingStats_Click" ToolTip="Create view of iratings in a series."/>
                 <DockPanel Grid.Row="14" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" >
                     <Button x:Name="btnProfileUpdate" DockPanel.Dock="Left" Width="125" Content="App Update" Click="btnProfileUpdate_Click" ToolTip="Indicates an app update."/>
                     <Button x:Name="btnProfileReset" DockPanel.Dock="Right" Content="Reset settings" Click="btnProfileReset_Click" ToolTip="Reset app settings to default values." />
