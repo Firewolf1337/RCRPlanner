@@ -74,7 +74,7 @@ namespace RCRPlanner
 
         readonly static Version version = Assembly.GetExecutingAssembly().GetName().Version;
         readonly static DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
-        readonly string displayableVersion = $"{version} ({buildDate})";
+        readonly string displayableVersion = $"{version} ({buildDate.ToShortDateString()})";
 
         readonly string favSeriesfile = @"\favouriteSeries.xml";
         readonly string favCarsfile = @"\favouriteCars.xml";
@@ -549,6 +549,8 @@ namespace RCRPlanner
                     pIDs.Add(pr.Id);
                 }
             }
+            tbstartPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
+            tbstopPrograms.Foreground = Application.Current.Resources["BrushYellow"] as SolidColorBrush;
         }
         private void stopPrograms()
         {
@@ -580,6 +582,8 @@ namespace RCRPlanner
                     }
                 }
             }
+            tbstartPrograms.Foreground = Application.Current.Resources["BrushYellow"] as SolidColorBrush;
+            tbstopPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -1679,10 +1683,10 @@ namespace RCRPlanner
                 dataTable.Columns.Add(ser.SeriesName);
                 foreach (var tr in ser.Tracks)
                 {
-                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate), Track = tr.Name, TrackOwned = tr.Owned , Week = tr.Week });
+                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate), Track = tr.Name, TrackOwned = tr.Owned , Week = tr.Week, WeekActive = tr.WeekActive });
                 }
             }
-            dataTable.Columns.Add("Races in Week");
+            dataTable.Columns.Add("WeekActive");
             DataRow row = dataTable.NewRow();
             row[0] = "";
             dataTable.Rows.Add(row);
@@ -1704,7 +1708,9 @@ namespace RCRPlanner
                 foreach(var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
                 {
                     row[seasonweek.SeriesName] = seasonweek.Track;
+                    row["WeekActive"] = seasonweek.WeekActive;
                 }
+                
                 dataTable.Rows.Add(row);
             }
             return dataTable;
@@ -1744,6 +1750,7 @@ namespace RCRPlanner
                 int colcount = 0;
                 foreach(var cell in ((System.Data.DataRow)line).ItemArray) 
                 {
+
                     if (cell.ToString().StartsWith("file:"))
                     {
                         Image logo = new Image();
@@ -1759,7 +1766,17 @@ namespace RCRPlanner
                         border = new Border();
                         border.BorderBrush = Brushes.Black;
                         border.MinWidth = 80;
-                        if (colcount != cols-1) {
+                        cell1 = new TextBlock();
+                        if (colcount < cols - 1)
+                        {
+                            cell1.Text = cell.ToString();
+                        }
+                        cell1.TextTrimming = TextTrimming.WordEllipsis;
+                        cell1.Margin = new Thickness(3, 0, 3, 0);
+                        cell1.TextAlignment = TextAlignment.Center;
+                        cell1.VerticalAlignment = VerticalAlignment.Center;
+                        if (colcount != cols - 1)
+                        {
                             border.MaxWidth = 180;
                         }
 
@@ -1772,18 +1789,15 @@ namespace RCRPlanner
                             border.BorderThickness = new Thickness(0, 0, 0, 1);
                         }
                         border.Height = 30;
-                        if(rowcount%2 == 0 && rowcount > 1 )
+                        if (rowcount % 2 == 0 && rowcount > 1)
                         {
                             border.Background = Application.Current.Resources["BrushOddBackground"] as SolidColorBrush;
                         }
-                        cell1 = new TextBlock();
-                        cell1.Text = cell.ToString();
-                        cell1.TextTrimming = TextTrimming.WordEllipsis;
-                        cell1.Margin = new Thickness(3, 0, 3, 0);
-                        cell1.TextAlignment = TextAlignment.Center;
-                        cell1.VerticalAlignment = VerticalAlignment.Center;
-                        border.Child = cell1;
-
+                        if (((System.Data.DataRow)line).ItemArray[cols - 1] != null && ((System.Data.DataRow)line).ItemArray[cols - 1] != DBNull.Value && Convert.ToBoolean(((System.Data.DataRow)line).ItemArray[cols - 1]))
+                        {
+                            border.Background = Application.Current.Resources["BrushGridHighlightYellow"] as SolidColorBrush;
+                            cell1.FontWeight = FontWeights.ExtraBold;
+                        }
                         if (tracklist.Any(t => t.Name.Equals(cell.ToString())))
                         {
                             cell1.Foreground = Application.Current.Resources["BrushMiddleGreen"] as SolidColorBrush;
@@ -1791,13 +1805,14 @@ namespace RCRPlanner
                         }
                         else
                         {
-                            cell1.Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                            cell1.Foreground = Application.Current.Resources["BrushTextWhite"] as SolidColorBrush;
                         }
+                        border.Child = cell1;
                         Grid.SetColumn(border, colcount);
                         Grid.SetRow(border, rowcount);
                         grid.Children.Add(border);
                     }
-
+                    
                     colcount++;
                 }
                 rowcount++;

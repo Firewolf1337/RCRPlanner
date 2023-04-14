@@ -170,6 +170,7 @@ namespace RCRPlanner
             public int Week { get; set; }
             public string Track { get; set; }
             public string TrackOwned { get; set; }
+            public bool WeekActive { get; set; }
 
         }
     }
