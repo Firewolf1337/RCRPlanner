@@ -666,7 +666,9 @@
                 </DataGrid>
 
                 <!-- Raceweeks overview -->
-                <DataGrid x:Name="gridRaces" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
+                <DataGrid x:Name="gridRaces" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" 
+                          BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" 
+                          MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10" Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
