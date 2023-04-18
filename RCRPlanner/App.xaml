@@ -36,16 +36,20 @@
         <Brush x:Key="BrushYellow">#f7ff40</Brush>
         <Color x:Key="ColorYellow">#f7ff40</Color>
         <Brush x:Key="BrushGridHighlightYellow">#22f7ff40</Brush>
+        <Brush x:Key="BrushGridHighlightBrightYellow">#AAf7ff40</Brush>
+        <Brush x:Key="BrushGridHighlightWhite">#22FFFFFF</Brush>
         <Brush x:Key="BrushLightGreen">#cdfff3</Brush>
         <Color x:Key="ColorLightGreen">#cdfff3</Color>
         <Brush x:Key="BrushMiddleGreen">#00dda7</Brush>
         <Color x:Key="ColorMiddleGreen">#00dda7</Color>
         <Brush x:Key="BrushDarkGreen">#00b287</Brush>
         <Color x:Key="ColorDarkGreen">#00b287</Color>
+        <Brush x:Key="BrushDarkerGreen">#00664e</Brush>
         <Color x:Key="ColorBlack">#121212</Color>
         <Brush x:Key="BrushBlack">#121212</Brush>
         <Brush x:Key="BrushTextWhite">#FFFFFF</Brush>
         <Brush x:Key="BrushTextBlack">#000000</Brush>
+        <Brush x:Key="BrushGray">#888888</Brush>
         <Brush x:Key="BrushDarkGray">#303030</Brush>
         <Brush x:Key="BrushDefaultWindowBackground">#EE151515</Brush>
         <Brush x:Key="DefaultBackgroundBrush">#08FFFFFF</Brush>
@@ -605,11 +609,13 @@
         <Style x:Key="SelectionDataGridCellStyle" BasedOn="{StaticResource DefaultDataGridCellStyle}" TargetType="{x:Type DataGridCell}">
             <Setter Property="Height" Value="Auto"/>
             <Setter Property="Foreground" Value="{StaticResource BrushYellow}"/>
+            <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow}"/>
         </Style>
         <Style x:Key="DefaultDataGridCell50hStyle" TargetType="{x:Type DataGridCell}">
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Foreground" Value="{StaticResource BrushYellow}"/>
+                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow}"/>
                 </Trigger>
             </Style.Triggers>
             <Setter Property="Template">

@@ -158,6 +158,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="jpegResizing.cs" />
     <Compile Include="oddCarImages.cs" />
+    <Compile Include="participationCredits.cs" />
     <Compile Include="pngResizing.cs" />
     <Compile Include="searchSerieResults.cs" />
     <Compile Include="searchSeries.cs" />

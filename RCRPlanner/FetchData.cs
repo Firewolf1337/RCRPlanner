@@ -38,6 +38,8 @@ namespace RCRPlanner
         readonly string iracingSeriesSeason = "https://members-ng.iracing.com/data/series/seasons";
         readonly string iracingSeriesPastSeasons = "https://members-ng.iracing.com/data/series/past_seasons?series_id=";
 
+        readonly string iracingParticipationCredits = "https://members-ng.iracing.com/data/member/participation_credits";
+
         readonly string iracingTracksGet = "https://members-ng.iracing.com/data/track/get";
         readonly string iracingTacksAssets = "https://members-ng.iracing.com/data/track/assets";
 
@@ -376,6 +378,17 @@ namespace RCRPlanner
                 download = downloader.DownloadString(url);
             }
             return download;
+        }
+        public async Task<List<participationCredits.Root>> getparticipationCredits()
+        {
+            var link = await getLink(iracingParticipationCredits);
+            var response = await client.GetAsync(link);
+            response.EnsureSuccessStatusCode();
+            var contents = await response.Content.ReadAsStringAsync();
+            //var responseObject = JsonSerializer.Deserialize<List<series.Root>>(contents);
+            var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<participationCredits.Root>>(contents, settings);
+
+            return responseObject;
         }
 
         public async Task<githubLatestRelease.Root> getGithubLastRelease(string url, string version)

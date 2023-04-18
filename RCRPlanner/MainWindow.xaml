@@ -232,7 +232,7 @@
 
                 <!-- Datagrid for series visualization -->
                 <DataGrid x:Name="gridSeries" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
-                MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged">
+                MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="15"  Width="15" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -360,8 +360,11 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding WeekActive}" Value="true">
                                                     <Setter Property="FontWeight" Value="ExtraBold"/>
-                                                    
+                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightWhite}"/>
                                                 </DataTrigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
+                                                </Trigger>
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
@@ -509,6 +512,15 @@
                 <DataGrid x:Name="gridCars" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"  Style="{StaticResource DefaultDataGrid50hStyle}" 
                      AutoGenerateColumns="False" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False"
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" HorizontalAlignment="Stretch">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
@@ -558,7 +570,7 @@
 
                 <!-- Datagrid for track visualization -->
                 <DataGrid x:Name="gridTracksLayout" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
-                GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged">
+                GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10"  Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -654,7 +666,7 @@
                 </DataGrid>
 
                 <!-- Raceweeks overview -->
-                <DataGrid x:Name="gridRaces" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden">
+                <DataGrid x:Name="gridRaces" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10" Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -874,8 +886,11 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding WeekActive}" Value="true">
                                                     <Setter Property="FontWeight" Value="ExtraBold"/>
-                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow}"/>
+                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightWhite}"/>
                                                 </DataTrigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
+                                                </Trigger>
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
@@ -1002,7 +1017,7 @@
                 <!-- Purchase Guide view-->
                 <DataGrid x:Name="gridPurchaseGuide" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGrid50hStyle}" 
                      AutoGenerateColumns="False" RowHeight="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
-                     SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" ScrollViewer.CanContentScroll="False">
+                     SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" ScrollViewer.CanContentScroll="False" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="15"  Width="15" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>

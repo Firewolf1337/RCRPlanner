@@ -29,6 +29,7 @@ using System.Timers;
 using System.Media;
 using System.Windows.Controls.Primitives;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 
 namespace RCRPlanner
@@ -82,6 +83,8 @@ namespace RCRPlanner
         List<memberInfo.FavoutireCars> favoutireCars = new List<memberInfo.FavoutireCars>();
         List<memberInfo.FavoutireSeries> favoutireSeries = new List<memberInfo.FavoutireSeries>();
         List<memberInfo.FavoutireTracks> favoutireTracks = new List<memberInfo.FavoutireTracks>();
+        List<searchSerieResults.Root> seasonRaces = new List<searchSerieResults.Root>(); // races done in this season.
+        List<participationCredits.Root> participationCredits = new List<participationCredits.Root>();
 
         readonly string autostartfile = @"\autostart.xml";
         autoStart.Root autoStartApps = new autoStart.Root();
@@ -1672,42 +1675,96 @@ namespace RCRPlanner
             gridAutoStart.ItemsSource = null;
             gridAutoStart.ItemsSource = dgAutoStartList;
         }
-        private DataTable generateSeasonOverview()
+        private async Task<DataTable> generateSeasonOverview()
         {
             var dgSeriesL = dgSeriesList.Where(x => x.Favourite.Contains(favsymbolSelected)).ToList();
             List<dgObjects.seasonOverviewDataGrid> dgSeasonOverview = new List<dgObjects.seasonOverviewDataGrid>();
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("Day");
+            List<string> links = new List<string>();
+            var YearQuater = new List<(int year,int quarter)>();
+            var YearQuaterSeries = new List<(int year, int quarter, int serie)>();
             foreach (var ser in dgSeriesL)
             {
                 dataTable.Columns.Add(ser.SeriesName);
                 foreach (var tr in ser.Tracks)
                 {
-                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate), Track = tr.Name, TrackOwned = tr.Owned , Week = tr.Week, WeekActive = tr.WeekActive });
+                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate),TrackId = tr.TrackID, Track = tr.Name, TrackOwned = tr.Owned , Week = tr.Week, WeekActive = tr.WeekActive });
                 }
+                if(!YearQuaterSeries.Contains((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId)))
+                {
+                    YearQuater.Add((ser.Season.season_year, ser.Season.season_quarter));
+                    YearQuaterSeries.Add((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId));
+                }
+            }
+            if (seasonRaces.Count == 0)
+            {
+                foreach (var yq in YearQuater.Distinct())
+                {
+                    string url = "https://members-ng.iracing.com/data/results/search_series?season_year=" + yq.year + "&season_quarter=" + yq.quarter + "&cust_id=" + User.cust_id + "&official_only=true&event_types=5";
+                    links.AddRange(await fData.getSerieSearchLinks(url));
+
+
+                }
+                foreach (var link in links)
+                {
+                    seasonRaces.AddRange(await fData.getSeriesSearchResults(link));
+                }
+            }
+            if (participationCredits.Count() == 0)
+            {
+                participationCredits = await fData.getparticipationCredits();
             }
             dataTable.Columns.Add("WeekActive");
             DataRow row = dataTable.NewRow();
             row[0] = "";
             dataTable.Rows.Add(row);
             row = dataTable.NewRow();
-            row[0] = "";
+            row[0] = "Serie:";
+            dataTable.Rows.Add(row);
+            row = dataTable.NewRow();
+            row[0] = "Credit Tracker:";
             dataTable.Rows.Add(row);
             foreach (var ser in dgSeriesL)
             {
+                var partCr = participationCredits.FirstOrDefault(s => s.series_id == ser.SerieId);
+                string pC = "";
+                if (partCr != null)
+                {
+                    pC = partCr.weeks + @"/" + partCr.min_weeks + " for $" + partCr.participation_credits;
+                }
                 dataTable.Rows[0][ser.SeriesName] = new BitmapImage(new Uri(ser.Seriesimage.AbsoluteUri));
                 dataTable.Rows[1][ser.SeriesName] = ser.SeriesName;
+                dataTable.Rows[2][ser.SeriesName] = pC;
             }
 
             List<DateTime> Weektimes = dgSeasonOverview.Select(d => d.StartTime).Distinct().ToList();
             Weektimes.Sort((x, y) => x.CompareTo(y));
+            var activeweeks = new List<(int series,int week)>();
+            foreach(var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
+            {
+                if(!activeweeks.Any(s => s.series == ser.SerieId))
+                {
+                    activeweeks.Add((ser.SerieId,  ser.Week));
+                }
+            }
             foreach (var week in (Weektimes))
             {
+
                 row = dataTable.NewRow();
                 row[0] = week.Date.ToShortDateString();
                 foreach(var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
                 {
-                    row[seasonweek.SeriesName] = seasonweek.Track;
+                    var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
+                    string pref = "";
+                    if(seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
+                    {
+                        pref = checksymbol;
+                    }
+                    if(seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol) {
+                        pref = unchecksymbol;
+                    }
+                    row[seasonweek.SeriesName] = pref + seasonweek.Week +": " + seasonweek.Track;
                     row["WeekActive"] = seasonweek.WeekActive;
                 }
                 
@@ -1715,112 +1772,143 @@ namespace RCRPlanner
             }
             return dataTable;
         }
-        private void generateSeasonOverview2()
+        private async void generateSeasonOverviewGrid()
         {
-            DataTable view = generateSeasonOverview();
-
-            gridSeasonOverview.Children.Clear();
-            Grid grid = new Grid();
-            grid.ShowGridLines = false;
-            Border border = new Border();
-            ColumnDefinition column1 = new ColumnDefinition();
-            RowDefinition row1 = new RowDefinition();
-            TextBlock cell1 = new TextBlock();
-            int cols = 0;
-            var tracklist = dgTracksList.Where(t => t.Owned == checksymbol).ToList();
-
-            foreach(var line in view.Rows)
+            try
             {
-                if (((System.Data.DataRow)line).ItemArray.Length > cols) { cols = ((System.Data.DataRow)line).ItemArray.Length; }
-            }
-            for (int c = 0; c < cols; c++)
-            {
-                column1 = new ColumnDefinition();
-                if (c == cols-1) {
-                    column1.Width = new GridLength(80, GridUnitType.Star);
-                }
-                grid.ColumnDefinitions.Add(column1);
-
-            }
-            int rowcount = 0;
-            foreach (var line in view.Rows)
-            {
-                row1 = new RowDefinition();
-                grid.RowDefinitions.Add(row1);
-                int colcount = 0;
-                foreach(var cell in ((System.Data.DataRow)line).ItemArray) 
+                if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
                 {
+                    DataTable view = await generateSeasonOverview();
+                    gridSeasonOverview.Children.Clear();
+                    Grid grid = new Grid();
+                    grid.ShowGridLines = false;
+                    Border border = new Border();
+                    ColumnDefinition column1 = new ColumnDefinition();
+                    RowDefinition row1 = new RowDefinition();
+                    TextBlock cell1 = new TextBlock();
+                    int cols = 0;
+                    var tracklist = dgTracksList.Where(t => t.Owned == checksymbol).ToList();
 
-                    if (cell.ToString().StartsWith("file:"))
+                    foreach (var line in view.Rows)
                     {
-                        Image logo = new Image();
-                        logo.Source = new BitmapImage(new Uri(cell.ToString()));
-                        logo.Width = 100;
-                        RenderOptions.SetBitmapScalingMode(logo, BitmapScalingMode.HighQuality);
-                        Grid.SetColumn(logo, colcount);
-                        Grid.SetRow(logo, rowcount);
-                        grid.Children.Add(logo);
+                        if (((System.Data.DataRow)line).ItemArray.Length > cols) { cols = ((System.Data.DataRow)line).ItemArray.Length; }
                     }
-                    else
+                    for (int c = 0; c < cols; c++)
                     {
-                        border = new Border();
-                        border.BorderBrush = Brushes.Black;
-                        border.MinWidth = 80;
-                        cell1 = new TextBlock();
-                        if (colcount < cols - 1)
+                        column1 = new ColumnDefinition();
+                        if (c == cols - 1)
                         {
-                            cell1.Text = cell.ToString();
+                            column1.Width = new GridLength(80, GridUnitType.Star);
                         }
-                        cell1.TextTrimming = TextTrimming.WordEllipsis;
-                        cell1.Margin = new Thickness(3, 0, 3, 0);
-                        cell1.TextAlignment = TextAlignment.Center;
-                        cell1.VerticalAlignment = VerticalAlignment.Center;
-                        if (colcount != cols - 1)
-                        {
-                            border.MaxWidth = 180;
-                        }
+                        grid.ColumnDefinitions.Add(column1);
 
-                        if (rowcount < 1)
-                        {
-                            border.BorderThickness = new Thickness(0, 0, 0, 0);
-                        }
-                        else
-                        {
-                            border.BorderThickness = new Thickness(0, 0, 0, 1);
-                        }
-                        border.Height = 30;
-                        if (rowcount % 2 == 0 && rowcount > 1)
-                        {
-                            border.Background = Application.Current.Resources["BrushOddBackground"] as SolidColorBrush;
-                        }
-                        if (((System.Data.DataRow)line).ItemArray[cols - 1] != null && ((System.Data.DataRow)line).ItemArray[cols - 1] != DBNull.Value && Convert.ToBoolean(((System.Data.DataRow)line).ItemArray[cols - 1]))
-                        {
-                            border.Background = Application.Current.Resources["BrushGridHighlightYellow"] as SolidColorBrush;
-                            cell1.FontWeight = FontWeights.ExtraBold;
-                        }
-                        if (tracklist.Any(t => t.Name.Equals(cell.ToString())))
-                        {
-                            cell1.Foreground = Application.Current.Resources["BrushMiddleGreen"] as SolidColorBrush;
-
-                        }
-                        else
-                        {
-                            cell1.Foreground = Application.Current.Resources["BrushTextWhite"] as SolidColorBrush;
-                        }
-                        border.Child = cell1;
-                        Grid.SetColumn(border, colcount);
-                        Grid.SetRow(border, rowcount);
-                        grid.Children.Add(border);
                     }
-                    
-                    colcount++;
+                    int rowcount = 0;
+                    foreach (var line in view.Rows)
+                    {
+                        row1 = new RowDefinition();
+                        grid.RowDefinitions.Add(row1);
+                        int colcount = 0;
+                        foreach (var cell in ((System.Data.DataRow)line).ItemArray)
+                        {
+
+                            if (cell.ToString().StartsWith("file:"))
+                            {
+                                Image logo = new Image();
+                                logo.Source = new BitmapImage(new Uri(cell.ToString()));
+                                logo.Width = 100;
+                                RenderOptions.SetBitmapScalingMode(logo, BitmapScalingMode.HighQuality);
+                                Grid.SetColumn(logo, colcount);
+                                Grid.SetRow(logo, rowcount);
+                                grid.Children.Add(logo);
+                            }
+                            else
+                            {
+                                border = new Border();
+                                border.BorderBrush = Brushes.Black;
+                                border.MinWidth = 80;
+                                cell1 = new TextBlock();
+                                if (cell.ToString().StartsWith(checksymbol))
+                                {
+                                    cell1.TextDecorations = TextDecorations.Strikethrough;
+                                }
+                                if (colcount < cols - 1)
+                                {
+                                    cell1.Text = cell.ToString().Replace(checksymbol, "").Replace(unchecksymbol, "");
+                                }
+                                cell1.TextTrimming = TextTrimming.WordEllipsis;
+                                cell1.Margin = new Thickness(3, 0, 5, 0);
+                                if (Regex.Match(cell.ToString(), @"^[" + checksymbol+unchecksymbol + @"]*\d*?[:]\W").Success)
+                                {
+                                    cell1.TextAlignment = TextAlignment.Left;
+                                }
+                                else
+                                {
+                                    cell1.TextAlignment = TextAlignment.Center;
+                                }
+                                cell1.VerticalAlignment = VerticalAlignment.Center;
+                                if (colcount != cols - 1)
+                                {
+                                    border.MaxWidth = 180;
+                                }
+
+                                if (rowcount < 2)
+                                {
+                                    border.BorderThickness = new Thickness(0, 0, 0, 0);
+                                }
+                                else
+                                {
+                                    border.BorderThickness = new Thickness(0, 0, 0, 1);
+                                }
+                                border.Height = 30;
+                                if (tracklist.Any(t => t.Name.Equals(Regex.Replace(cell.ToString(), @"^[" + checksymbol+unchecksymbol + @"]*\d*?[:]\W", ""))))
+                                {
+                                    cell1.Foreground = Application.Current.Resources["BrushMiddleGreen"] as SolidColorBrush;
+                                    if (cell.ToString().StartsWith(unchecksymbol)) {
+                                        cell1.Foreground = Application.Current.Resources["BrushDarkerGreen"] as SolidColorBrush;
+                                    }
+                                }
+                                else
+                                {
+                                    cell1.Foreground = Application.Current.Resources["BrushTextWhite"] as SolidColorBrush;
+                                    if (cell.ToString().StartsWith(unchecksymbol))
+                                    {
+                                        cell1.Foreground = Application.Current.Resources["BrushGray"] as SolidColorBrush;
+                                    }
+                                }
+                                if (rowcount % 2 == 0 && rowcount > 2)
+                                {
+                                    border.Background = Application.Current.Resources["BrushOddBackground"] as SolidColorBrush;
+                                }
+                                if (((System.Data.DataRow)line).ItemArray[cols - 1] != null && ((System.Data.DataRow)line).ItemArray[cols - 1] != DBNull.Value && Convert.ToBoolean(((System.Data.DataRow)line).ItemArray[cols - 1]))
+                                {
+                                    border.Background = Application.Current.Resources["BrushGridHighlightWhite"] as SolidColorBrush;
+                                    cell1.FontWeight = FontWeights.ExtraBold;
+
+                                }
+                                if (cell1.TextDecorations == TextDecorations.Strikethrough)
+                                {
+                                    border.Background = Application.Current.Resources["BrushGridHighlightBrightYellow"] as SolidColorBrush;
+                                    cell1.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
+                                }
+
+                                border.Child = cell1;
+                                Grid.SetColumn(border, colcount);
+                                Grid.SetRow(border, rowcount);
+                                grid.Children.Add(border);
+                            }
+
+                            colcount++;
+                        }
+                        rowcount++;
+                    }
+                    row1 = new RowDefinition();
+                    row1.Height = new GridLength(30, GridUnitType.Star);
+                    grid.RowDefinitions.Add(row1);
+                    gridSeasonOverview.Children.Add(grid);
                 }
-                rowcount++;
             }
-            row1 = new RowDefinition();
-            row1.Height = new GridLength(30, GridUnitType.Star);
-            grid.RowDefinitions.Add(row1);
-            gridSeasonOverview.Children.Add(grid);
+            catch (Exception ex) { }
         }
 
 
@@ -1853,10 +1941,28 @@ namespace RCRPlanner
                 ((DataGrid)sender).ScrollIntoView(((DataGrid)sender).SelectedItem);
             }
         }
+        private void dataGrid_ExtendCollapseDetails(object sender, MouseButtonEventArgs e)
+        {
+            if (!((System.Windows.Controls.DataGrid)sender).IsMouseCaptureWithin)
+            {
+                if (((System.Windows.Controls.DataGrid)sender).RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
+                {
+                    ((System.Windows.Controls.DataGrid)sender).RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
+                }
+                else
+                {
+                    ((System.Windows.Controls.DataGrid)sender).RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+                }
+            }
+        }
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (((DataGrid)sender).SelectedItem != null || ((DataGrid)sender).SelectedIndex != -1)
             {
+                if (((System.Windows.Controls.DataGrid)sender).RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
+                {
+                    ((System.Windows.Controls.DataGrid)sender).RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
+                }
                 switch (((DataGrid)sender).Name)
                 {
                     case "gridCars":
@@ -2278,7 +2384,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
-            generateSeasonOverview2();
+            generateSeasonOverviewGrid();
             stackPanelMenuClose_MouseDown(null, null);
             generateSeasonOverview();
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { null }, false);

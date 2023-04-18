@@ -168,6 +168,7 @@ namespace RCRPlanner
             public string SeriesName { get; set; }
             public DateTime StartTime { get; set; }
             public int Week { get; set; }
+            public int TrackId { get; set; }
             public string Track { get; set; }
             public string TrackOwned { get; set; }
             public bool WeekActive { get; set; }

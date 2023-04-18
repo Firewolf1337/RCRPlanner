@@ -17,7 +17,7 @@ ___
 ## Handling and Troubleshooting 
 
 * **Most of the table rows are clickable and will show more information.**
-   * To close the opend row again press crtl + left mouse button.
+   * To close the opend row again press left mouse button.
 
 * **There is no auto refresh of the data. In case of missing cars, tracks, series, races or the new season starts reload the data from iRacing.**
     * Click on the Profile -> "Reload data"
