@@ -6,18 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Windows;
 
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
+
 
 
 namespace RCRPlanner

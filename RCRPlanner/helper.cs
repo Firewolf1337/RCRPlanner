@@ -9,15 +9,8 @@ using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Windows.Controls;
 using System.Reflection;
-using System.Diagnostics;
 using System.Windows.Data;
-using Microsoft.Win32;
-
 
 namespace RCRPlanner
 {
