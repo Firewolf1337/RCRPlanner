@@ -20,38 +20,118 @@ namespace RCRPlanner
         {
             string input;
             string color = "#00000000";
+            bool sof = false;
+            System.Data.DataRowView rowView;
+            int rowid;
+            int colid;
             try
             {
                 System.Windows.Controls.DataGridCell dgc = (System.Windows.Controls.DataGridCell)value;
-                System.Data.DataRowView rowView = (System.Data.DataRowView)dgc.DataContext;
+                System.Windows.Controls.DataGridRow r2 = System.Windows.Controls.DataGridRow.GetRowContainingElement(dgc);
+                rowid = r2.GetIndex();
+                rowView = (System.Data.DataRowView)dgc.DataContext;
                 input = (string)rowView.Row.ItemArray[dgc.Column.DisplayIndex].ToString();
+                sof = dgc.Column.DisplayIndex > statistics.sofcol ? true : false;
+                colid = dgc.Column.DisplayIndex;
             }
+            catch (Exception ex)
+            {
+                return DependencyProperty.UnsetValue;
+            }
+            try
+            {
+                if (colid > 0)
+                {
+                    if (!sof)
+                    {
+
+                        int minStarter = MainWindow.main.partStatMinStarters;
+                        int min = statistics.partMin;
+                        int max = statistics.partMax;
+                        int tenpC = (max - min) / 10;
+                        int cellval = 0;
+                        if (!String.IsNullOrWhiteSpace(input))
+                        {
+                            cellval = System.Convert.ToInt32(input);
+                        }
+                        if (rowid > 0)
+                        {
+                            if (cellval < minStarter) { color = "#770000"; }
+                            if (cellval >= minStarter) { color = "#002800"; }
+                            if (cellval >= tenpC && tenpC > minStarter) { color = "#00330e"; }
+                            if (cellval >= tenpC * 2 && tenpC * 2 > minStarter) { color = "#00431d"; }
+                            if (cellval >= tenpC * 3 && tenpC * 3 > minStarter) { color = "#00552c"; }
+                            if (cellval >= tenpC * 4 && tenpC * 4 > minStarter) { color = "#00673c"; }
+                            if (cellval >= tenpC * 5 && tenpC * 5 > minStarter) { color = "#007a4d"; }
+                            if (cellval >= tenpC * 6 && tenpC * 6 > minStarter) { color = "#008d5e"; }
+                            if (cellval >= tenpC * 7 && tenpC * 7 > minStarter) { color = "#00a06f"; }
+                            if (cellval >= tenpC * 8 && tenpC * 8 > minStarter) { color = "#00b481"; }
+                            if (cellval >= tenpC * 9 && tenpC * 9 > minStarter) { color = "#00c994"; }
+                        }
+                        else
+                        {
+                            color = "#001700";
+                        }
+                    }
+                    else
+                    {
+                        int min = statistics.sofMin;
+                        int max = statistics.sofMax;
+                        int tenpC = (max - min) / 10;
+                        int cellval = 0;
+                        if (!String.IsNullOrWhiteSpace(input))
+                        {
+                            cellval = System.Convert.ToInt32(input);
+                        }
+                        color = "#494C13";
+                        if (cellval >= min) { color = "#5B5E18"; }
+                        if (cellval >= tenpC + min) { color = "#6C6F1C"; }
+                        if (cellval >= tenpC * 2 + min) { color = "#7D8120"; }
+                        if (cellval >= tenpC * 3 + min) { color = "#8F9325"; }
+                        if (cellval >= tenpC * 4 + min) { color = "#A0A529"; }
+                        if (cellval >= tenpC * 5 + min) { color = "#B1B72E"; }
+                        if (cellval >= tenpC * 6 + min) { color = "#C3C932"; }
+                        if (cellval >= tenpC * 7 + min) { color = "#D4DB37"; }
+                        if (cellval >= tenpC * 8 + min) { color = "#E5ED3B"; }
+                        if (cellval >= tenpC * 9 + min) { color = "#f7ff40"; }
+                    }
+
+                }
+            }
+            catch { return color; }
+            return color;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+    public class ValueToBrushTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string color = Application.Current.Resources["BrushTextWhite"].ToString();
+            System.Drawing.Color light;
+            bool sof = false;
+            try
+            {
+                System.Windows.Controls.DataGridCell dgc = (System.Windows.Controls.DataGridCell)value;
+                var backcolor = ((System.Windows.Media.SolidColorBrush)dgc.Background).Color;
+                light = System.Drawing.Color.FromArgb(backcolor.A,backcolor.R,backcolor.G,backcolor.B);
+                sof = dgc.Column.DisplayIndex > statistics.sofcol ? true : false;
+            }
+
             catch
             {
                 return DependencyProperty.UnsetValue;
             }
             try
             {
-                int minStarter = MainWindow.main.partStatMinStarters;
-                int min = statistics.partMin;
-                int max = statistics.partMax;
-                int tenpC = (max - min) / 10;
-                int cellval = 0;
-                if (!String.IsNullOrWhiteSpace(input))
+                if (sof)
                 {
-                    cellval = System.Convert.ToInt32(input);
+                    color = Application.Current.Resources["BrushTextBlack"].ToString();
                 }
-                if (cellval < minStarter) { color = "#770000"; }
-                if (cellval >= minStarter) { color = "#002800"; }
-                if (cellval >= tenpC && tenpC > minStarter) { color = "#00330e"; }
-                if (cellval >= tenpC * 2 && tenpC * 2 > minStarter) { color = "#00431d"; }
-                if (cellval >= tenpC * 3 && tenpC * 3 > minStarter) { color = "#00552c"; }
-                if (cellval >= tenpC * 4 && tenpC * 4 > minStarter) { color = "#00673c"; }
-                if (cellval >= tenpC * 5 && tenpC * 5 > minStarter) { color = "#007a4d"; }
-                if (cellval >= tenpC * 6 && tenpC * 6 > minStarter) { color = "#008d5e"; }
-                if (cellval >= tenpC * 7 && tenpC * 7 > minStarter) { color = "#00a06f"; }
-                if (cellval >= tenpC * 8 && tenpC * 8 > minStarter) { color = "#00b481"; }
-                if (cellval >= tenpC * 9 && tenpC * 9 > minStarter) { color = "#00c994"; }
 
             }
             catch { return color; }

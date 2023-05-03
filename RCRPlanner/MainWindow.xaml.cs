@@ -661,8 +661,25 @@ namespace RCRPlanner
                     textProgressDirtRoad.Text = dirtroadClass + User.licenses.dirt_road.safety_rating.ToString();
                     lbliRatingDirtRoad.Content = User.licenses.dirt_road.irating.ToString() + " iR";
                     lblCpiDirtRoad.Content = Math.Round(User.licenses.dirt_road.cpi, 2).ToString() + " CPI";
-
-
+                    List<int> items = getPurchasedItems();
+                    lblTrackItems.Content = "bought Tracks: " + items[0] + " / " + items[2];
+                    lblCarItems.Content = "bought Cars: " + items[1] + " / " + items[3];
+                    int itemcount = items[0] + items[1];
+                    ProgItems.Value = itemcount;
+                    tbItems.Width = 40;
+                    int pos = Convert.ToInt32((ProgItems.RenderSize.Width / 40) * itemcount);
+                    if (pos < 40) {
+                        tbItems.Width = 40 + pos;
+                        tbItems.Padding= new Thickness(pos, 0, 0, 0);
+                        tbItems.Foreground = Application.Current.Resources["BrushTextWhite"] as SolidColorBrush;
+                    }
+                    if (pos >= 40)
+                    {
+                        tbItems.Padding = new Thickness(0,0,5,0);
+                        tbItems.Width = pos;
+                        tbItems.Foreground = Application.Current.Resources["BrushTextBlack"] as SolidColorBrush;
+                    }
+                    tbItems.Text = itemcount + " / 40";
                     lblCustId.Content = "iRacing ID: " + User.cust_id.ToString();
                 }
                 catch (Exception ex)
@@ -1903,7 +1920,34 @@ namespace RCRPlanner
             }
             catch (Exception ex) { }
         }
-
+        private List<int> getPurchasedItems()
+        {
+            var tracks = User.track_packages.Select(t => t.package_id);
+            var cars = User.car_packages.Select(c => c.package_id);
+            int purchasedTracks = 0;
+            int purchasedCars = 0;
+            var trackPrices = (tracksList.Where(p => p.price > 0).Select(p=> p.price)).Distinct();
+            var carPrices = (carsList.Where(p => p.price > 0).Select(p => p.price)).Distinct();
+            foreach(var item in tracks)
+            {
+                var track = tracksList.FirstOrDefault(t => t.package_id == item);
+                if(track.price > 5)
+                {
+                    purchasedTracks++;
+                }
+            }
+            foreach(var item in cars)
+            {
+                var car = carsList.FirstOrDefault(c => c.package_id == item);
+                if(car != null && car.price > 3)
+                {
+                    purchasedCars++;
+                }
+            }
+            int purchaseableTracks = tracksList.Where(t => t.price > 0 && t.purchasable).Count();
+            int purchaseableCars = carsList.Where(c => c.price > 0).Count();
+            return new List<int>() { purchasedTracks, purchasedCars, purchaseableTracks, purchaseableCars};
+        }
 
         private void clearDetails()
         {
@@ -2093,6 +2137,10 @@ namespace RCRPlanner
             };
             var parent = control.Parent as UIElement;
             parent?.RaiseEvent(wheelArgs);
+        }
+        private void gridPartStat_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            e.Column.Header = ((sender as DataGrid).ItemsSource as DataView).Table.Columns[e.PropertyName].Caption;
         }
 
         private void btnLoadCars_Click(object sender, RoutedEventArgs e)
@@ -2659,7 +2707,7 @@ namespace RCRPlanner
                                     btnMenu1.Content = "Loading...";
                                     btnMenu1.IsEnabled = false;
                                     partStatMinStarters = (seriesList.Find(x => x.series_id == _serId)).min_starters;
-                                    dataTable = await statistics.PaticipationStats(_serId,_year,_season,_week);
+                                    dataTable = await statistics.ParticipationStats(_serId,_year,_season,_week);
                                     gridPartStat.ItemsSource = null;
                                     gridPartStat.ItemsSource = dataTable.DefaultView;
                                     gridPartStat.UpdateLayout();

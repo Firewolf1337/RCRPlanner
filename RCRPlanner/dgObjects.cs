@@ -148,6 +148,8 @@ namespace RCRPlanner
             public string DayOfWeek { get; set; }
             public int NumberDriver { get; set; }
             public string Track { get; set; }
+            public int SoF { get; set; }
+            public int Splits { get; set; }
 
         }
         public class iRaitingDataGrid

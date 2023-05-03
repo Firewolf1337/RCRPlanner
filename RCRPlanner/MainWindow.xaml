@@ -1177,12 +1177,13 @@
                 <UserControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6">
                     <UserControl.Resources>
                         <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
+                        <local:ValueToBrushTextConverter x:Key="ValueToBrushTextConverter"/>
                         <Style x:Key="CellStyle" TargetType="DataGridCell" BasedOn="{StaticResource PartStatGridCellStyle}">
                             <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushConverter}}" />
-
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource ValueToBrushTextConverter}}" />
                         </Style>
                     </UserControl.Resources>
-                    <DataGrid x:Name="gridPartStat" CellStyle="{StaticResource CellStyle}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding}" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="True" RowHeight="25" MinColumnWidth="30" GridLinesVisibility="Horizontal" IsReadOnly="true" Visibility="Hidden">
+                    <DataGrid x:Name="gridPartStat" CellStyle="{StaticResource CellStyle}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding}" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="True" RowHeight="25" MinColumnWidth="30" GridLinesVisibility="Horizontal" IsReadOnly="true" Visibility="Hidden" AutoGeneratingColumn="gridPartStat_AutoGeneratingColumn">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DefaultHeaderStyle}">
                                 <Setter Property="Width">
@@ -1522,11 +1523,33 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
-                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
                         <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
                     <Label x:Name="lblUsername" Content="" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
                     <Label x:Name="lblCustId" Content="User ID" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
+                    <Label x:Name="lblTrackItems" Content="Bought Tracks:" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
+                    <Label x:Name="lblCarItems" Content="Bought Cars:" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource DefaultLabelStyle}"/>
+                    <ProgressBar x:Name="ProgItems" Maximum="40" Value="0" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="17" ToolTip="Progress to the 40+ Pieces Club">
+                        <ProgressBar.Foreground>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <LinearGradientBrush.RelativeTransform>
+                                    <RotateTransform CenterX="0.5" CenterY="0.5" Angle="270"/>
+                                </LinearGradientBrush.RelativeTransform>
+                                <GradientStop Color="{StaticResource ColorYellow}" Offset="0"/>
+                                <GradientStop Color="{StaticResource ColorMiddleGreen}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </ProgressBar.Foreground>
+                        <ProgressBar.Background>
+                            <SolidColorBrush Color="Black"></SolidColorBrush>
+                        </ProgressBar.Background>
+                    </ProgressBar>
+                    <DockPanel Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="3" LastChildFill="true">
+                        <TextBlock x:Name="tbItems"  Text="10/40" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource BrushTextWhite}" ToolTip="Progress to the 40+ Pieces Club"/>
+                    </DockPanel>
+                    
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="70"/>
@@ -1591,6 +1614,7 @@
                         <Label x:Name="lbliRatingDirtRoad" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                         <Label x:Name="lblCpiDirtRoad" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                     </Grid>
+                    
                 </Grid>
                 <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="35" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" >
                     <Button x:Name="btnProfileReload" Content="Reload data" Height="35" Width="100" Click="btnProfileReload_Click" />

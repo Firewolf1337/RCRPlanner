@@ -11,9 +11,13 @@ namespace RCRPlanner
     {
         public static int partMin;
         public static int partMax;
+        public static int sofMin;
+        public static int sofMax;
+        public static int sofcol;
         private readonly FetchData fData = new FetchData();
-        public async Task<DataTable> PaticipationStats(int seriesId, int year, int season, int week)
+        public async Task<DataTable> ParticipationStats(int seriesId, int year, int season, int week)
         {
+            sofcol = 1;
             string url = "https://members-ng.iracing.com/data/results/search_series?season_year=" + year + "&season_quarter=" + season + "&series_id=" + seriesId + "&event_types=5";
             if (week != -1) {
                 url = "https://members-ng.iracing.com/data/results/search_series?season_year="+ year + "&season_quarter="+ season +"&series_id="+ seriesId + "&race_week_num="+ week +"&event_types=5";
@@ -35,28 +39,45 @@ namespace RCRPlanner
             }
             foreach(var id in dgParticipation)
             {
-                id.NumberDriver += results.Where(r => r.session_id == id.SessionId).Sum(x => x.num_drivers);
-                id.StartTime = results.FirstOrDefault(r => r.session_id == id.SessionId).start_time;
-                id.DayOfWeek = (results.FirstOrDefault(r => r.session_id == id.SessionId).start_time.DayOfWeek).ToString();
-                id.Time = new DateTime(results.FirstOrDefault(r => r.session_id == id.SessionId).start_time.Ticks).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToString());
-                id.Track = results.FirstOrDefault(r => r.session_id == id.SessionId).track.track_name + " - " + results.FirstOrDefault(r => r.session_id == id.SessionId).track.config_name;
+                List<searchSerieResults.Root> session = results.Where(r => r.session_id == id.SessionId).ToList();
+                id.NumberDriver += session.Sum(x => x.num_drivers);
+                id.StartTime = session[0].start_time;
+                id.DayOfWeek = (session[0].start_time.DayOfWeek).ToString();
+                id.Time = new DateTime(session[0].start_time.Ticks).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToString());
+                id.Track = session[0].track.track_name + " - " + session[0].track.config_name;
+                id.SoF = session.Max(s => s.event_strength_of_field);
+                id.Splits = session.Count();
             }
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("Day");
             partMin = dgParticipation.Select(i => i.NumberDriver).Min();
             partMax = dgParticipation.Select(i => i.NumberDriver).Max();
+            sofMin = dgParticipation.Select(i => i.SoF).Min();
+            sofMax = dgParticipation.Select(i => i.SoF).Max();
 
             foreach (var time in dgParticipation.Select(t => t.StartTime.TimeOfDay).Distinct()) {
                 string thetime = new DateTime(time.Ticks).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToString());
                 dataTable.Columns.Add(thetime);
+                sofcol++;
             }
             dataTable.Columns.Add("Track");
-            //dataTable.Columns.Add("Week sum");
+            foreach (var time in dgParticipation.Select(t => t.StartTime.TimeOfDay).Distinct())
+            {
+                string thetime = new DateTime(time.Ticks).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToString());
+                DataColumn column = new DataColumn();
+                column.ColumnName = "s" + thetime;
+                column.Caption = thetime;
+                dataTable.Columns.Add(column);
+            }
             string lasttrack = "first";
+            DataRow row;
+            row = dataTable.NewRow();
+            row[0] = " ";
+            row["Track"] = "<- Participations | Top split SoF ->";
+            dataTable.Rows.Add(row);
             foreach (var session in dgParticipation.Select(d => d.StartTime.DayOfYear).Distinct())
             {
                 List<dgObjects.participationDataGrid> tempgrid = dgParticipation.Where(c => c.StartTime.DayOfYear == session).ToList();
-                DataRow row;
                 row = dataTable.NewRow();
                 row[0] = tempgrid[0].DayOfWeek + " " + tempgrid[0].StartTime.Date.ToShortDateString();
                 int rownumber = dataTable.Rows.Count-1;
@@ -73,6 +94,7 @@ namespace RCRPlanner
                 foreach (var entry in tempgrid)
                 {
                     row[entry.Time] = entry.NumberDriver;
+                    row["s" + entry.Time] = entry.SoF;
                 }
                 dataTable.Rows.Add(row);
             }
