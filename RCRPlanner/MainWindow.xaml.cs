@@ -662,12 +662,14 @@ namespace RCRPlanner
                     lbliRatingDirtRoad.Content = User.licenses.dirt_road.irating.ToString() + " iR";
                     lblCpiDirtRoad.Content = Math.Round(User.licenses.dirt_road.cpi, 2).ToString() + " CPI";
                     List<int> items = getPurchasedItems();
-                    lblTrackItems.Content = "bought Tracks: " + items[0] + " / " + items[2];
-                    lblCarItems.Content = "bought Cars: " + items[1] + " / " + items[3];
+                    lblTrackItems.Content = "bought Tracks: " + items[0] +"("+items[4] +  ")*" + " / " + items[2];
+                    lblCarItems.Content = "bought Cars: " + items[1] + "(" + items[5] + ")*" + " / " + items[3];
                     int itemcount = items[0] + items[1];
                     ProgItems.Value = itemcount;
                     tbItems.Width = 40;
                     int pos = Convert.ToInt32((ProgItems.RenderSize.Width / 40) * itemcount);
+                    var gradient = (((System.Windows.Media.GradientBrush)ProgItems.Foreground).GradientStops);
+                    gradient[1].Offset = itemcount<40 && itemcount > 0? 1/((float)itemcount/40): 1;
                     if (pos < 40) {
                         tbItems.Width = 40 + pos;
                         tbItems.Padding= new Thickness(pos, 0, 0, 0);
@@ -675,11 +677,11 @@ namespace RCRPlanner
                     }
                     if (pos >= 40)
                     {
-                        tbItems.Padding = new Thickness(0,0,5,0);
+                        tbItems.Padding = new Thickness(0,0,8,0);
                         tbItems.Width = pos;
                         tbItems.Foreground = Application.Current.Resources["BrushTextBlack"] as SolidColorBrush;
                     }
-                    tbItems.Text = itemcount + " / 40";
+                    tbItems.Text = itemcount + " / 40**";
                     lblCustId.Content = "iRacing ID: " + User.cust_id.ToString();
                 }
                 catch (Exception ex)
@@ -1924,16 +1926,23 @@ namespace RCRPlanner
         {
             var tracks = User.track_packages.Select(t => t.package_id);
             var cars = User.car_packages.Select(c => c.package_id);
+            int lowpriceTracks = 0;
             int purchasedTracks = 0;
+            int lowpriceCars = 0;
             int purchasedCars = 0;
             var trackPrices = (tracksList.Where(p => p.price > 0).Select(p=> p.price)).Distinct();
             var carPrices = (carsList.Where(p => p.price > 0).Select(p => p.price)).Distinct();
             foreach(var item in tracks)
             {
                 var track = tracksList.FirstOrDefault(t => t.package_id == item);
+
                 if(track.price > 5)
                 {
                     purchasedTracks++;
+                }
+                else if(track.price > 0)
+                {
+                    lowpriceTracks++;
                 }
             }
             foreach(var item in cars)
@@ -1943,10 +1952,14 @@ namespace RCRPlanner
                 {
                     purchasedCars++;
                 }
+                else if(car != null && car.price > 0)
+                {
+                    lowpriceCars++;
+                }
             }
-            int purchaseableTracks = tracksList.Where(t => t.price > 0 && t.purchasable).Count();
-            int purchaseableCars = carsList.Where(c => c.price > 0).Count();
-            return new List<int>() { purchasedTracks, purchasedCars, purchaseableTracks, purchaseableCars};
+            int purchaseableTracks = tracksList.Where(t => t.price > 0 && t.purchasable).GroupBy(t => t.package_id).Count();
+            int purchaseableCars = carsList.Where(c => c.price > 0).GroupBy(c => c.package_id).Count();
+            return new List<int>() { purchasedTracks, purchasedCars, purchaseableTracks, purchaseableCars, lowpriceTracks, lowpriceCars};
         }
 
         private void clearDetails()

@@ -1523,16 +1523,17 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="35"/>
-                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="130"/>
                         <RowDefinition Height="25"/>
-                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="17"/>
+                        <RowDefinition Height="20"/>
                         <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
                     <Label x:Name="lblUsername" Content="" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
                     <Label x:Name="lblCustId" Content="User ID" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
-                    <Label x:Name="lblTrackItems" Content="Bought Tracks:" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
-                    <Label x:Name="lblCarItems" Content="Bought Cars:" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource DefaultLabelStyle}"/>
-                    <ProgressBar x:Name="ProgItems" Maximum="40" Value="0" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="17" ToolTip="Progress to the 40+ Pieces Club">
+                    <Label x:Name="lblTrackItems" Content="Bought Tracks:" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Padding="0" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
+                    <Label x:Name="lblCarItems" Content="Bought Cars:" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource DefaultLabelStyle}" />
+                    <ProgressBar x:Name="ProgItems" Maximum="40" Value="25" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" Padding="0" Margin="0,-5,0,0" VerticalAlignment="Top" Height="17" ToolTip="Progress to the 40+ Pieces Club.">
                         <ProgressBar.Foreground>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <LinearGradientBrush.RelativeTransform>
@@ -1547,9 +1548,12 @@
                         </ProgressBar.Background>
                     </ProgressBar>
                     <DockPanel Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="3" LastChildFill="true">
-                        <TextBlock x:Name="tbItems"  Text="10/40" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource BrushTextWhite}" ToolTip="Progress to the 40+ Pieces Club"/>
+                        <TextBlock x:Name="tbItems"  Text="10/40" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-5,0,0" Foreground="{StaticResource BrushTextWhite}" ToolTip="Progress to the 40+ Pieces Club."/>
                     </DockPanel>
-                    
+                    <StackPanel Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="4" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <Label Content="*Numbers in (#) will most likely not count towards the '40+ Pieces Club' discount due to the reduced price." FontSize="8.5" Padding="0" HorizontalAlignment="Left" VerticalAlignment="top" VerticalContentAlignment="Top" Foreground="{StaticResource BrushTextWhite}"  Style="{StaticResource DefaultLabelStyle}" />
+                        <Label Content="**This is also not 100% accurate due to missing information in the iRacing API." FontSize="8.5"  Padding="0" HorizontalAlignment="Left" VerticalContentAlignment="Top"  Foreground="{StaticResource BrushTextWhite}" Style="{StaticResource DefaultLabelStyle}"/>
+                    </StackPanel>
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="70"/>
@@ -1616,7 +1620,7 @@
                     </Grid>
                     
                 </Grid>
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Height="35" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" >
+                <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Height="35" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" >
                     <Button x:Name="btnProfileReload" Content="Reload data" Height="35" Width="100" Click="btnProfileReload_Click" />
                 </StackPanel>
             </Grid>
