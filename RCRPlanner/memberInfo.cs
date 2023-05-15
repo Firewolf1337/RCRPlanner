@@ -17,6 +17,12 @@ namespace RCRPlanner
         {
             public int track_id { get; set; }
         }
+        public class SympathyCombi
+        {
+            public int track_id { get; set; }
+            public int series_id { get; set; }
+            public string status { get; set; }
+        }
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
         public class Account
         {

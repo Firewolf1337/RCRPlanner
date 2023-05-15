@@ -11,7 +11,8 @@ namespace RCRPlanner
             public int series_id { get; set; }
             public int week { get; set; }
             public seriesSeason.Schedule SeasonSchedule { get; set; }
-            public seriesSeason.Root Serie {get;set;}
+            public seriesSeason.Root Serie { get; set; }
+            public bool hated { get; set; }
         }
         public class Root
         {

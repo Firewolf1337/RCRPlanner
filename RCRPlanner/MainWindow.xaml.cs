@@ -58,6 +58,12 @@ namespace RCRPlanner
         readonly string alarmClockSymbol = "⏰";
         readonly string clockSymbol = "🕙";
         readonly string magnifier = "🔍";
+        readonly string warning = "⚠";
+        readonly string thumbup = "👍";
+        readonly string thumbdown = "👎";
+        readonly string neutral = "◯";
+        readonly string play = "►";
+        readonly string pause = "▐▐";
         string activeGrid = "";
         bool reloadData = false;
         int lastLoginResult = -1;
@@ -73,9 +79,11 @@ namespace RCRPlanner
         readonly string favSeriesfile = @"\favouriteSeries.xml";
         readonly string favCarsfile = @"\favouriteCars.xml";
         readonly string favTracksfile = @"\favouriteTracks.xml";
+        readonly string sympathyCombifile = @"\sympathyCombi.xml";
         List<memberInfo.FavoutireCars> favoutireCars = new List<memberInfo.FavoutireCars>();
         List<memberInfo.FavoutireSeries> favoutireSeries = new List<memberInfo.FavoutireSeries>();
         List<memberInfo.FavoutireTracks> favoutireTracks = new List<memberInfo.FavoutireTracks>();
+        List<memberInfo.SympathyCombi> sympathyCombis = new List<memberInfo.SympathyCombi>();
         List<searchSerieResults.Root> seasonRaces = new List<searchSerieResults.Root>(); // races done in this season.
         List<participationCredits.Root> participationCredits = new List<participationCredits.Root>();
 
@@ -313,6 +321,11 @@ namespace RCRPlanner
                     favoutireCars = helper.DeSerializeObject<List<memberInfo.FavoutireCars>>(exePath + favCarsfile);
                     favoutireCars = favoutireCars.GroupBy(x => x.car_id).Select(x => x.First()).ToList();
                 }
+                if (File.Exists(exePath + sympathyCombifile))
+                {
+                    sympathyCombis = helper.DeSerializeObject<List<memberInfo.SympathyCombi>>(exePath + sympathyCombifile);
+                    sympathyCombis = sympathyCombis.GroupBy(x => x.series_id).Select(x => x.First()).ToList();
+                }
             }));
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
             {
@@ -531,18 +544,25 @@ namespace RCRPlanner
         }
         private void startPrograms()
         {
+            if (autoStartApps.StartLauncher)
+            {
+                Process.Start(new ProcessStartInfo("iracing://"));
+            }
             foreach (var prog in autoStartApps.Programs)
             {
-                Process pr = new Process();
-                pr.StartInfo.FileName = prog.Path;
-                if (autoStartApps.Minimized == true)
+                if (!prog.Paused)
                 {
-                    pr.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                }
-                pr.Start();
-                if (autoStartApps.Kill)
-                {
-                    pIDs.Add(pr.Id);
+                    Process pr = new Process();
+                    pr.StartInfo.FileName = prog.Path;
+                    if (autoStartApps.Minimized == true)
+                    {
+                        pr.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                    }
+                    pr.Start();
+                    if (autoStartApps.Kill)
+                    {
+                        pIDs.Add(pr.Id);
+                    }
                 }
             }
             tbstartPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
@@ -592,6 +612,10 @@ namespace RCRPlanner
             {
                 alarmTimer.Stop();
                 stopPrograms();
+                helper.SerializeObject<List<memberInfo.FavoutireTracks>>(favoutireTracks, exePath + favTracksfile);
+                helper.SerializeObject<List<memberInfo.FavoutireSeries>>(favoutireSeries, exePath + favSeriesfile);
+                helper.SerializeObject<List<memberInfo.FavoutireCars>>(favoutireCars, exePath + favCarsfile);
+                helper.SerializeObject<List<memberInfo.SympathyCombi>>(sympathyCombis, exePath + sympathyCombifile);
                 this.Close();
             }
         }
@@ -1267,7 +1291,7 @@ namespace RCRPlanner
                     tracksinserie.Sort((x, y) => x.SeasonSchedule.start_date.CompareTo(y.SeasonSchedule.start_date));
                     tracks.TracksInSeries lastseason = new tracks.TracksInSeries();
                     tracks.TracksInSeries nextseason = new tracks.TracksInSeries();
-
+                    string actualsympathy = neutral;
                     foreach (var season in tracksinserie)
                     {
                         if (lastseason.SeasonSchedule == null)
@@ -1331,8 +1355,16 @@ namespace RCRPlanner
                             repeattimes = 0;
                         }
                     }
+
+                    actualWeeks.Add(new actualWeek { seriesId = serie.SerieId, week = actualweekofserie.week });
+                    var racetime = helper.getNextRace(DateTime.SpecifyKind(firstracetime, DateTimeKind.Utc), repeattimes, actualtime).ToLocalTime();
+                    dgObjects.RaceOverviewDataGrid _raceobj = new dgObjects.RaceOverviewDataGrid();
+                    var tr = tracksList.FirstOrDefault(t => t.track_id == actualweekofserie.track_id);
+
                     foreach (var track in serie.Tracks)
                     {
+                        track.Sympathy = neutral;
+                        track.Series = new List<dgObjects.seriesDataGrid> { serie };
                         if (track.Week == actualweekofserie.week && !over)
                         {
                             track.WeekActive = true;
@@ -1341,11 +1373,15 @@ namespace RCRPlanner
                         {
                             track.WeekActive = false;
                         }
+                        foreach (var combi in sympathyCombis)
+                        {
+                            if (serie.SerieId == combi.series_id && combi.track_id == track.TrackID)
+                            {
+                                track.Sympathy = combi.status;
+                                actualsympathy =  combi.status;
+                            }
+                        }
                     }
-                    actualWeeks.Add(new actualWeek { seriesId = serie.SerieId, week = actualweekofserie.week });
-                    var racetime = helper.getNextRace(DateTime.SpecifyKind(firstracetime, DateTimeKind.Utc), repeattimes, actualtime).ToLocalTime();
-                    dgObjects.RaceOverviewDataGrid _raceobj = new dgObjects.RaceOverviewDataGrid();
-                    var tr = tracksList.FirstOrDefault(t => t.track_id == actualweekofserie.track_id);
                     if (tr != null)
                     {
                         List<dgObjects.carsDataGrid> cars = new List<dgObjects.carsDataGrid>();
@@ -1364,8 +1400,9 @@ namespace RCRPlanner
                         _raceobj.Serie = serie;
                         _raceobj.TracksOwned = serie.Tracks.Count(t => t.Owned == checksymbol).ToString() + "/" + serie.Tracks.Count();
                         _raceobj.NextRace = racetime;
-
+                        _raceobj.TrackTrackID = tr.track_id;
                         _raceobj.Timer = RaceAlarms.Any(a => a.SerieId == serie.SerieId) ? alarmClockSymbol : clockSymbol;
+                        _raceobj.Sympathy = actualsympathy;
                         if (racetime.Date == DateTime.Now.Date && racetime > DateTime.Now && !over)
                         {
                             _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
@@ -1681,6 +1718,7 @@ namespace RCRPlanner
                     sysicon.Dispose();
                     autoStartData.Icon = bmpSrc;
                     autoStartData.Name = FileVersionInfo.GetVersionInfo(prog.Path).ProductName != null ? FileVersionInfo.GetVersionInfo(prog.Path).ProductName : FileVersionInfo.GetVersionInfo(prog.Path.ToString()).FileName;
+                    autoStartData.Pause = prog.Paused ? pause : play; 
                     dgAutoStartList.Add(autoStartData);
                 }
             }
@@ -2172,6 +2210,7 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = magnifier;
@@ -2207,6 +2246,7 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = magnifier;
@@ -2241,6 +2281,7 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Reload";
@@ -2269,6 +2310,7 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = magnifier;
@@ -2302,6 +2344,7 @@ namespace RCRPlanner
             cbMenu5.Visibility = Visibility.Hidden;
             dpMenu4.Visibility = Visibility.Hidden;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Visible;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Show filter";
@@ -2331,6 +2374,7 @@ namespace RCRPlanner
             cbMenu3.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Loading...";
@@ -2367,6 +2411,7 @@ namespace RCRPlanner
             cbMenu3.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Loading...";
@@ -2402,6 +2447,7 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Visible;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             cbMenu2.IsChecked = autoStartApps.Active;
@@ -2417,6 +2463,9 @@ namespace RCRPlanner
             cbMenu5.ToolTip = "Can lead to data loss, since all programs with the specified program name will be closed!";
             cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Yellow"));
             cbMenu5.IsChecked = autoStartApps.KillByName;
+            cbMenu6.Content = "Autostart iRacing launcher";
+            cbMenu6.ToolTip = "Starts the iRacing launcher at planner start without manually open website.";
+            cbMenu6.IsChecked = autoStartApps.StartLauncher;
             clearDetails();
             stackPanelMenuClose_MouseDown(null, null);
             generateAutoStartView();
@@ -2436,6 +2485,7 @@ namespace RCRPlanner
             cbMenu5.Visibility = Visibility.Hidden;
             dpMenu4.Visibility = Visibility.Hidden;
             dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             generateSeasonOverviewGrid();
@@ -2471,7 +2521,6 @@ namespace RCRPlanner
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 CollectionViewSource.GetDefaultView(gridSeries.ItemsSource).Refresh();
             }));
-            helper.SerializeObject<List<memberInfo.FavoutireSeries>>(favoutireSeries, exePath + favSeriesfile);
         }
         private void gridCarsFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -2489,7 +2538,6 @@ namespace RCRPlanner
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 CollectionViewSource.GetDefaultView(gridCars.ItemsSource).Refresh();
             }));
-            helper.SerializeObject<List<memberInfo.FavoutireCars>>(favoutireCars, exePath + favCarsfile);
         }
 
         private void gridTracksFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
@@ -2508,7 +2556,7 @@ namespace RCRPlanner
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 CollectionViewSource.GetDefaultView(gridTracksLayout.ItemsSource).Refresh();
             }));
-            helper.SerializeObject<List<memberInfo.FavoutireTracks>>(favoutireTracks, exePath + favTracksfile);
+
         }
 
         private void gridRacesAlarm_MouseDown(object sender, MouseButtonEventArgs e)
@@ -2529,7 +2577,65 @@ namespace RCRPlanner
                 CollectionViewSource.GetDefaultView(gridRaces.ItemsSource).Refresh();
             }));
         }
+        private void gridRacesHated2_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            int serid = -1;
+            int traid = -1;
+            string sympathy = "";
+            bool save = false;
+            if(((System.Windows.Controls.TextBlock)sender).Text == neutral)
+            {
+                sympathy = thumbdown;
+            }
+            if (((System.Windows.Controls.TextBlock)sender).Text == thumbdown)
+            {
+                sympathy = thumbup;
+            }
+            if (((System.Windows.Controls.TextBlock)sender).Text == thumbup)
+            {
+                sympathy = neutral;
+            }
+            var _type = ((System.Windows.FrameworkElement)sender).DataContext.GetType();
+            if (_type.Name == "RaceOverviewDataGrid")
+            {
+                serid = ((RCRPlanner.dgObjects.RaceOverviewDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId;
+                traid = ((RCRPlanner.dgObjects.RaceOverviewDataGrid)((System.Windows.FrameworkElement)sender).DataContext).TrackTrackID;
+                dgRaceOverviewList.First(r => r.SerieId == serid).Sympathy = ((System.Windows.Controls.TextBlock)sender).Text = sympathy ;
+                dgRaceOverviewList.First(r => r.SerieId == serid).Tracks.First(t => t.TrackID == traid).Sympathy = ((System.Windows.Controls.TextBlock)sender).Text = sympathy;
+                save = true;
+            }
+            else if(_type.Name == "tracksDataGrid")
+            {
+                serid = ((RCRPlanner.dgObjects.tracksDataGrid)((System.Windows.FrameworkElement)sender).DataContext).Series[0].SerieId;
+                traid = ((RCRPlanner.dgObjects.tracksDataGrid)((System.Windows.FrameworkElement)sender).DataContext).TrackID;
+                dgRaceOverviewList.First(r => r.SerieId == serid).Tracks.First(t => t.TrackID == traid).Sympathy = ((System.Windows.Controls.TextBlock)sender).Text = sympathy;
+                if (((RCRPlanner.dgObjects.tracksDataGrid)((System.Windows.FrameworkElement)sender).DataContext).WeekActive)
+                {
+                    dgRaceOverviewList.First(r => r.SerieId == serid).Sympathy = ((System.Windows.Controls.TextBlock)sender).Text = sympathy;
+                }
+                save = true;
+            }
+            if (save)
+            {
+                var combi = new memberInfo.SympathyCombi { series_id = serid, track_id = traid, status = sympathy };
 
+                if (((System.Windows.Controls.TextBlock)sender).Text != neutral)
+                {
+
+                    sympathyCombis.Add(combi);
+
+                }
+                else
+                {
+                    var del = sympathyCombis.Find(c => c.series_id == serid && c.track_id == traid);
+                    sympathyCombis.Remove(del);
+                }
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    CollectionViewSource.GetDefaultView(gridRaces.ItemsSource).Refresh();
+                }));
+            }
+        }
         private void stackPanelFilterClose_MouseDown(object sender, MouseButtonEventArgs e)
         {
             resize_Grid(gridFilter, "height", 0, moveAnimationDuration);
@@ -2650,6 +2756,32 @@ namespace RCRPlanner
                 CollectionViewSource.GetDefaultView(gridAutoStart.ItemsSource).Refresh();
             }));
             helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+        }
+        private void gridAutoStartPause_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (((System.Windows.FrameworkElement)sender).DataContext.GetType().Name == "autoStartDataGrid")
+            {
+                string status = "";
+                int ID = ((RCRPlanner.dgObjects.autoStartDataGrid)((System.Windows.FrameworkElement)sender).DataContext).ID;
+                if (((System.Windows.Controls.TextBlock)sender).Text == play)
+                {
+                    var prog = autoStartApps.Programs.FirstOrDefault(i => i.ID == ID);
+                    prog.Paused = true;
+                    status = pause;
+                }
+                if (((System.Windows.Controls.TextBlock)sender).Text == pause)
+                {
+                    var prog = autoStartApps.Programs.FirstOrDefault(i => i.ID == ID );
+                    prog.Paused = false;
+                    status = play;
+                }
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    generateAutoStartView();
+                    CollectionViewSource.GetDefaultView(gridAutoStart.ItemsSource).Refresh();
+                }));
+                helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+            }
         }
         private async void btnMenu1_Click(object sender, RoutedEventArgs e)
         {
@@ -2860,6 +2992,23 @@ namespace RCRPlanner
                     else
                     {
                         autoStartApps.KillByName = false;
+                    }
+                    break;
+            }
+            helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+        }
+        private void cbMenu6_Click(object sender, RoutedEventArgs e)
+        {
+            switch (activeGrid)
+            {
+                case "gridAutoStart":
+                    if (cbMenu6.IsChecked == true)
+                    {
+                        autoStartApps.StartLauncher = true;
+                    }
+                    else
+                    {
+                        autoStartApps.StartLauncher = false;
                     }
                     break;
             }

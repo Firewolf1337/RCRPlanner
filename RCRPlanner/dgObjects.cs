@@ -69,6 +69,7 @@ namespace RCRPlanner
             public string Racelenght { get; set; }
             public bool WeekActive { get; set; }
             public Uri TrackLink {get; set;}
+            public string Sympathy { get; set; }
 
         }
         public class tracksLayoutsDataGrid
@@ -130,6 +131,7 @@ namespace RCRPlanner
             public List<carsDataGrid> Cars { get; set; }
             public List<tracksDataGrid> Tracks { get; set; }
             public string TracksOwned { get; set; }
+            public string Sympathy { get; set; }
 
         }
         public class autoStartDataGrid
@@ -138,6 +140,7 @@ namespace RCRPlanner
             public string Path { get; set; }
             public BitmapSource Icon { get; set; }
             public string Name { get; set; }
+            public string Pause { get; set; }
 
         }
         public class participationDataGrid

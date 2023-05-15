@@ -92,6 +92,7 @@
                         </ComboBox.ItemsPanel>
                     </ComboBox>
                 </DockPanel>
+                <CheckBox x:Name="cbMenu6" Grid.Column="5" Grid.Row="0" Height="30" Click="cbMenu6_Click" ToolTipService.IsEnabled="True" ToolTip="Test"/>
                 <Button x:Name="btnMenu6" Grid.Column="5" Grid.Row="0" Height="30" Width="Auto" Click="btnMenu6_Click"/>
                 <TextBlock x:Name="tbMenu6" Grid.Column="5" Grid.Row="0" Height="30" Text="⟳" Style="{StaticResource DefaultTextBlockStyle}" FontSize="30" HorizontalAlignment="Right" Margin="0,0,20,0" MouseDown="tbMenu6_MouseDown" />
                 <Grid x:Name="gridDetails" Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="1" Visibility="Hidden">
@@ -867,6 +868,25 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Like/Dislike" IsReadOnly="false" MinWidth="60" Width="Auto" SortMemberPath="Hated"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Sympathy}" Value="👎">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Sympathy}" Value="👍">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Sympathy}" HorizontalAlignment="Center" MouseDown="gridRacesHated2_MouseDown" FontSize="16"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn IsReadOnly="True" CanUserResize="False" CanUserSort="False" Width="Auto" CanUserReorder="False" MinWidth="1">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -975,6 +995,25 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Like/Dislike" IsReadOnly="True" SortMemberPath="Hated"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                            <DataGridTemplateColumn.CellStyle>
+                                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Sympathy}" Value="👎">
+                                                            <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Sympathy}" Value="👍">
+                                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTemplateColumn.CellStyle>
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Sympathy}" HorizontalAlignment="Center" MouseDown="gridRacesHated2_MouseDown" />
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -1142,6 +1181,34 @@
                      AutoGenerateColumns="False" MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" >
                     <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Paused" IsReadOnly="True" MinWidth="50" SortMemberPath="Pause" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock x:Name="tbPause" Text="{Binding Pause}" MouseDown="gridAutoStartPause_MouseDown" FontSize="20" HorizontalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Pause}" Value="►">
+                                                        <Setter Property="RenderTransform">
+                                                            <Setter.Value>
+                                                                <ScaleTransform ScaleX=".7" ScaleY="1.4" CenterX="8"  CenterY="13"  />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Pause}" Value="▐▐">
+                                                        <Setter Property="RenderTransform">
+                                                            <Setter.Value>
+                                                                <ScaleTransform ScaleX=".35" ScaleY=".7" CenterX="14"  CenterY="13"  />
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn IsReadOnly="True" Width="Auto" CanUserResize="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
