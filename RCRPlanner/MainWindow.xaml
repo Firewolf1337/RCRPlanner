@@ -1003,7 +1003,7 @@
                                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Sympathy}" Value="👎">
-                                                            <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                                            <Setter Property="Foreground" Value="{StaticResource ClassRed}" />
                                                         </DataTrigger>
                                                         <DataTrigger Binding="{Binding Sympathy}" Value="👍">
                                                             <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
