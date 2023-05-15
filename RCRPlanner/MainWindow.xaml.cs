@@ -544,29 +544,32 @@ namespace RCRPlanner
         }
         private void startPrograms()
         {
-            if (autoStartApps.StartLauncher)
+            try
             {
-                Process.Start(new ProcessStartInfo("iracing://"));
-            }
-            foreach (var prog in autoStartApps.Programs)
-            {
-                if (!prog.Paused)
+                if (autoStartApps.Programs.Count() > 0)
                 {
-                    Process pr = new Process();
-                    pr.StartInfo.FileName = prog.Path;
-                    if (autoStartApps.Minimized == true)
+                    foreach (var prog in autoStartApps.Programs)
                     {
-                        pr.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                    }
-                    pr.Start();
-                    if (autoStartApps.Kill)
-                    {
-                        pIDs.Add(pr.Id);
+                        if (!prog.Paused)
+                        {
+                            Process pr = new Process();
+                            pr.StartInfo.FileName = prog.Path;
+                            if (autoStartApps.Minimized == true)
+                            {
+                                pr.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                            }
+                            pr.Start();
+                            if (autoStartApps.Kill)
+                            {
+                                pIDs.Add(pr.Id);
+                            }
+                        }
                     }
                 }
+                tbstartPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
+                tbstopPrograms.Foreground = Application.Current.Resources["BrushYellow"] as SolidColorBrush;
             }
-            tbstartPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
-            tbstopPrograms.Foreground = Application.Current.Resources["BrushYellow"] as SolidColorBrush;
+            catch { }
         }
         private void stopPrograms()
         {
@@ -2447,7 +2450,7 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
-            cbMenu6.Visibility = Visibility.Visible;
+            cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
             btnMenu6.Visibility = Visibility.Hidden;
             cbMenu2.IsChecked = autoStartApps.Active;
@@ -2463,9 +2466,6 @@ namespace RCRPlanner
             cbMenu5.ToolTip = "Can lead to data loss, since all programs with the specified program name will be closed!";
             cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Yellow"));
             cbMenu5.IsChecked = autoStartApps.KillByName;
-            cbMenu6.Content = "Autostart iRacing launcher";
-            cbMenu6.ToolTip = "Starts the iRacing launcher at planner start without manually open website.";
-            cbMenu6.IsChecked = autoStartApps.StartLauncher;
             clearDetails();
             stackPanelMenuClose_MouseDown(null, null);
             generateAutoStartView();
@@ -2507,15 +2507,16 @@ namespace RCRPlanner
         }
         private void gridSeriesFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            int ID = ((RCRPlanner.dgObjects.seriesDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId;
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
             {
-                dgSeriesList.First(r => r.SerieId == ((RCRPlanner.dgObjects.seriesDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId).Favourite = favsymbolSelected;
-                favoutireSeries.Add(new memberInfo.FavoutireSeries { series_id = ((RCRPlanner.dgObjects.seriesDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId });
+                dgSeriesList.First(r => r.SerieId == ID).Favourite = favsymbolSelected;
+                favoutireSeries.Add(new memberInfo.FavoutireSeries { series_id = ID });
             }
             else
             {
-                dgSeriesList.First(r => r.SerieId == ((RCRPlanner.dgObjects.seriesDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId).Favourite = favsymbolUnselected;
-                var fav = favoutireSeries.FirstOrDefault(i => i.series_id == ((RCRPlanner.dgObjects.seriesDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId);
+                dgSeriesList.First(r => r.SerieId == ID).Favourite = favsymbolUnselected;
+                var fav = favoutireSeries.FirstOrDefault(i => i.series_id == ID);
                 favoutireSeries.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
@@ -2524,15 +2525,16 @@ namespace RCRPlanner
         }
         private void gridCarsFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            int ID = ((RCRPlanner.dgObjects.carsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).CarId;
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
             {
-                dgCarsList.First(r => r.CarId == ((RCRPlanner.dgObjects.carsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).CarId).Favourite = favsymbolSelected;
-                favoutireCars.Add(new memberInfo.FavoutireCars { car_id = ((RCRPlanner.dgObjects.carsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).CarId });
+                dgCarsList.First(r => r.CarId == ID).Favourite = favsymbolSelected;
+                favoutireCars.Add(new memberInfo.FavoutireCars { car_id = ID });
             }
             else
             {
-                dgCarsList.First(r => r.CarId == ((RCRPlanner.dgObjects.carsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).CarId).Favourite = favsymbolUnselected;
-                var fav = favoutireCars.FirstOrDefault(i => i.car_id == ((RCRPlanner.dgObjects.carsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).CarId);
+                dgCarsList.First(r => r.CarId == ID).Favourite = favsymbolUnselected;
+                var fav = favoutireCars.FirstOrDefault(i => i.car_id == ID);
                 favoutireCars.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
@@ -2542,15 +2544,16 @@ namespace RCRPlanner
 
         private void gridTracksFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            int ID = ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).PackageID;
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
             {
-                dgTrackLayoutList.First(r => r.PackageID == ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).PackageID).Favourite = favsymbolSelected;
-                favoutireTracks.Add(new memberInfo.FavoutireTracks { track_id = ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).PackageID });
+                dgTrackLayoutList.First(r => r.PackageID == ID).Favourite = favsymbolSelected;
+                favoutireTracks.Add(new memberInfo.FavoutireTracks { track_id = ID });
             }
             else
             {
-                dgTrackLayoutList.First(r => r.PackageID == ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).PackageID).Favourite = favsymbolUnselected;
-                var fav = favoutireTracks.FirstOrDefault(i => i.track_id == ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).PackageID);
+                dgTrackLayoutList.First(r => r.PackageID == ID).Favourite = favsymbolUnselected;
+                var fav = favoutireTracks.FirstOrDefault(i => i.track_id == ID);
                 favoutireTracks.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
@@ -2999,20 +3002,7 @@ namespace RCRPlanner
         }
         private void cbMenu6_Click(object sender, RoutedEventArgs e)
         {
-            switch (activeGrid)
-            {
-                case "gridAutoStart":
-                    if (cbMenu6.IsChecked == true)
-                    {
-                        autoStartApps.StartLauncher = true;
-                    }
-                    else
-                    {
-                        autoStartApps.StartLauncher = false;
-                    }
-                    break;
-            }
-            helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+
         }
         private async void ddMenu2_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

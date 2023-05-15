@@ -12,7 +12,6 @@ namespace RCRPlanner
             public bool Kill { get; set; }
             public bool KillByName { get; set; }
             public List<Programs> Programs {get; set;}
-            public bool StartLauncher { get; set; }
 
         }
         public class Programs { 

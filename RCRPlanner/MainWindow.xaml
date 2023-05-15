@@ -671,7 +671,7 @@
                           BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" 
                           MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10" Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
+                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="1" Width="1" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock/>
@@ -681,18 +681,18 @@
                         <DataGridTemplateColumn IsReadOnly="True" CanUserResize="False" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Image Source="{Binding Serie.Seriesimage}" RenderOptions.BitmapScalingMode="Fant" Height="30" Width="100"/>
+                                    <Image Source="{Binding Serie.Seriesimage}" RenderOptions.BitmapScalingMode="Fant" Height="30" Width="100" Margin="0,0,5,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="200" Width="Auto" SortMemberPath="Serie.SeriesName"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="200" Width="225" SortMemberPath="Serie.SeriesName"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Serie.SeriesName}"  TextTrimming="WordEllipsis" />
+                                    <TextBlock Text="{Binding Serie.SeriesName}"  TextTrimming="WordEllipsis" Margin="0,0,5,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="80" Width="Auto" SortMemberPath="Track.Name"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="80" Width="190" SortMemberPath="Track.Name"  CanUserSort="True">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
@@ -705,7 +705,7 @@
                             </DataGridTemplateColumn.CellStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Track.Name}"  TextTrimming="WordEllipsis" />
+                                    <TextBlock Text="{Binding Track.Name}"  TextTrimming="WordEllipsis" Margin="0,0,5,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -723,7 +723,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Class" IsReadOnly="True" MinWidth="60" Width="Auto" SortMemberPath="Serie.Class"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Class" IsReadOnly="True" MinWidth="40" Width="Auto" SortMemberPath="Serie.Class"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="{StaticResource BrushTextBlack }" />
@@ -770,7 +770,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Eligible"  IsReadOnly="True" SortMemberPath="Serie.Eligible"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Eligible" MinWidth="40" IsReadOnly="True" SortMemberPath="Serie.Eligible"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
@@ -787,7 +787,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Official"  IsReadOnly="True" SortMemberPath="Serie.Official"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Official" MinWidth="40" IsReadOnly="True" SortMemberPath="Serie.Official"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
@@ -804,7 +804,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Fixed"  IsReadOnly="True" SortMemberPath="Serie.Fixed"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Fixed" MinWidth="40" IsReadOnly="True" SortMemberPath="Serie.Fixed"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
@@ -847,11 +847,11 @@
                         <DataGridTemplateColumn Header="Next race"  IsReadOnly="True" SortMemberPath="NextRace"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding NextRaceTime}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding NextRaceTime}" HorizontalAlignment="Center" Margin="0,0,5,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Alarm" IsReadOnly="false" MinWidth="60" Width="Auto" SortMemberPath="Timer"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Alarm" IsReadOnly="false" MinWidth="35" Width="Auto" SortMemberPath="Timer"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
@@ -868,12 +868,12 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Like/Dislike" IsReadOnly="false" MinWidth="60" Width="Auto" SortMemberPath="Hated"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="👍👎" IsReadOnly="false" Width="35" SortMemberPath="Sympathy"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Sympathy}" Value="👎">
-                                            <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                            <Setter Property="Foreground" Value="{StaticResource ClassRed}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Sympathy}" Value="👍">
                                             <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
@@ -943,7 +943,7 @@
                                             </DataGridTemplateColumn.CellStyle>
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Name}" />
+                                                    <TextBlock Text="{Binding Name}" Margin="0,0,5,0" TextTrimming="WordEllipsis"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -991,14 +991,14 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Price" IsReadOnly="True" SortMemberPath="Price"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn Header="Price" IsReadOnly="True" SortMemberPath="Price" Width="30" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Like/Dislike" IsReadOnly="True" SortMemberPath="Hated"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn Header="👍👎" IsReadOnly="True" Width="30" SortMemberPath="Hated"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellStyle>
                                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
                                                     <Style.Triggers>
