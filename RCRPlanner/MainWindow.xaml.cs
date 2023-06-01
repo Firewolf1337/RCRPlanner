@@ -149,32 +149,39 @@ namespace RCRPlanner
 
         public MainWindow()
         {
-            main = this;
-            this.InitializeComponent();
-            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight-2;
-            if (Properties.Settings.Default.UpdateSettings)
+            try
             {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.UpdateSettings = false;
-                Properties.Settings.Default.Save();
-            }
-            if (Properties.Settings.Default.minimized == "true")
-            {
-                this.WindowState = WindowState.Minimized;
-                this.cbStartMinimized.IsChecked = true;
-            }
-            gridLoading.Visibility = Visibility.Visible;
-            gridLoadingBG.Visibility = Visibility.Visible;
-            bwPresetLoader.DoWork += worker_DoWork;
-            bwPresetLoader.WorkerReportsProgress = false;
-            bwPresetLoader.RunWorkerCompleted += worker_RunWorkerCompleted;
-            bwPresetLoader.RunWorkerAsync();
-            btnLoadRaces_Click(null, null);
+                main = this;
+                this.InitializeComponent();
+                this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight - 2;
+                if (Properties.Settings.Default.UpdateSettings)
+                {
+                    Properties.Settings.Default.Upgrade();
+                    Properties.Settings.Default.UpdateSettings = false;
+                    Properties.Settings.Default.Save();
+                }
+                if (Properties.Settings.Default.minimized == "true")
+                {
+                    this.WindowState = WindowState.Minimized;
+                    this.cbStartMinimized.IsChecked = true;
+                }
+                gridLoading.Visibility = Visibility.Visible;
+                gridLoadingBG.Visibility = Visibility.Visible;
+                bwPresetLoader.DoWork += worker_DoWork;
+                bwPresetLoader.WorkerReportsProgress = false;
+                bwPresetLoader.RunWorkerCompleted += worker_RunWorkerCompleted;
+                bwPresetLoader.RunWorkerAsync();
+                btnLoadRaces_Click(null, null);
 
-            alarmTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            alarmTimer.Interval = 10000;
-            alarmTimer.Enabled = true;
-            lblVersion.Content = displayableVersion;
+                alarmTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+                alarmTimer.Interval = 10000;
+                alarmTimer.Enabled = true;
+                lblVersion.Content = displayableVersion;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Main: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
@@ -324,7 +331,6 @@ namespace RCRPlanner
                 if (File.Exists(exePath + sympathyCombifile))
                 {
                     sympathyCombis = helper.DeSerializeObject<List<memberInfo.SympathyCombi>>(exePath + sympathyCombifile);
-                    sympathyCombis = sympathyCombis.GroupBy(x => x.series_id).Select(x => x.First()).ToList();
                 }
             }));
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -1381,7 +1387,10 @@ namespace RCRPlanner
                             if (serie.SerieId == combi.series_id && combi.track_id == track.TrackID)
                             {
                                 track.Sympathy = combi.status;
-                                actualsympathy =  combi.status;
+                                if (track.WeekActive)
+                                {
+                                    actualsympathy = combi.status;
+                                }
                             }
                         }
                     }
