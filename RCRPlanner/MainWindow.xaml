@@ -537,12 +537,22 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="230" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="200" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding CarName}" TextTrimming="WordEllipsis"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
+                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Owned}" Value="🗸">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Series" IsReadOnly="True" SortMemberPath="Series_Participations" MinWidth="40" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
@@ -558,10 +568,10 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Owned"  IsReadOnly="True" SortMemberPath="Owned"  MinWidth="50" Width="*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" SortMemberPath="Created"  MinWidth="80" Width="80*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Owned}" HorizontalAlignment="Center" FontSize="20"/>
+                                    <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -573,7 +583,7 @@
                 <DataGrid x:Name="gridTracksLayout" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
                 GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10"  Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
+                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="5"  Width="5" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock/>
@@ -587,12 +597,23 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="300" Width="Auto" SortMemberPath="Name"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="200" Width="Auto" SortMemberPath="Name"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
+                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
+                                    <Setter Property="Height" Value="35"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Owned}" Value="🗸">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Layouts" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Layouts_count"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
@@ -608,17 +629,17 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" MinWidth="40" SortMemberPath="Price"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" MinWidth="40" SortMemberPath="Price"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Price}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Owned"  IsReadOnly="True" Width="100*" SortMemberPath="Owned"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" Width="80*" SortMemberPath="Created"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Owned}" HorizontalAlignment="Center" FontSize="20"/>
+                                    <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -630,6 +651,15 @@
                                   AutoGenerateColumns="False" RowHeight="50" MinColumnWidth="50" GridLinesVisibility="Horizontal" 
                                   SelectionMode="Extended" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Layouts}" SelectionChanged="dataGrid_SelectionChanged"
                                   PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
                                     <DataGrid.Columns>
                                         <DataGridTemplateColumn IsReadOnly="True" Header="Track" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate >
