@@ -568,7 +568,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" SortMemberPath="Created"  MinWidth="80" Width="80*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" SortMemberPath="CarId"  MinWidth="80" Width="80*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
@@ -636,7 +636,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" Width="80*" SortMemberPath="Created"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" Width="80*" SortMemberPath="TrackID"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
