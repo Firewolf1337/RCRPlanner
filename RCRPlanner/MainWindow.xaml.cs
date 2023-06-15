@@ -23,7 +23,15 @@ using Microsoft.Win32;
 using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Text.RegularExpressions;
-
+[assembly: AssemblyTitle("RCRPlanner")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("RCRPlanner")]
+[assembly: AssemblyCopyright("Copyright © 2024")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: AssemblyVersion("2.0.*")]
 
 namespace RCRPlanner
 {
