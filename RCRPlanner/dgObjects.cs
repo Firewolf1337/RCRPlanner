@@ -141,6 +141,7 @@ namespace RCRPlanner
             public BitmapSource Icon { get; set; }
             public string Name { get; set; }
             public string Pause { get; set; }
+            public string withiRacing { get; set; }
 
         }
         public class participationDataGrid

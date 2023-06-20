@@ -45,6 +45,7 @@ namespace RCRPlanner
         private readonly FetchData fData = new FetchData();
         private readonly filehandler fh = new filehandler();
         private readonly statistics statistics = new statistics();
+        ProcessWatcher processWatcher = new ProcessWatcher("iRacingSim64DX11");
         //private static readonly HttpClient client = new HttpClient();
         memberInfo.Root User = new memberInfo.Root();
         string username;
@@ -88,9 +89,9 @@ namespace RCRPlanner
         List<participationCredits.Root> participationCredits = new List<participationCredits.Root>();
 
         readonly string autostartfile = @"\autostart.xml";
-        autoStart.Root autoStartApps = new autoStart.Root();
+        public static autoStart.Root autoStartApps = new autoStart.Root();
         public bool autostartsuppress;
-        private readonly List<int> pIDs = new List<int>();
+        public static readonly List<int> pIDs = new List<int>();
         private readonly List<dgObjects.autoStartDataGrid> dgAutoStartList = new List<dgObjects.autoStartDataGrid>();
 
         private readonly BackgroundWorker bwPresetLoader = new BackgroundWorker();
@@ -305,6 +306,8 @@ namespace RCRPlanner
                     if(autoStartApps.Programs != null && autoStartApps.Active && !autostartsuppress)
                     {
                         startPrograms();
+
+                        processWatcher.StartWatching();
                     }
                 }
                 else
@@ -556,7 +559,7 @@ namespace RCRPlanner
                 {
                     foreach (var prog in autoStartApps.Programs)
                     {
-                        if (!prog.Paused)
+                        if (!prog.Paused && !prog.withiRacing)
                         {
                             Process pr = new Process();
                             pr.StartInfo.FileName = prog.Path;
@@ -621,6 +624,7 @@ namespace RCRPlanner
             {
                 alarmTimer.Stop();
                 stopPrograms();
+                processWatcher.StopWatching();
                 helper.SerializeObject<List<memberInfo.FavoutireTracks>>(favoutireTracks, exePath + favTracksfile);
                 helper.SerializeObject<List<memberInfo.FavoutireSeries>>(favoutireSeries, exePath + favSeriesfile);
                 helper.SerializeObject<List<memberInfo.FavoutireCars>>(favoutireCars, exePath + favCarsfile);
@@ -1730,7 +1734,8 @@ namespace RCRPlanner
                     sysicon.Dispose();
                     autoStartData.Icon = bmpSrc;
                     autoStartData.Name = FileVersionInfo.GetVersionInfo(prog.Path).ProductName != null ? FileVersionInfo.GetVersionInfo(prog.Path).ProductName : FileVersionInfo.GetVersionInfo(prog.Path.ToString()).FileName;
-                    autoStartData.Pause = prog.Paused ? pause : play; 
+                    autoStartData.Pause = prog.Paused ? pause : play;
+                    autoStartData.withiRacing = prog.withiRacing ? checksymbol : unchecksymbol;
                     dgAutoStartList.Add(autoStartData);
                 }
             }
@@ -2786,6 +2791,32 @@ namespace RCRPlanner
                     var prog = autoStartApps.Programs.FirstOrDefault(i => i.ID == ID );
                     prog.Paused = false;
                     status = play;
+                }
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    generateAutoStartView();
+                    CollectionViewSource.GetDefaultView(gridAutoStart.ItemsSource).Refresh();
+                }));
+                helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+            }
+        }
+        private void gridAutoStartwithiRacing_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (((System.Windows.FrameworkElement)sender).DataContext.GetType().Name == "autoStartDataGrid")
+            {
+                string status = "";
+                int ID = ((RCRPlanner.dgObjects.autoStartDataGrid)((System.Windows.FrameworkElement)sender).DataContext).ID;
+                if (((System.Windows.Controls.TextBlock)sender).Text == checksymbol)
+                {
+                    var prog = autoStartApps.Programs.FirstOrDefault(i => i.ID == ID);
+                    prog.withiRacing = false;
+                    status = unchecksymbol;
+                }
+                if (((System.Windows.Controls.TextBlock)sender).Text == unchecksymbol)
+                {
+                    var prog = autoStartApps.Programs.FirstOrDefault(i => i.ID == ID);
+                    prog.withiRacing = true;
+                    status = checksymbol;
                 }
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                 {

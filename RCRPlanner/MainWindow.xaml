@@ -1211,10 +1211,10 @@
                      AutoGenerateColumns="False" MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" >
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Paused" IsReadOnly="True" MinWidth="50" SortMemberPath="Pause" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}" >
+                        <DataGridTemplateColumn Header="Paused" IsReadOnly="True" MinWidth="50" SortMemberPath="Pause" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock x:Name="tbPause" Text="{Binding Pause}" MouseDown="gridAutoStartPause_MouseDown" FontSize="20" HorizontalAlignment="Center">
+                                    <TextBlock x:Name="tbPause" Text="{Binding Pause}" MouseDown="gridAutoStartPause_MouseDown" FontSize="20" HorizontalAlignment="Center" ToolTip="Pause programs from starting instead of removing them.">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Style.Triggers>
@@ -1236,6 +1236,13 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="after iRacing" IsReadOnly="True" MinWidth="50" SortMemberPath="Pause" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock x:Name="tbwithiracing" Text="{Binding withiRacing}" MouseDown="gridAutoStartwithiRacing_MouseDown" FontSize="20" HorizontalAlignment="Center" ToolTip="Start program after joining a Race in iRacing."/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -18,6 +18,7 @@ namespace RCRPlanner
             public int ID { get; set; }
             public string Path { get; set; }
             public bool Paused { get; set; } = false;
+            public bool withiRacing { get; set; } = false;
 
         }
     }
