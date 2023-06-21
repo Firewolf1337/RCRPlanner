@@ -32,10 +32,10 @@
             <Grid x:Name="MainGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Visibility="Visible"  >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition MaxWidth="200"/>
+                    <ColumnDefinition MaxWidth="200"/>
+                    <ColumnDefinition MaxWidth="200"/>
+                    <ColumnDefinition MaxWidth="200"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -47,7 +47,7 @@
                 <CheckBox x:Name="cbMenu2" Grid.Column="1" Grid.Row="0" Height="30" Click="cbMenu2_Click"/>
                 <DockPanel x:Name="tbMenu2" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Width="300" HorizontalAlignment="Left" LastChildFill="True">
                     <Label x:Name="tbMenu2lb"  Style="{StaticResource DefaultLabelStyle}"/>
-                    <TextBox x:Name="tbMenu2tb" Height="25" Style="{StaticResource DefaultTextBoxStyle}"/>
+                    <TextBox x:Name="tbMenu2tb" Height="24" Style="{StaticResource DefaultTextBoxStyle}"/>
                 </DockPanel>
                 <DockPanel x:Name="dpMenu2" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu2"  Style="{StaticResource DefaultLabelStyle}"/>
@@ -93,7 +93,13 @@
                     </ComboBox>
                 </DockPanel>
                 <CheckBox x:Name="cbMenu6" Grid.Column="5" Grid.Row="0" Height="30" Click="cbMenu6_Click" ToolTipService.IsEnabled="True" ToolTip="Test"/>
-                <Button x:Name="btnMenu6" Grid.Column="5" Grid.Row="0" Height="30" Width="Auto" Click="btnMenu6_Click"/>
+                <DockPanel x:Name="dpMenu6" Grid.Column="5" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" LastChildFill="False">
+                    <Label x:Name="tbMenu6lb" Style="{StaticResource DefaultLabelStyle}"/>
+                    <TextBox x:Name="tbMenu6tb" Height="24" Width="40" Style="{StaticResource DefaultTextBoxStyle}" />
+                    <Button x:Name="btnMenu6" Grid.Column="5" Grid.Row="0" Height="30" Width="30" Click="btnMenu6_Click">
+                        <TextBlock x:Name="btnMenu6tb" Margin="0,-3,0,0" FontSize="16"/>
+                    </Button>
+                </DockPanel>
                 <TextBlock x:Name="tbMenu6" Grid.Column="5" Grid.Row="0" Height="30" Text="⟳" Style="{StaticResource DefaultTextBlockStyle}" FontSize="30" HorizontalAlignment="Right" Margin="0,0,20,0" MouseDown="tbMenu6_MouseDown" />
                 <Grid x:Name="gridDetails" Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="1" Visibility="Hidden">
                     <Grid.ColumnDefinitions>

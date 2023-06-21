@@ -23,5 +23,8 @@
     <Setting Name="UpdateSettings" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="delayTime" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

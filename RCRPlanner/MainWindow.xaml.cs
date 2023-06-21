@@ -65,6 +65,7 @@ namespace RCRPlanner
         readonly string neutral = "◯";
         readonly string play = "►";
         readonly string pause = "▐▐";
+        readonly string save = "💾";
         string activeGrid = "";
         bool reloadData = false;
         int lastLoginResult = -1;
@@ -2229,7 +2230,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = magnifier;
             btnMenu1.Width = 40;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
@@ -2265,7 +2266,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = magnifier;
             btnMenu1.Width = 40;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
@@ -2300,7 +2301,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Reload";
             btnMenu1.Width = 80;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
@@ -2329,7 +2330,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = magnifier;
             btnMenu1.Width = 40;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
@@ -2363,7 +2364,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Visible;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Show filter";
             btnMenu1.Width = 100;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
@@ -2393,7 +2394,7 @@ namespace RCRPlanner
             cbMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Loading...";
             btnMenu1.Width = 100;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
@@ -2430,7 +2431,7 @@ namespace RCRPlanner
             cbMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
             btnMenu1.Content = "Loading...";
             btnMenu1.Width = 80;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
@@ -2466,7 +2467,7 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Visible;
             cbMenu2.IsChecked = autoStartApps.Active;
             btnMenu1.Content = "Add program";
             btnMenu1.Width = 100;
@@ -2480,6 +2481,10 @@ namespace RCRPlanner
             cbMenu5.ToolTip = "Can lead to data loss, since all programs with the specified program name will be closed!";
             cbMenu5.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Yellow"));
             cbMenu5.IsChecked = autoStartApps.KillByName;
+            tbMenu6tb.Text = Properties.Settings.Default.delayTime.ToString();
+            btnMenu6tb.Text = save;
+            tbMenu6lb.Content = "Time to wait for iRacing:";
+            tbMenu6lb.ToolTip = "Time in seconds.";
             clearDetails();
             stackPanelMenuClose_MouseDown(null, null);
             generateAutoStartView();
@@ -2501,7 +2506,6 @@ namespace RCRPlanner
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            btnMenu6.Visibility = Visibility.Hidden;
             generateSeasonOverviewGrid();
             stackPanelMenuClose_MouseDown(null, null);
             generateSeasonOverview();
@@ -3256,7 +3260,8 @@ namespace RCRPlanner
             switch (activeGrid)
             {
                 case "gridAutoStart":
-                    
+                    Properties.Settings.Default.delayTime = Convert.ToInt32(tbMenu6tb.Text);
+                    Properties.Settings.Default.Save();
                     break;
             }
         }

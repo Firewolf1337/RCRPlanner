@@ -59,7 +59,7 @@ namespace RCRPlanner
             //Console.WriteLine("Die .exe wurde gestartet. Führe Aktion aus...");
             try
             {
-                Thread.Sleep(10000);
+                Thread.Sleep(Convert.ToInt32(Properties.Settings.Default.delayTime)*1000);
                 if (MainWindow.autoStartApps.Programs.Count > 0)
                 {
                     foreach (var prog in MainWindow.autoStartApps.Programs)
