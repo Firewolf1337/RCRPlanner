@@ -51,7 +51,7 @@
         <Brush x:Key="BrushTextBlack">#000000</Brush>
         <Brush x:Key="BrushGray">#888888</Brush>
         <Brush x:Key="BrushDarkGray">#303030</Brush>
-        <Brush x:Key="BrushDefaultWindowBackground">#EE151515</Brush>
+        <Brush x:Key="BrushDefaultWindowBackground">#FF151515</Brush>
         <Brush x:Key="DefaultBackgroundBrush">#08FFFFFF</Brush>
         <Brush x:Key="BrushOddBackground">#11888888</Brush>
 
@@ -378,11 +378,10 @@
             </Setter>
         </Style>
         <Style x:Key="MenuIconStyle">
-            <Setter Property="Rectangle.Fill" Value="White" />
-            <Setter Property="Rectangle.Height" Value="5" />
-            <Setter Property="Rectangle.Width" Value="25" />
-            <Setter Property="Rectangle.Margin" Value="0,12,0,13" />
-
+            <Setter Property="Rectangle.Fill" Value="{StaticResource BrushDarkGray}" />
+            <Setter Property="Rectangle.Height" Value="4" />
+            <Setter Property="Rectangle.Width" Value="20" />
+            <Setter Property="Rectangle.Margin" Value="0,12,0,12" />
         </Style>
         <Style x:Key="HeaderMenuStyle">
             <Setter Property="TextBlock.Foreground" Value="White" />
@@ -403,7 +402,6 @@
             <Setter Property="Ellipse.VerticalAlignment" Value="Center" />
             <Setter Property="Ellipse.HorizontalAlignment" Value="Right" />
             <Setter Property="Ellipse.Stroke" Value="{StaticResource BrushMiddleGreen}" />
-
         </Style>
         <Style x:Key="XIconTextSytle" TargetType="TextBlock">
             <Setter Property="Width" Value="20"/>
@@ -503,7 +501,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <LinearGradientBrush x:Key="DefautlHeaderBrush" StartPoint="0,0" EndPoint="1,0" Opacity="0.2">
+        <LinearGradientBrush x:Key="DefautlHeaderBrush" StartPoint="0,0" EndPoint="1,0" Opacity="1">
             <GradientStop Color="{StaticResource ColorYellow}" Offset="0.2" />
             <GradientStop Color="{StaticResource ColorLightGreen}" Offset="0.4" />
             <GradientStop Color="{StaticResource ColorMiddleGreen}" Offset="0.6" />
