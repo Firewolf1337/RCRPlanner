@@ -1832,7 +1832,7 @@ namespace RCRPlanner
                     if(seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol) {
                         pref = unchecksymbol;
                     }
-                    row[seasonweek.SeriesName] = pref + seasonweek.Week +": " + seasonweek.Track;
+                    row[seasonweek.SeriesName] = pref + seasonweek.Week.ToString().PadLeft(2, '0') +": " + seasonweek.Track;
                     row["WeekActive"] = seasonweek.WeekActive;
                 }
                 
