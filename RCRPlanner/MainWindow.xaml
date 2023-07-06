@@ -18,10 +18,10 @@
         SizeChanged="Window_SizeChanged"
         MouseDown="Window_MouseDown"
         Background="Transparent">
-    <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" BorderThickness="1" Background="{StaticResource BrushDefaultWindowBackground}">
+    <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" SnapsToDevicePixels="True" Visibility="Visible" BorderThickness="1" Background="{StaticResource BrushDefaultWindowBackground}">
     <Grid x:Name="gridMainwindow">
         <Grid.RowDefinitions>
-            <RowDefinition Height="44"/>
+            <RowDefinition Height="42"/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -1365,7 +1365,7 @@
 
                     </DataGrid> -->
             </Grid>
-        
+
 
 
 
@@ -1383,17 +1383,24 @@
                     <ColumnDefinition Width="105"/>
                     <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
-                <Border CornerRadius="0"  Grid.Column="0" Grid.ColumnSpan="10" BorderThickness="0"  Height="20" Background="{StaticResource DefautlHeaderBrush}">
+                <Border CornerRadius="0"  Grid.Column="0" Grid.ColumnSpan="10" BorderThickness="0"  Height="22" Background="{StaticResource DefautlHeaderBrush}">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="2" Direction="-90" Color="Black" />
                     </Border.Effect>
                 </Border>
+                <DockPanel Panel.ZIndex="10" Grid.ColumnSpan="10" LastChildFill="False" HorizontalAlignment="Center" >
+                    <Image Source="/256.png" HorizontalAlignment="Center" Width="42" Height="42" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Effect>
+                            <DropShadowEffect Direction="-90" ShadowDepth="2" BlurRadius="5"/>
+                        </Image.Effect>
+                    </Image>
+                    <TextBlock Text="RCR Planner" Foreground="{StaticResource BrushDefaultWindowBackground}" FontSize="24" FontFamily="{StaticResource Sui Generis}"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="2" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </DockPanel>
 
-                <TextBlock Text="RCR Planner" Panel.ZIndex="10" Grid.ColumnSpan="10" Foreground="{StaticResource BrushDefaultWindowBackground}" FontSize="24" FontFamily="{StaticResource Sui Generis}"  VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="2" />
-                    </TextBlock.Effect>
-                </TextBlock>
                 <StackPanel x:Name="spHeaderMenuLogin"  Grid.Column="4" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="spHeaderMenuLogin_MouseDown">
                     <TextBlock x:Name="tbHeaderMenuLogin" Text="Login" Style="{StaticResource HeaderMenuStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
@@ -1551,7 +1558,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/> <!-- Row 0 -->
+                    <RowDefinition Height="35"/> <!-- Row 0 -->
                     <RowDefinition Height="16"/> <!-- Row 1 -->
                     <RowDefinition Height="50"/> <!-- Row 2 -->
                     <RowDefinition Height="50"/> <!-- Row 3 -->
@@ -1580,7 +1587,7 @@
                         <DropShadowEffect BlurRadius="20" ShadowDepth="1" Color="{StaticResource ColorBlack}" Direction="0" Opacity="0.5" RenderingBias="Performance" ></DropShadowEffect>
                     </Border.Effect>
                 </Border>
-                <StackPanel x:Name="stackPanelMenuClose" Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Height="35" VerticalAlignment="Center" Width="30" MouseDown="stackPanelMenuClose_MouseDown" Margin="10,0,0,0" >
+                <StackPanel x:Name="stackPanelMenuClose" Grid.ColumnSpan="1" Grid.Column="0" Grid.Row="0"  HorizontalAlignment="Left" Height="35" VerticalAlignment="Center" Width="30" MouseDown="stackPanelMenuClose_MouseDown" Margin="11,4,0,0" >
                     <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
                 </StackPanel>
                 <DockPanel Grid.Row="1" Grid.Column="0"  Width="Auto" HorizontalAlignment="Stretch" LastChildFill="true">
