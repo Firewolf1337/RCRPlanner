@@ -354,7 +354,7 @@ namespace RCRPlanner
             content = Regex.Replace(content, @"<div id=""track-inactive"">[\s\S]*?.*?[\s\S]*?<\/div>", "");
             content = Regex.Replace(content, @"<div id=""track-turns"">[\s\S]*?.*?[\s\S]*?<\/div>", "");
             webBrowser.Document.Body.InnerHtml = content;
-            using (Bitmap bitmap = new Bitmap(webBrowser.Width, webBrowser.Height))
+            using (Bitmap bitmap = new Bitmap(webBrowser.Width, webBrowser.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
             {
                 webBrowser.DrawToBitmap(bitmap,  new Rectangle(0, 0, bitmap.Width, bitmap.Height));
                 bitmap.Save(((System.Windows.Forms.WebBrowser)sender).AccessibleDescription, System.Drawing.Imaging.ImageFormat.Png);
