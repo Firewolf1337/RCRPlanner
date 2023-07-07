@@ -5,6 +5,8 @@ Now you can see all series, cars, tracks and upcoming races for in iRacing.
 You can automatically start applications which you need while racing and close them together with the planner.
 In addition, it is possible to create some interesting statistics.
 
+![Races](/doc/images/races.png)
+
 ***Get an overview [here](/../../wiki/Overview)***
 
 **If you are interested, try it! -> [Latest Release](/../../releases/latest)** <br />
