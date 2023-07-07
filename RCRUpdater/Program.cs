@@ -67,7 +67,7 @@ namespace RCRUpdater
 
             Process.Start(updatePath + "\\" + updateFileName, "/noAutostart");
             Console.WriteLine("Press any key to continue.");
-            Console.ReadLine();
+            Console.ReadKey();
         }
     }
 }
