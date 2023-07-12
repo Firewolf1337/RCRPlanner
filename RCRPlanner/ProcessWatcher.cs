@@ -22,6 +22,7 @@ namespace RCRPlanner
             // Starte einen Hintergrundthread, um den Prozess kontinuierlich zu überwachen
             Thread monitoringThread = new Thread(MonitorProcess);
             monitoringThread.Start();
+            stopRequested = false;
         }
 
         public void StopWatching()

@@ -2517,11 +2517,13 @@ namespace RCRPlanner
         private void btnstartPrograms_Click(object sender, RoutedEventArgs e)
         {
             startPrograms();
+            processWatcher.StartWatching();
         }
 
         private void btnstopPrograms_Click(object sender, RoutedEventArgs e)
         {
             stopPrograms();
+            processWatcher.StopWatching();
         }
         private void gridSeriesFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
         {
