@@ -431,7 +431,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Lenght"  IsReadOnly="True" SortMemberPath="Length" MinWidth="70" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn Header="Length"  IsReadOnly="True" SortMemberPath="Length" MinWidth="70" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Length}" HorizontalAlignment="Center"/>
@@ -445,10 +445,10 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Racelenght" HeaderStyle="{StaticResource DataGridHeaderCenter}" MinWidth="75" Width="Auto" IsReadOnly="True" SortMemberPath="Racelenght"  CanUserSort="True">
+                                        <DataGridTemplateColumn Header="Racelength" HeaderStyle="{StaticResource DataGridHeaderCenter}" MinWidth="75" Width="Auto" IsReadOnly="True" SortMemberPath="Racelength"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Racelenght}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Racelength}" HorizontalAlignment="Center"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -745,7 +745,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Race lenght" MinWidth="80" IsReadOnly="True" SortMemberPath="SerieRaceLength"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Race length" MinWidth="80" IsReadOnly="True" SortMemberPath="SerieRaceLength"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding SerieRaceLength}" HorizontalAlignment="Center"/>
@@ -1006,7 +1006,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Lenght"  IsReadOnly="True" SortMemberPath="Length"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn Header="Length"  IsReadOnly="True" SortMemberPath="Length"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Length}" HorizontalAlignment="Center"/>
@@ -1020,10 +1020,10 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Racelenght" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" MinWidth="85" SortMemberPath="Racelenght"  CanUserSort="True">
+                                        <DataGridTemplateColumn Header="Racelength" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" MinWidth="85" SortMemberPath="Racelength"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Racelenght}" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding Racelength}" HorizontalAlignment="Center"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -1131,7 +1131,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Track lenght" HeaderStyle="{StaticResource DataGridHeaderCenter}"  IsReadOnly="True" Width="100" SortMemberPath="Length"  CanUserSort="True">
+                        <DataGridTemplateColumn Header="Track length" HeaderStyle="{StaticResource DataGridHeaderCenter}"  IsReadOnly="True" Width="100" SortMemberPath="Length"  CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Length}" HorizontalAlignment="Center"/>

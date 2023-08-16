@@ -1000,7 +1000,7 @@ namespace RCRPlanner
                         _trackobj.TrackImage = new Uri("file:///" + exePath + tracksLogo + tr.track_id + ".png");
                         _trackobj.Week = track.SeasonSchedule.race_week_num + 1;
                         _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date, Thread.CurrentThread.CurrentUICulture).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                        _trackobj.Racelenght = track.SeasonSchedule.race_lap_limit != null ? track.SeasonSchedule.race_lap_limit.ToString() + " Laps" : track.SeasonSchedule.race_time_limit.ToString() + " Min";
+                        _trackobj.Racelength = track.SeasonSchedule.race_lap_limit != null ? track.SeasonSchedule.race_lap_limit.ToString() + " Laps" : track.SeasonSchedule.race_time_limit.ToString() + " Min";
                         tracks.Add(_trackobj);
                     }
                     tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
@@ -2146,7 +2146,7 @@ namespace RCRPlanner
                         tbDetail2.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Pitlimit.ToString() + (isMetric ? "km/h" : "mph");
                         lblDetails2.Content = "Pitlimit:";
                         tbDetail1.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Length.ToString() + (isMetric ? "km" : "m");
-                        lblDetails1.Content = "Lenght:";
+                        lblDetails1.Content = "Length:";
                         tbDetail4.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Created.ToString();
                         lblDetails4.Content = "Created:";
                         try

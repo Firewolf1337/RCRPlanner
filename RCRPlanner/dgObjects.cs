@@ -66,7 +66,7 @@ namespace RCRPlanner
             public int Week { get; set; }
             public string Weekdate { get; set; }
             public Uri TrackImage { get; set; }
-            public string Racelenght { get; set; }
+            public string Racelength { get; set; }
             public bool WeekActive { get; set; }
             public Uri TrackLink {get; set;}
             public string Sympathy { get; set; }
