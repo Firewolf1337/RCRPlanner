@@ -35,6 +35,8 @@ namespace RCRUpdater
             {
                 Console.WriteLine("Step killing Planner files error:");
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("Press Enter to continue.");
+                Console.ReadKey();
             }
 
 
@@ -52,6 +54,8 @@ namespace RCRUpdater
                 {
                     Console.WriteLine("Step moving files error:");
                     Console.WriteLine(ex.Message);
+                    Console.WriteLine("Press Enter to continue.");
+                    Console.ReadKey();
                 }
             }
             try
@@ -62,12 +66,13 @@ namespace RCRUpdater
             {
                 Console.WriteLine("Step deleting temp folder error:");
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("Press Enter to continue.");
+                Console.ReadKey();
             }
 
 
             Process.Start(updatePath + "\\" + updateFileName, "/noAutostart");
-            Console.WriteLine("Press any key to continue.");
-            Console.ReadKey();
+
         }
     }
 }
