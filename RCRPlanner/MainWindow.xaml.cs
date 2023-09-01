@@ -1743,7 +1743,7 @@ namespace RCRPlanner
             gridAutoStart.ItemsSource = null;
             gridAutoStart.ItemsSource = dgAutoStartList;
         }
-        private async Task<DataTable> generateSeasonOverview()
+        private async Task<DataTable> generateSeasonOverview(bool reload)
         {
             var dgSeriesL = dgSeriesList.Where(x => x.Favourite.Contains(favsymbolSelected)).ToList();
             List<dgObjects.seasonOverviewDataGrid> dgSeasonOverview = new List<dgObjects.seasonOverviewDataGrid>();
@@ -1765,7 +1765,7 @@ namespace RCRPlanner
                     YearQuaterSeries.Add((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId));
                 }
             }
-            if (seasonRaces.Count == 0)
+            if (seasonRaces.Count == 0 || reload)
             {
                 foreach (var yq in YearQuater.Distinct())
                 {
@@ -1840,13 +1840,13 @@ namespace RCRPlanner
             }
             return dataTable;
         }
-        private async void generateSeasonOverviewGrid()
+        private async void generateSeasonOverviewGrid(bool reload)
         {
             try
             {
                 if (await fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)), false) == 200)
                 {
-                    DataTable view = await generateSeasonOverview();
+                    DataTable view = await generateSeasonOverview(reload);
                     gridSeasonOverview.Children.Clear();
                     Grid grid = new Grid();
                     grid.ShowGridLines = false;
@@ -2505,10 +2505,11 @@ namespace RCRPlanner
             dpMenu4.Visibility = Visibility.Hidden;
             dpMenu5.Visibility = Visibility.Hidden;
             cbMenu6.Visibility = Visibility.Hidden;
-            tbMenu6.Visibility = Visibility.Hidden;
-            generateSeasonOverviewGrid();
+            dpMenu6.Visibility = Visibility.Hidden;
+            tbMenu6.Visibility = Visibility.Visible;
+            generateSeasonOverviewGrid(false);
             stackPanelMenuClose_MouseDown(null, null);
-            generateSeasonOverview();
+            //generateSeasonOverview(false);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { null }, false);
             gridSeasonOverview.Visibility = Visibility.Visible;
             scrollSeasonOverview.Visibility = Visibility.Visible;
@@ -3254,6 +3255,9 @@ namespace RCRPlanner
             {
                 case "gridRaces":
                     generateRaceView();
+                    break;
+                case "gridSeasonOverview":
+                    generateSeasonOverviewGrid(true);
                     break;
             }
         }
