@@ -34,7 +34,3 @@ ___
     * Run the TransparentPics.ps1 file with powershell.
         * has to be run again when new cars or tracks will be released.
 
-## Building information
-
-If you want to build it on your own, please modify RCRPlanner/salt.txt. With this String you password will be encrypted and stored on your PC.
-Also change the repo in the App.config file to prevent downloading another version from this repo.
