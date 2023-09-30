@@ -78,13 +78,13 @@ namespace RCRPlanner
         readonly static DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
         readonly string displayableVersion = $"{version} ({buildDate.ToShortDateString()})";
 
-        readonly string favSeriesfile = @"\favouriteSeries.xml";
-        readonly string favCarsfile = @"\favouriteCars.xml";
-        readonly string favTracksfile = @"\favouriteTracks.xml";
+        readonly string favSeriesfile = @"\favoriteSeries.xml";
+        readonly string favCarsfile = @"\favoriteCars.xml";
+        readonly string favTracksfile = @"\favoriteTracks.xml";
         readonly string sympathyCombifile = @"\sympathyCombi.xml";
-        List<memberInfo.FavoutireCars> favoutireCars = new List<memberInfo.FavoutireCars>();
-        List<memberInfo.FavoutireSeries> favoutireSeries = new List<memberInfo.FavoutireSeries>();
-        List<memberInfo.FavoutireTracks> favoutireTracks = new List<memberInfo.FavoutireTracks>();
+        List<memberInfo.FavoriteCars> favoriteCars = new List<memberInfo.FavoriteCars>();
+        List<memberInfo.FavoriteSeries> favoriteSeries = new List<memberInfo.FavoriteSeries>();
+        List<memberInfo.FavoriteTracks> favoriteTracks = new List<memberInfo.FavoriteTracks>();
         List<memberInfo.SympathyCombi> sympathyCombis = new List<memberInfo.SympathyCombi>();
         List<searchSerieResults.Root> seasonRaces = new List<searchSerieResults.Root>(); // races done in this season.
         List<participationCredits.Root> participationCredits = new List<participationCredits.Root>();
@@ -246,7 +246,7 @@ namespace RCRPlanner
                 Directory.CreateDirectory(exePath+seriesLogos);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
-
+                fData.EnsureVersionCompatibility();
                 lblLoadingText.Content = "Loading user information.";
                 if (Properties.Settings.Default.username != string.Empty)
                 {
@@ -318,19 +318,19 @@ namespace RCRPlanner
                 }
                 if (File.Exists(exePath + favSeriesfile))
                 {
-                    favoutireSeries = helper.DeSerializeObject<List<memberInfo.FavoutireSeries>>(exePath + favSeriesfile);
-                    favoutireSeries = favoutireSeries.GroupBy(x => x.series_id).Select(x => x.First()).ToList();
+                    favoriteSeries = helper.DeSerializeObject<List<memberInfo.FavoriteSeries>>(exePath + favSeriesfile);
+                    favoriteSeries = favoriteSeries.GroupBy(x => x.series_id).Select(x => x.First()).ToList();
 
                 }
                 if (File.Exists(exePath + favTracksfile))
                 {
-                    favoutireTracks = helper.DeSerializeObject<List<memberInfo.FavoutireTracks>>(exePath + favTracksfile);
-                    favoutireTracks = favoutireTracks.GroupBy(x => x.track_id).Select(x => x.First()).ToList();
+                    favoriteTracks = helper.DeSerializeObject<List<memberInfo.FavoriteTracks>>(exePath + favTracksfile);
+                    favoriteTracks = favoriteTracks.GroupBy(x => x.track_id).Select(x => x.First()).ToList();
                 }
                 if (File.Exists(exePath + favCarsfile))
                 {
-                    favoutireCars = helper.DeSerializeObject<List<memberInfo.FavoutireCars>>(exePath + favCarsfile);
-                    favoutireCars = favoutireCars.GroupBy(x => x.car_id).Select(x => x.First()).ToList();
+                    favoriteCars = helper.DeSerializeObject<List<memberInfo.FavoriteCars>>(exePath + favCarsfile);
+                    favoriteCars = favoriteCars.GroupBy(x => x.car_id).Select(x => x.First()).ToList();
                 }
                 if (File.Exists(exePath + sympathyCombifile))
                 {
@@ -374,7 +374,7 @@ namespace RCRPlanner
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        lblLoadingText.Content = "Credentials present. Conneting to API...";
+                        lblLoadingText.Content = "Credentials present. Connecting to API...";
                     }));
                     var status = fData.Login_API(Encoding.UTF8.GetBytes((username).ToLower()), Encoding.UTF8.GetBytes(helper.ToInsecureString(password)),false);
                     try
@@ -578,6 +578,8 @@ namespace RCRPlanner
                 }
                 tbstartPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
                 tbstopPrograms.Foreground = Application.Current.Resources["BrushYellow"] as SolidColorBrush;
+                btnstart_Programs.Visibility = Visibility.Hidden;
+                btnstop_Programs.Visibility = Visibility.Visible;
             }
             catch { }
         }
@@ -613,6 +615,8 @@ namespace RCRPlanner
             }
             tbstartPrograms.Foreground = Application.Current.Resources["BrushYellow"] as SolidColorBrush;
             tbstopPrograms.Foreground = Application.Current.Resources["BrushDarkGray"] as SolidColorBrush;
+            btnstart_Programs.Visibility = Visibility.Visible;
+            btnstop_Programs.Visibility = Visibility.Hidden;
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -626,9 +630,9 @@ namespace RCRPlanner
                 alarmTimer.Stop();
                 stopPrograms();
                 processWatcher.StopWatching();
-                helper.SerializeObject<List<memberInfo.FavoutireTracks>>(favoutireTracks, exePath + favTracksfile);
-                helper.SerializeObject<List<memberInfo.FavoutireSeries>>(favoutireSeries, exePath + favSeriesfile);
-                helper.SerializeObject<List<memberInfo.FavoutireCars>>(favoutireCars, exePath + favCarsfile);
+                helper.SerializeObject<List<memberInfo.FavoriteTracks>>(favoriteTracks, exePath + favTracksfile);
+                helper.SerializeObject<List<memberInfo.FavoriteSeries>>(favoriteSeries, exePath + favSeriesfile);
+                helper.SerializeObject<List<memberInfo.FavoriteCars>>(favoriteCars, exePath + favCarsfile);
                 helper.SerializeObject<List<memberInfo.SympathyCombi>>(sympathyCombis, exePath + sympathyCombifile);
                 this.Close();
             }
@@ -744,7 +748,7 @@ namespace RCRPlanner
 
             resize_Grid(gridProfile, "height", position, moveAnimationDuration);
         }
-        private void spHeaderMenuLogin_MouseDown(object sender, MouseButtonEventArgs e)
+        private void btnLogin_Click (object sender, RoutedEventArgs e)
         {
             Thickness margin = gridLogin.Margin;
             int position;
@@ -801,7 +805,7 @@ namespace RCRPlanner
             grid.BeginAnimation(MarginProperty, PositionAnimation);
             }));
         }
-        private async void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLoginLogin_Click(object sender, RoutedEventArgs e)
         {
             if (tbLoginPasword.Password != "")
             {
@@ -830,7 +834,7 @@ namespace RCRPlanner
                     User = await fData.getMemberInfo();
                     helper.SerializeObject<memberInfo.Root>(User, userfile);
                     Style_ProfileIcon(User);
-                    spHeaderMenuLogin_MouseDown(null, null);
+                    btnLogin_Click(null, null);
                     lblLogin.Content = "";
                     mre.Set();
                 }
@@ -959,7 +963,7 @@ namespace RCRPlanner
                                 join asset in seriesAssetsList on series.series_id equals asset.series_id
                                 join season in seriesSeasonList on series.series_id equals season.series_id into _ssL
                                 from alls in _ssL.DefaultIfEmpty()
-                                join fav in favoutireSeries on series.series_id equals fav.series_id into ser
+                                join fav in favoriteSeries on series.series_id equals fav.series_id into ser
                                 from allseries in ser.DefaultIfEmpty()
                                 select new dgObjects.seriesDataGrid()
                                 {
@@ -970,7 +974,7 @@ namespace RCRPlanner
                                     Class = series.allowed_licenses[0].min_license_level >= series.allowed_licenses[0].max_license_level ? (series.allowed_licenses[1].group_name).Replace("Class ", "").Replace("ookie", "") : (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", ""),
                                     License = (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", "") + " " + (series.allowed_licenses[0].min_license_level - (series.allowed_licenses[0].license_group - 1) * 4).ToString("0.00"),
                                     Eligible = series.eligible == true ? checksymbol : "",
-                                    Favourite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
+                                    Favorite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
                                     Official = alls?.official == true ? checksymbol : unchecksymbol,
                                     Fixed = alls?.fixed_setup == true ? checksymbol : unchecksymbol,
                                     Season = alls != null ? alls : new seriesSeason.Root(),
@@ -1046,7 +1050,7 @@ namespace RCRPlanner
                                                              Class = serie.Class,
                                                              License = serie.License,
                                                              Eligible = serie.Eligible,
-                                                             Favourite = serie.Favourite,
+                                                             Favorite = serie.Favorite,
                                                          }).FirstOrDefault();
                             seriesDataGridsList.Add(seriesDataGridsObject);
                         }
@@ -1054,7 +1058,7 @@ namespace RCRPlanner
                     }
                     dgObjects.carsDataGrid carsDataGridObject = new dgObjects.carsDataGrid
                     {
-                        Favourite = favoutireCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected,
+                        Favorite = favoriteCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected,
                         CarId = car.car_id,
                         CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png"),
                         CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png"),
@@ -1124,7 +1128,7 @@ namespace RCRPlanner
                                                              License = serie.License,
                                                              Eligible = serie.Eligible,
                                                              Weeks = tracksinseries.week.ToString(),
-                                                             Favourite = serie.Favourite,
+                                                             Favorite = serie.Favorite,
                                                          }).FirstOrDefault();
                             seriesDataGridsList.Add(seriesDataGridsObject);
                         }
@@ -1174,7 +1178,7 @@ namespace RCRPlanner
                             Price = track.Price,
                             Layouts_count = 1,
                             Participations = track.Participations,
-                            Favourite = favoutireTracks.Any(x => x.track_id == track.PackageID) ? favsymbolSelected : favsymbolUnselected,
+                            Favorite = favoriteTracks.Any(x => x.track_id == track.PackageID) ? favsymbolSelected : favsymbolUnselected,
                             TrackID = track.TrackID
                         };
                         dgTrackLayoutList.Add(newTrack);
@@ -1219,7 +1223,7 @@ namespace RCRPlanner
                 foreach (var item in tracksInSeries)
                 {
                     var track = tracksList.First(t => t.track_id == item.track_id);
-                    if (favoutireSeries.Any(f => f.series_id == item.series_id) && !User.track_packages.Any(p => p.package_id == track.package_id))
+                    if (favoriteSeries.Any(f => f.series_id == item.series_id) && !User.track_packages.Any(p => p.package_id == track.package_id))
                     {
                         List<dgObjects.seriesDataGrid> seriesDataGridsList = new List<dgObjects.seriesDataGrid>();
                         var seriesDataGridsObject = (from serie in dgSeriesList
@@ -1234,7 +1238,7 @@ namespace RCRPlanner
                                                          License = serie.License,
                                                          Eligible = serie.Eligible,
                                                          Weeks = item.week.ToString(),
-                                                         Favourite = serie.Favourite,
+                                                         Favorite = serie.Favorite,
                                                          OwnTracks = serie.Tracks.Count(t => t.Owned == checksymbol),
                                                      }).FirstOrDefault();
                         seriesDataGridsList.Add(seriesDataGridsObject);
@@ -1535,9 +1539,9 @@ namespace RCRPlanner
                             serieclass = true;
                         }
                         if (
-                            ((cbFilterFavSeries.IsChecked == true && race.Serie.Favourite == favsymbolSelected || cbFilterFavSeries.IsChecked == false) &&
-                            (cbFilterFavTracks.IsChecked == true && race.Track.Favourite == favsymbolSelected || cbFilterFavTracks.IsChecked == false) &&
-                            (cbFilterFavCars.IsChecked == true && race.Cars.Any(c => favoutireCars.Any(u => u.car_id == c.CarId)) || cbFilterFavCars.IsChecked == false) ||
+                            ((cbFilterFavSeries.IsChecked == true && race.Serie.Favorite == favsymbolSelected || cbFilterFavSeries.IsChecked == false) &&
+                            (cbFilterFavTracks.IsChecked == true && race.Track.Favorite == favsymbolSelected || cbFilterFavTracks.IsChecked == false) &&
+                            (cbFilterFavCars.IsChecked == true && race.Cars.Any(c => favoriteCars.Any(u => u.car_id == c.CarId)) || cbFilterFavCars.IsChecked == false) ||
                             (cbFilterFavSeries.IsChecked == false && cbFilterFavTracks.IsChecked == false && cbFilterFavCars.IsChecked == false))
                           )
                         {
@@ -1745,7 +1749,7 @@ namespace RCRPlanner
         }
         private async Task<DataTable> generateSeasonOverview(bool reload)
         {
-            var dgSeriesL = dgSeriesList.Where(x => x.Favourite.Contains(favsymbolSelected)).ToList();
+            var dgSeriesL = dgSeriesList.Where(x => x.Favorite.Contains(favsymbolSelected)).ToList();
             List<dgObjects.seasonOverviewDataGrid> dgSeasonOverview = new List<dgObjects.seasonOverviewDataGrid>();
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("Day");
@@ -1788,7 +1792,7 @@ namespace RCRPlanner
             row[0] = "";
             dataTable.Rows.Add(row);
             row = dataTable.NewRow();
-            row[0] = "Serie:";
+            row[0] = "Series:";
             dataTable.Rows.Add(row);
             row = dataTable.NewRow();
             row[0] = "Credit Tracker:";
@@ -2144,7 +2148,7 @@ namespace RCRPlanner
                         tbDetail3.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Corners.ToString();
                         lblDetails3.Content = "Corners:";
                         tbDetail2.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Pitlimit.ToString() + (isMetric ? "km/h" : "mph");
-                        lblDetails2.Content = "Pitlimit:";
+                        lblDetails2.Content = "Pit limit:";
                         tbDetail1.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Length.ToString() + (isMetric ? "km" : "m");
                         lblDetails1.Content = "Length:";
                         tbDetail4.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Created.ToString();
@@ -2305,7 +2309,7 @@ namespace RCRPlanner
             btnMenu1.Content = "Reload";
             btnMenu1.Width = 80;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
-            cbMenu2.Content = "only if owned track in serie <8";
+            cbMenu2.Content = "only if owned track in a series <8";
             clearDetails();
             generatePurchaseGuideView();
             stackPanelMenuClose_MouseDown(null, null);
@@ -2334,7 +2338,7 @@ namespace RCRPlanner
             btnMenu1.Content = magnifier;
             btnMenu1.Width = 40;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Right;
-            tbMenu2lb.Content = "Serie name:";
+            tbMenu2lb.Content = "Series name:";
             tbMenu2tb.Text = "";
             cbMenu4.Content = "Eligible series";
             cbMenu4.IsChecked = true;
@@ -2402,7 +2406,7 @@ namespace RCRPlanner
             ddMenu2.SelectedIndex = -1;
             ddMenu3.Items.Clear();
             ddMenu4.Items.Clear();
-            lbMenu2.Content = "Serie:";
+            lbMenu2.Content = "Series:";
             lbMenu3.Content = "Year:";
             lbMenu4.Content = "Season:";
             lbMenu5.Content = "Week:";
@@ -2439,7 +2443,7 @@ namespace RCRPlanner
             ddMenu2.SelectedIndex = -1;
             ddMenu3.Items.Clear();
             ddMenu4.Items.Clear();
-            lbMenu2.Content = "Serie:";
+            lbMenu2.Content = "Series:";
             lbMenu3.Content = "Season:";
             lbMenu4.Content = "Car class:";
             ddMenu2.ItemsSource = cbSeries;
@@ -2472,7 +2476,7 @@ namespace RCRPlanner
             btnMenu1.Content = "Add program";
             btnMenu1.Width = 100;
             btnMenu1.HorizontalAlignment = HorizontalAlignment.Center;
-            cbMenu2.Content = "Auto start progams on launch?";
+            cbMenu2.Content = "Auto start programs on launch?";
             cbMenu3.Content = "Start programs minimized?";
             cbMenu3.IsChecked = autoStartApps.Minimized;
             cbMenu4.Content = "Kill programs on close?";
@@ -2526,56 +2530,56 @@ namespace RCRPlanner
             stopPrograms();
             processWatcher.StopWatching();
         }
-        private void gridSeriesFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
+        private void gridSeriesFavorite_MouseDown(object sender, MouseButtonEventArgs e)
         {
             int ID = ((RCRPlanner.dgObjects.seriesDataGrid)((System.Windows.FrameworkElement)sender).DataContext).SerieId;
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
             {
-                dgSeriesList.First(r => r.SerieId == ID).Favourite = favsymbolSelected;
-                favoutireSeries.Add(new memberInfo.FavoutireSeries { series_id = ID });
+                dgSeriesList.First(r => r.SerieId == ID).Favorite = favsymbolSelected;
+                favoriteSeries.Add(new memberInfo.FavoriteSeries { series_id = ID });
             }
             else
             {
-                dgSeriesList.First(r => r.SerieId == ID).Favourite = favsymbolUnselected;
-                var fav = favoutireSeries.FirstOrDefault(i => i.series_id == ID);
-                favoutireSeries.Remove(fav);
+                dgSeriesList.First(r => r.SerieId == ID).Favorite = favsymbolUnselected;
+                var fav = favoriteSeries.FirstOrDefault(i => i.series_id == ID);
+                favoriteSeries.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 CollectionViewSource.GetDefaultView(gridSeries.ItemsSource).Refresh();
             }));
         }
-        private void gridCarsFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
+        private void gridCarsFavorite_MouseDown(object sender, MouseButtonEventArgs e)
         {
             int ID = ((RCRPlanner.dgObjects.carsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).CarId;
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
             {
-                dgCarsList.First(r => r.CarId == ID).Favourite = favsymbolSelected;
-                favoutireCars.Add(new memberInfo.FavoutireCars { car_id = ID });
+                dgCarsList.First(r => r.CarId == ID).Favorite = favsymbolSelected;
+                favoriteCars.Add(new memberInfo.FavoriteCars { car_id = ID });
             }
             else
             {
-                dgCarsList.First(r => r.CarId == ID).Favourite = favsymbolUnselected;
-                var fav = favoutireCars.FirstOrDefault(i => i.car_id == ID);
-                favoutireCars.Remove(fav);
+                dgCarsList.First(r => r.CarId == ID).Favorite = favsymbolUnselected;
+                var fav = favoriteCars.FirstOrDefault(i => i.car_id == ID);
+                favoriteCars.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 CollectionViewSource.GetDefaultView(gridCars.ItemsSource).Refresh();
             }));
         }
 
-        private void gridTracksFavoutire_MouseDown(object sender, MouseButtonEventArgs e)
+        private void gridTracksFavorite_MouseDown(object sender, MouseButtonEventArgs e)
         {
             int ID = ((RCRPlanner.dgObjects.tracksLayoutsDataGrid)((System.Windows.FrameworkElement)sender).DataContext).PackageID;
             if (((System.Windows.Controls.TextBlock)sender).Text != favsymbolSelected)
             {
-                dgTrackLayoutList.First(r => r.PackageID == ID).Favourite = favsymbolSelected;
-                favoutireTracks.Add(new memberInfo.FavoutireTracks { track_id = ID });
+                dgTrackLayoutList.First(r => r.PackageID == ID).Favorite = favsymbolSelected;
+                favoriteTracks.Add(new memberInfo.FavoriteTracks { track_id = ID });
             }
             else
             {
-                dgTrackLayoutList.First(r => r.PackageID == ID).Favourite = favsymbolUnselected;
-                var fav = favoutireTracks.FirstOrDefault(i => i.track_id == ID);
-                favoutireTracks.Remove(fav);
+                dgTrackLayoutList.First(r => r.PackageID == ID).Favorite = favsymbolUnselected;
+                var fav = favoriteTracks.FirstOrDefault(i => i.track_id == ID);
+                favoriteTracks.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
                 CollectionViewSource.GetDefaultView(gridTracksLayout.ItemsSource).Refresh();
@@ -2723,8 +2727,31 @@ namespace RCRPlanner
         {
             Properties.Settings.Default.username = "";
             Properties.Settings.Default.password = "";
+            Properties.Settings.Default.Save();
+        }
+        private void btnFilterReset_Click(object sender, RoutedEventArgs e)
+        {
             Properties.Settings.Default.filter = @defaultfilter;
             Properties.Settings.Default.Save();
+            Properties.Settings.Default.Reload();
+            List<string> filter = new List<string>();
+            filter = defaultfilter.Split(';').ToList();
+            try
+            {
+                var cbFilter = FindVisualChildren<CheckBox>(gridFilter);
+                foreach (CheckBox cb in cbFilter)
+                {
+                    if (filter.Contains(cb.Name))
+                    {
+                        cb.IsChecked = true;
+                    }
+                    else
+                    {
+                        cb.IsChecked = false;
+                    }
+                }
+            }
+            catch { }
         }
         private async void btnProfileUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -2919,7 +2946,7 @@ namespace RCRPlanner
                         }
                         else
                         {
-                            btnMenu1.Content = "Please relogin!";
+                            btnMenu1.Content = "Please re-login!";
                         }
                     }
                     catch (Exception ex)
@@ -2961,7 +2988,7 @@ namespace RCRPlanner
                         }
                         else
                         {
-                            btnMenu1.Content = "Please relogin!";
+                            btnMenu1.Content = "Please re-login!";
                         }
                     }
                     catch (Exception ex)
@@ -3340,6 +3367,21 @@ namespace RCRPlanner
                 cbFilterOwnCars.IsEnabled = true;
                 cbFilterOwnTracks.IsEnabled = true;
             }
+        }
+
+        private void LoginClose_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Thickness margin = gridLogin.Margin;
+            int position;
+            if (margin.Bottom != 50)
+            {
+                position = 50;
+            }
+            else
+            {
+                position = -250;
+            }
+            move_grid(gridLogin, "bottom", position, moveAnimationDuration);
         }
     }
 }

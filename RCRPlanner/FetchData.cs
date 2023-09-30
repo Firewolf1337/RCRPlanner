@@ -75,7 +75,7 @@ namespace RCRPlanner
                     }
                     catch (Exception ex)
                     {
-                        if(ex.InnerException != null)
+                        if (ex.InnerException != null)
                         {
                             MessageBox.Show("Existing connection: " + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
@@ -101,7 +101,7 @@ namespace RCRPlanner
                 }
                 catch (Exception ex)
                 {
-                    if(ex.InnerException != null)
+                    if (ex.InnerException != null)
                     {
                         MessageBox.Show("Connection:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
@@ -177,7 +177,7 @@ namespace RCRPlanner
             var responseObject = new memberInfo.Root();
             try
             {
-                responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<memberInfo.Root>(contents,settings);
+                responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<memberInfo.Root>(contents, settings);
                 //responseObject = JsonSerializer.Deserialize<memberInfo.Root>(contents);
             }
             catch (Exception ex)
@@ -427,6 +427,38 @@ namespace RCRPlanner
             }
 
             return responseObject;
+        }
+        public bool EnsureVersionCompatibility()
+        {
+            string[] favfiles =
+            {
+                "favouriteCars.xml",
+                "favouriteSeries.xml",
+                "favouriteTracks.xml"
+            };
+            try
+            {
+                foreach (string file in favfiles)
+                    {
+                    string path = System.Windows.Forms.Application.StartupPath + "\\" + file;
+                    if (File.Exists(path)) {
+                        string text = File.ReadAllText(path);
+                        text = text.Replace("avourite", "avorite");
+                        text = text.Replace("avoutire", "avorite");
+                        File.WriteAllText(path, text);
+                        try
+                        {
+                            System.IO.File.Move(path, System.Windows.Forms.Application.StartupPath + "\\" + file.Replace("avourite", "avorite"));
+
+                        }
+                        catch { }
+                    }
+                }
+                return true;
+            }
+            catch {
+                return false; 
+            }
         }
         public async Task<githubLatestRelease.Root> getGithubActualReleaseinfo(string url)
         {

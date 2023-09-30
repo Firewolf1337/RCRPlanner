@@ -177,10 +177,10 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="60" Width="100*" HeaderStyle="{StaticResource DataGridHeaderCenter}" SortMemberPath="Favourite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                            <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="100*" HeaderStyle="{StaticResource DataGridHeaderCenter}" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Favourite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavoutire_MouseDown"/>
+                                        <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -225,10 +225,10 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="60" Width="100" SortMemberPath="Favourite" HeaderStyle="{StaticResource DataGridHeaderCenter}" CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                            <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="100" SortMemberPath="Favorite" HeaderStyle="{StaticResource DataGridHeaderCenter}" CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Favourite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavoutire_MouseDown"/>
+                                        <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -255,10 +255,10 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="60" Width="Auto" SortMemberPath="Favourite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Favourite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavoutire_MouseDown" FontSize="25"/>
+                                    <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown" FontSize="25"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -407,7 +407,7 @@
                                                 </Style>
                                             </DataGridTemplateColumn.CellStyle>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Layoutname" IsReadOnly="True" MinWidth="100" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
+                                        <DataGridTemplateColumn Header="Layout name" IsReadOnly="True" MinWidth="100" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Layoutname}" />
@@ -445,7 +445,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Racelength" HeaderStyle="{StaticResource DataGridHeaderCenter}" MinWidth="75" Width="Auto" IsReadOnly="True" SortMemberPath="Racelength"  CanUserSort="True">
+                                        <DataGridTemplateColumn Header="Race length" HeaderStyle="{StaticResource DataGridHeaderCenter}" MinWidth="75" Width="Auto" IsReadOnly="True" SortMemberPath="Racelength"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Racelength}" HorizontalAlignment="Center"/>
@@ -536,10 +536,10 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favourite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                        <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Favourite}" HorizontalAlignment="Center" MouseDown="gridCarsFavoutire_MouseDown" FontSize="25"/>
+                                    <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridCarsFavorite_MouseDown" FontSize="25"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -596,10 +596,10 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Favourite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favourite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                        <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Favourite}" HorizontalAlignment="Center" MouseDown="gridTracksFavoutire_MouseDown" FontSize="25"/>
+                                    <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridTracksFavorite_MouseDown" FontSize="25"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -983,7 +983,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Layoutname" IsReadOnly="True" MinWidth="100" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
+                                        <DataGridTemplateColumn Header="Layout name" IsReadOnly="True" MinWidth="100" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellStyle>
                                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
                                                     <Style.Triggers>
@@ -1020,7 +1020,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Racelength" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" MinWidth="85" SortMemberPath="Racelength"  CanUserSort="True">
+                                        <DataGridTemplateColumn Header="Race length" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" MinWidth="85" SortMemberPath="Racelength"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Racelength}" HorizontalAlignment="Center"/>
@@ -1373,21 +1373,22 @@
             <Grid x:Name="headerMenuGrid" Grid.ColumnSpan="2" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="26" />
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="105"/>
                     <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
-                <Border CornerRadius="0"  Grid.Column="0" Grid.ColumnSpan="10" BorderThickness="0"  Height="22" Background="{StaticResource DefautlHeaderBrush}">
+                <Border CornerRadius="0"  Grid.Column="0" Grid.ColumnSpan="10" BorderThickness="0" Margin="0.1,0,0.1,0" Height="22" Background="{StaticResource DefautlHeaderBrush}">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="2" Direction="-90" Color="Black" />
                     </Border.Effect>
                 </Border>
+
                 <DockPanel Panel.ZIndex="10" Grid.ColumnSpan="10" LastChildFill="False" HorizontalAlignment="Center" >
                     <Image Source="/256.png" HorizontalAlignment="Center" Width="42" Height="42" RenderOptions.BitmapScalingMode="HighQuality">
                         <Image.Effect>
@@ -1401,10 +1402,38 @@
                     </TextBlock>
                 </DockPanel>
 
-                <StackPanel x:Name="spHeaderMenuLogin"  Grid.Column="4" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="spHeaderMenuLogin_MouseDown">
+                <!--<StackPanel x:Name="spHeaderMenuLogin"  Grid.Column="4" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="spHeaderMenuLogin_MouseDown">
                     <TextBlock x:Name="tbHeaderMenuLogin" Text="Login" Style="{StaticResource HeaderMenuStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </StackPanel>
-
+                </StackPanel> -->
+                <Ellipse  Style="{StaticResource HeaderMenuIconEllipseStyleMenu}" Grid.Column="1" Panel.ZIndex="1" Margin="0">
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="3" />
+                    </Ellipse.Effect>
+                </Ellipse>
+                <Button x:Name="btnstop_Programs" Height="22" Grid.Column="1" Panel.ZIndex="2" Click="btnstopPrograms_Click" ToolTip="Stop programs" Background="Transparent" Visibility="Hidden">
+                    <Viewbox Height="20" Width="20">
+                        <TextBlock x:Name="tbstop_Programs" Foreground="{StaticResource BrushTextWhite}" Text="◾">
+                            <TextBlock.RenderTransform>
+                                <ScaleTransform ScaleX="2" ScaleY="2" CenterX="5"  CenterY="6" />
+                            </TextBlock.RenderTransform>
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="1" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </Viewbox>
+                </Button>
+                <Button x:Name="btnstart_Programs" Height="22" Grid.Column="1" Panel.ZIndex="2" Click="btnstartPrograms_Click" HorizontalAlignment="Right" ToolTip="Start programs" Background="Transparent" Visibility="Visible">
+                    <Viewbox Height="20" Width="20">
+                        <TextBlock x:Name="tbstart_Programs" Foreground="{StaticResource BrushTextWhite}" Text="►" HorizontalAlignment="Right" >
+                            <TextBlock.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="2" CenterX="20"  CenterY="6"  />
+                            </TextBlock.RenderTransform>
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="2" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </Viewbox>
+                </Button>
                 <!-- Profile Elements -->
                 <Ellipse x:Name="elHeaderMenuProfileColor1" Fill="{StaticResource BrushYellow}" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="36" Height="36" Panel.ZIndex="10" MouseDown="elHeaderMenuProfileColor1_MouseDown"  >
                     <Ellipse.Effect>
@@ -1435,7 +1464,12 @@
                 </Ellipse>
                 <TextBlock Style="{StaticResource MaxIconTextSytle}" Grid.Column="8" Panel.ZIndex="10" MouseDown="MaxMin_MouseDown" Margin="0,-2,33,0"/>
                 <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="10"  Opacity="0" Fill="{StaticResource BrushRed}" MouseDown="stackPanelMenu_MouseDown"/>
-                <Grid Grid.ColumnSpan="1" Grid.Column="0" Height="40">
+                <Ellipse  Style="{StaticResource HeaderMenuIconEllipseStyleMenu}" Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="0" Margin="0">
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="3" />
+                    </Ellipse.Effect>
+                </Ellipse>
+                <Grid Grid.ColumnSpan="1" Grid.Column="0" Height="41">
                     <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="1" Style="{StaticResource MenuIconStyle}" VerticalAlignment="Top">
                         <Rectangle.Effect>
                             <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="1" />
@@ -1486,6 +1520,7 @@
                 <Label Content="Type:" Grid.Row="3" Grid.Column="1" Style="{StaticResource DefaultLabelStyle}"/>
                 <Label Content="License:" Grid.Row="4" Grid.Column="1" Style="{StaticResource DefaultLabelStyle}"/>
                 <Button x:Name="btnFilterSave" Content="Save and apply filter" Grid.Column="2" Grid.Row="5" Width="120" HorizontalAlignment="Right" Margin="5,5" Click="btnFilterSave_Click" />
+                <Button x:Name="btnFilterReset" Content="Reset" Grid.Column="1" Grid.Row="5" Width="120" HorizontalAlignment="Center" Margin="5,5" Click="btnFilterReset_Click" />
                 <Grid Grid.Column="2" Grid.Row="1" x:Name="gridFilterOfficial" Margin="5,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -1595,7 +1630,7 @@
                     <Label Content="Overviews" Width="60" Margin="0,-3,0,-3" HorizontalAlignment="Center" FontSize="10" Style="{StaticResource DefaultLabelStyle}"/>
                     <Line X1="0" Y1="7" X2="50" Y2="7" Width="95" Stretch="Fill" Stroke="{StaticResource BrushDarkGray}" StrokeThickness="1" />
                 </DockPanel>
-                <Button x:Name="btnLoadRaces" Grid.Row="2" Grid.Column="0" Content="Races" Click="btnLoadRaces_Click" ToolTip="View upcomming races"/>
+                <Button x:Name="btnLoadRaces" Grid.Row="2" Grid.Column="0" Content="Races" Click="btnLoadRaces_Click" ToolTip="View upcoming races"/>
                 <Button x:Name="btnLoadSeasonOverview" Grid.Row="3" Grid.Column="0" Content="Season" Click="btnLoadSeasonOverview_Click" ToolTip="View a season overview of favorite series."/>
                 <Button x:Name="btnLoadSeries" Grid.Row="4" Grid.Column="0" Content="Series" Click="btnLoadSeries_Click" ToolTip="View series"/>
                 <Button x:Name="btnLoadCars" Grid.Row="5" Grid.Column="0" Content="Cars" Click="btnLoadCars_Click" ToolTip="View cars"/>
@@ -1636,7 +1671,7 @@
                 </DockPanel>
                 <DockPanel Grid.Row="17" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" >
                     <Button x:Name="btnProfileUpdate" DockPanel.Dock="Left" Width="125" Content="App Update" Click="btnProfileUpdate_Click" ToolTip="Indicates an app update."/>
-                    <Button x:Name="btnProfileReset" DockPanel.Dock="Right" Content="Reset settings" Click="btnProfileReset_Click" ToolTip="Reset app settings to default values." />
+                    <Button x:Name="btnLogin" DockPanel.Dock="Right" Content="Login" Click="btnLogin_Click" ToolTip="Enter iRacing credentials" />
                 </DockPanel> 
                 <CheckBox x:Name="cbStartMinimized" Grid.Row="18" Grid.Column="0" Content="Start minimized" Width="Auto" Margin="10,0,0,0" Click="cbStartMinimized_Click" ToolTip="Select whether the planner starts in background or not." />
                 <DockPanel Grid.Row="19" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch">
@@ -1780,37 +1815,51 @@
             </Grid>
 
             <!-- Login grid -->
-        <Grid x:Name="gridLogin" Panel.ZIndex="100" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="1" Margin="0,0,0,50"  Width="500" Height="250" HorizontalAlignment="Center" VerticalAlignment="Bottom" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="125"/>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="34"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Border Grid.ColumnSpan="3" Grid.RowSpan="6" BorderBrush="{DynamicResource DefaultBorderBrush}" BorderThickness="1">
-                <Border.Background>
-                    <SolidColorBrush Color="{StaticResource ColorBlack}" Opacity="0.9"/>
-                </Border.Background>
-                <Border.Effect>
+            <Grid x:Name="gridLogin" Panel.ZIndex="100" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="1" Margin="0,0,0,50"  Width="500" Height="250" HorizontalAlignment="Center" VerticalAlignment="Bottom" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="125"/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Grid.ColumnSpan="3" Grid.RowSpan="6" BorderBrush="{DynamicResource DefaultBorderBrush}" BorderThickness="1">
+                    <Border.Background>
+                        <SolidColorBrush Color="{StaticResource ColorBlack}" Opacity="0.9"/>
+                    </Border.Background>
+                    <Border.Effect>
                         <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="{StaticResource ColorBlack}" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
-                </Border.Effect>
-            </Border>
-            <TextBlock Text="Name:"  Style="{StaticResource DefaultTextStyle}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-            <TextBlock Text="Password:"  Style="{StaticResource DefaultTextStyle}" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-            <TextBox x:Name="tbLoginName" Style="{StaticResource DefaultTextBoxStyle}" Grid.Column="1" Grid.Row="1" Margin="2" CharacterCasing="Lower"/>
-            <PasswordBox  x:Name="tbLoginPasword" Style="{StaticResource DefaultPasswordBoxStyle}" Grid.Column="1" Grid.Row="2" Margin="2" />
-            <CheckBox x:Name="cbSaveLogin" Content="Save Login" IsChecked="False" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="{StaticResource BrushTextWhite}" FontFamily="{StaticResource Montserrat Light}" />
-            <Button x:Name="btnLogin" Content="Login" Grid.Column="1" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="30" FontSize="18" Margin="0,2,2,0" Click="btnLogin_Click"/>
-            <Label x:Name="lblLogin" Content="" Grid.Column="1" Grid.Row="5" FontFamily="{StaticResource Montserrat Light}" Foreground="{StaticResource BrushTextWhite}"/>
-        </Grid>
-        <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource BrushBlack}" Opacity="0.5" Visibility="Hidden"/>
+                    </Border.Effect>
+                </Border>
+                <StackPanel x:Name="stackPanelLoginClose" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" Height="35" VerticalAlignment="Center" Width="30" MouseDown="LoginClose_MouseDown" >
+                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
+                </StackPanel>
+                <TextBlock Text="E-Mail address: "  Style="{StaticResource DefaultTextStyle}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBlock Text="Password: "  Style="{StaticResource DefaultTextStyle}" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBox x:Name="tbLoginName" Style="{StaticResource DefaultTextBoxStyle}" Grid.Column="1" Grid.Row="1" Margin="2" CharacterCasing="Lower"/>
+                <PasswordBox  x:Name="tbLoginPasword" Style="{StaticResource DefaultPasswordBoxStyle}" Grid.Column="1" Grid.Row="2" Margin="2" />
+                <Grid Grid.Column="1" Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="70"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="cbSaveLogin" Content="Save Login" IsChecked="False" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{StaticResource BrushTextWhite}" FontFamily="{StaticResource Montserrat Light}" />
+                    <Button x:Name="btnResetLogin" Content="Reset" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="25" Margin="0,2,2,0" Click="btnProfileReset_Click"/>
+                    <Button x:Name="btnLoginLogin" Content="Login" Grid.Column="2"  VerticalAlignment="Top" HorizontalAlignment="Right" Width="70" Height="25" Margin="0,2,2,0" Click="btnLoginLogin_Click"/>
+                </Grid>
+                <Label x:Name="lblLogin" Content="" Grid.Column="1" Grid.Row="5" FontFamily="{StaticResource Montserrat Light}" Foreground="{StaticResource BrushTextWhite}"/>
+            </Grid>
+            <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource BrushBlack}" Opacity="0.5" Visibility="Hidden"/>
         <Grid x:Name="gridLoading" Background="{StaticResource BrushBlack}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="50,50" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
