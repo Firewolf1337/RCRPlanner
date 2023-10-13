@@ -18,7 +18,7 @@ namespace RCRPlanner
             public string RaceLength { get; set; }
             public string RaceTimes { get; set; }
             public string Weeks { get; set; }
-            public string Favourite { get; set; }
+            public string Favorite { get; set; }
             public string Fixed { get; set; }
             public string Official { get; set; }
             public List<tracksDataGrid> Tracks { get; set; }
@@ -44,7 +44,7 @@ namespace RCRPlanner
             public List<seriesDataGrid> Series { get; set; }
             public int PackageID { get; set; }
             public int Series_Participations { get; set; }
-            public string Favourite { get; set; }
+            public string Favorite { get; set; }
             public string ForumLink { get; set; }
         }
 
@@ -83,7 +83,7 @@ namespace RCRPlanner
             public int Participations { get; set; }
             public Uri TrackImage { get; set; }
             public string Created { get; set; }
-            public string Favourite { get; set; }
+            public string Favorite { get; set; }
             public int TrackID { get; set; }
         }
 
@@ -97,7 +97,7 @@ namespace RCRPlanner
             public string SerieRaceLength { get; set; }
             public string RaceTimes { get; set; }
             public string SerieWeek { get; set; }
-            public string Favourite { get; set; }
+            public string Favorite { get; set; }
             public string SerieFixed { get; set; }
             public string SerieOfficial { get; set; }
             public DateTime NextRace { get; set; }

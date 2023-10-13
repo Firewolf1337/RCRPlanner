@@ -55,13 +55,13 @@ namespace RCRPlanner
             sofMin = dgParticipation.Select(i => i.SoF).Min();
             sofMax = dgParticipation.Select(i => i.SoF).Max();
 
-            foreach (var time in dgParticipation.Select(t => t.StartTime.TimeOfDay).Distinct()) {
+            foreach (var time in dgParticipation.Select(t => t.StartTime.TimeOfDay).Distinct().OrderBy(t => t.Ticks)) {
                 string thetime = new DateTime(time.Ticks).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToString());
                 dataTable.Columns.Add(thetime);
                 sofcol++;
             }
             dataTable.Columns.Add("Track");
-            foreach (var time in dgParticipation.Select(t => t.StartTime.TimeOfDay).Distinct())
+            foreach (var time in dgParticipation.Select(t => t.StartTime.TimeOfDay).Distinct().OrderBy(t => t.Ticks))
             {
                 string thetime = new DateTime(time.Ticks).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortTimePattern.ToString());
                 DataColumn column = new DataColumn();
@@ -94,7 +94,7 @@ namespace RCRPlanner
                 foreach (var entry in tempgrid)
                 {
                     row[entry.Time] = entry.NumberDriver;
-                    row["s" + entry.Time] = entry.SoF;
+                    row["s" + entry.Time] =  entry.SoF;
                 }
                 dataTable.Rows.Add(row);
             }

@@ -5,15 +5,15 @@ namespace RCRPlanner
 {
     public class memberInfo
     {
-        public class FavoutireSeries
+        public class FavoriteSeries
         {
             public int series_id { get; set; }
         }
-        public class FavoutireCars
+        public class FavoriteCars
         {
             public int car_id { get; set; }
         }
-        public class FavoutireTracks
+        public class FavoriteTracks
         {
             public int track_id { get; set; }
         }
@@ -168,9 +168,9 @@ namespace RCRPlanner
             public DateTime read_pp { get; set; }
             public bool has_read_tc { get; set; }
             public bool has_read_pp { get; set; }
-            public List<FavoutireSeries> favoutireSeries { get; set; }
-            public List<FavoutireCars> favoutireCars { get; set; }
-            public List<FavoutireTracks> favoutireTracks { get; set; }
+            public List<FavoriteSeries> favoriteSeries { get; set; }
+            public List<FavoriteCars> favoriteCars { get; set; }
+            public List<FavoriteTracks> favoriteTracks { get; set; }
         }
 
         public class Suit
