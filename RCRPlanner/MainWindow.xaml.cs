@@ -709,7 +709,7 @@ namespace RCRPlanner
                     int itemcount = items[0] + items[1];
                     ProgItems.Value = itemcount;
                     tbItems.Width = 40;
-                    int pos = Convert.ToInt32((ProgItems.RenderSize.Width / 40) * itemcount);
+                    int pos = Convert.ToInt32((ProgItems.RenderSize.Width / 40) * (itemcount > 40 ? 40 : itemcount) );
                     var gradient = (((System.Windows.Media.GradientBrush)ProgItems.Foreground).GradientStops);
                     gradient[1].Offset = itemcount<40 && itemcount > 0? 1/((float)itemcount/40): 1;
                     if (pos < 40) {
@@ -1429,7 +1429,7 @@ namespace RCRPlanner
                             _raceobj.NextRaceTime = racetime.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
 
                         }
-                        else if (racetime.Year == DateTime.Parse("01.01.0001").Year || over)
+                        else if (racetime.Year == DateTime.Parse("0001-01-01").Year || over)
                         {
                             _raceobj.NextRaceTime = "Season is over.";
                         }
