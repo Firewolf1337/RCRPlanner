@@ -9,7 +9,7 @@
         		UseLayoutRounding="True"
 		        SnapsToDevicePixels="True"
         Title="RavenCreekRacing Planner"
-        MinWidth="900" MinHeight="640"
+        MinWidth="1200" MinHeight="800"
         Width="1200" Height="800" 
         WindowStyle="None"
         AllowsTransparency="True"
@@ -101,145 +101,341 @@
                     </Button>
                 </DockPanel>
                 <TextBlock x:Name="tbMenu6" Grid.Column="5" Grid.Row="0" Height="30" Text="⟳" Style="{StaticResource DefaultTextBlockStyle}" FontSize="30" HorizontalAlignment="Right" Margin="0,-7,20,0" MouseDown="tbMenu6_MouseDown" VerticalAlignment="Center" TextAlignment="Center" UseLayoutRounding="True" />
-                <Grid x:Name="gridDetails" Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="1" Visibility="Hidden">
+                <Grid Grid.Column="0" Grid.ColumnSpan="6" Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="15"/>
-                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="600"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="100"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
                         <RowDefinition/>
-                        <RowDefinition Height="15"/>
                     </Grid.RowDefinitions>
-                    <Image x:Name="imDetailImage" Stretch="Uniform"  Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" RenderOptions.BitmapScalingMode="HighQuality"/>
-                    <Label x:Name="lblDetails1" Grid.Column="1" Grid.Row="1" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail1" Text="" Grid.Column="2" Grid.Row="1" Style="{StaticResource DefaultTextBlockStyle}"/>
-                    <Label x:Name="lblDetails2" Grid.Column="1" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail2" Text="" Grid.Column="2" Grid.Row="2" Style="{StaticResource DefaultTextBlockStyle}"/>
-                    <Label x:Name="lblDetails3" Grid.Column="1" Grid.Row="3" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail3" Text="" Grid.Column="2" Grid.Row="3" Style="{StaticResource DefaultTextBlockStyle}"/>
-                    <Label x:Name="lblDetails4" Grid.Column="3" Grid.Row="1" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail4" Text="" Grid.Column="4" Grid.Row="1" Style="{StaticResource DefaultTextBlockStyle}"/>
-                    <Label x:Name="lblDetails5" Grid.Column="3" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail5" Text="" Grid.Column="4" Grid.Row="2" Style="{StaticResource DefaultTextBlockStyle}"/>
-                    <Label x:Name="lblDetails6" Grid.Column="3" Grid.Row="3" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail6" Text="" Grid.Column="4" Grid.Row="3" Style="{StaticResource DefaultTextBlockStyle}"/>
-                    <Label x:Name="lblDetails7" Grid.Column="1" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail7" Grid.Column="2" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
+                    <Grid x:Name="gridDetails" Grid.Column="1" Grid.Row="0" Visibility="Hidden">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="15"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="100"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="15"/>
+                        </Grid.RowDefinitions>
+                        <Image x:Name="imDetailImage" Stretch="Uniform"  Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Label x:Name="lblDetails1" Grid.Column="1" Grid.Row="1" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail1" Text="" Grid.Column="2" Grid.Row="1" Style="{StaticResource DefaultTextBlockStyle}"/>
+                        <Label x:Name="lblDetails2" Grid.Column="1" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail2" Text="" Grid.Column="2" Grid.Row="2" Style="{StaticResource DefaultTextBlockStyle}"/>
+                        <Label x:Name="lblDetails3" Grid.Column="1" Grid.Row="3" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail3" Text="" Grid.Column="2" Grid.Row="3" Style="{StaticResource DefaultTextBlockStyle}"/>
+                        <Label x:Name="lblDetails4" Grid.Column="3" Grid.Row="1" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail4" Text="" Grid.Column="4" Grid.Row="1" Style="{StaticResource DefaultTextBlockStyle}"/>
+                        <Label x:Name="lblDetails5" Grid.Column="3" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail5" Text="" Grid.Column="4" Grid.Row="2" Style="{StaticResource DefaultTextBlockStyle}"/>
+                        <Label x:Name="lblDetails6" Grid.Column="3" Grid.Row="3" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail6" Text="" Grid.Column="4" Grid.Row="3" Style="{StaticResource DefaultTextBlockStyle}"/>
+                        <Label x:Name="lblDetails7" Grid.Column="1" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail7" Grid.Column="2" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
                         <Hyperlink x:Name="tbDetail7Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="{StaticResource BrushTextWhite}">Left click open / Right click copy</Hyperlink>
-                     </TextBlock>
-                    <Label x:Name="lblDetails8" Grid.Column="3" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
-                    <TextBlock x:Name="tbDetail8" Grid.Column="4" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
+                        </TextBlock>
+                        <Label x:Name="lblDetails8" Grid.Column="3" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}" />
+                        <TextBlock x:Name="tbDetail8" Grid.Column="4" Grid.Row="4" Style="{StaticResource DefaultTextBlockStyle}">
                         <Hyperlink x:Name="tbDetail8Link" NavigateUri="#" Click="link_Click" MouseRightButtonDown="link_Copy" Foreground="{StaticResource BrushTextWhite}">Left click open / Right click copy</Hyperlink>
-                    </TextBlock>
-                    <DataGrid x:Name="gridCarDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30"  GridLinesVisibility="Horizontal" Visibility="Visible" 
+                        </TextBlock>
+                        <DataGrid x:Name="gridCarDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30"  GridLinesVisibility="Horizontal" Visibility="Visible" 
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" BorderBrush="{StaticResource DefaultBorderBrush}">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn IsReadOnly="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Image Source="{Binding Seriesimage}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="100"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="200" Width="Auto" SortMemberPath="SeriesName"  CanUserSort="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding SeriesName}"  TextTrimming="WordEllipsis"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Category" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Category"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Category}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Eligible"  IsReadOnly="True" SortMemberPath="Eligible"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                <DataGridTemplateColumn.CellTemplate >
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Eligible}" HorizontalAlignment="Center"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="100*" HeaderStyle="{StaticResource DataGridHeaderCenter}" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <DataGrid x:Name="gridTrackDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30" GridLinesVisibility="Horizontal" Visibility="Visible"
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding Seriesimage}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="100"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="200" Width="Auto" SortMemberPath="SeriesName"  CanUserSort="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding SeriesName}"  TextTrimming="WordEllipsis"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Category" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Category"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Category}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Eligible"  IsReadOnly="True" SortMemberPath="Eligible"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Eligible}" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="100*" HeaderStyle="{StaticResource DataGridHeaderCenter}" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <DataGrid x:Name="gridTrackDetail" Grid.Row="5" Grid.RowSpan="8" Grid.Column="1" Grid.ColumnSpan="4"  Style="{StaticResource DefaultDataGridStyle}" AutoGenerateColumns="False" RowHeight="30" GridLinesVisibility="Horizontal" Visibility="Visible"
                                   SelectionMode="Extended" ScrollViewer.CanContentScroll="False"
                                   PreviewMouseWheel="DataGrid_PreviewMouseWheel" BorderBrush="{StaticResource DefaultBorderBrush}">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn IsReadOnly="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding Seriesimage}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="Auto"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="150" Width="150" SortMemberPath="SeriesName"  CanUserSort="True">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding SeriesName}"  TextTrimming="WordEllipsis"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Layout" IsReadOnly="True" MinWidth="80" Width="80" SortMemberPath="Category"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Category}" HorizontalAlignment="Center"  TextTrimming="WordEllipsis"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Weeks" IsReadOnly="True" MinWidth="80" Width="Auto" SortMemberPath="Weeks"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Weeks}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Eligible"  IsReadOnly="True" SortMemberPath="Eligible"  CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                    <DataGridTemplateColumn.CellTemplate >
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Eligible}" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="100" SortMemberPath="Favorite" HeaderStyle="{StaticResource DataGridHeaderCenter}" CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+
+                    <!-- Datagrid for car visualization -->
+                    <DataGrid x:Name="gridCars" Grid.Row="0" Grid.Column="0" Style="{StaticResource DefaultDataGrid50hStyle}" 
+                     AutoGenerateColumns="False" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False"
+                     SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" HorizontalAlignment="Stretch">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn IsReadOnly="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Image Source="{Binding Seriesimage}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Width="Auto"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="150" Width="150" SortMemberPath="SeriesName"  CanUserSort="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding SeriesName}"  TextTrimming="WordEllipsis"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Layout" IsReadOnly="True" MinWidth="80" Width="80" SortMemberPath="Category"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Category}" HorizontalAlignment="Center"  TextTrimming="WordEllipsis"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Weeks" IsReadOnly="True" MinWidth="80" Width="Auto" SortMemberPath="Weeks"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Weeks}" HorizontalAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Eligible"  IsReadOnly="True" SortMemberPath="Eligible"  CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                 <DataGridTemplateColumn.CellTemplate >
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Eligible}" HorizontalAlignment="Center" />
+                                        <Image Source="{Binding CarLogo}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="60" Width="100" SortMemberPath="Favorite" HeaderStyle="{StaticResource DataGridHeaderCenter}" CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                            <DataGridTemplateColumn Header="Fav." IsReadOnly="false" MinWidth="30" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridSeriesFavorite_MouseDown"/>
+                                        <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridCarsFavorite_MouseDown" FontSize="25"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="200" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding CarName}" TextTrimming="WordEllipsis"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Owned}" Value="🗸">
+                                                <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTemplateColumn.CellStyle>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Series" IsReadOnly="True" SortMemberPath="Series_Participations" MinWidth="40" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Series_Participations}" HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Price"  IsReadOnly="True" SortMemberPath="Price" MinWidth="40"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate >
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Created"  IsReadOnly="True" SortMemberPath="CarId"  MinWidth="80" Width="80*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate >
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+
+
+                    <!-- Datagrid for track visualization -->
+                    <DataGrid x:Name="gridTracksLayout" Grid.Row="0" Grid.Column="0" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
+                GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn IsReadOnly="True" MaxWidth="5"  Width="5" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridTracksFavorite_MouseDown" FontSize="25"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="200" Width="Auto" SortMemberPath="Name"  CanUserSort="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellStyle>
+                                    <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
+                                        <Setter Property="Height" Value="35"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Owned}" Value="🗸">
+                                                <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTemplateColumn.CellStyle>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Layouts" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Layouts_count"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Layouts_count}" HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="40" SortMemberPath="Participations"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Participations}" HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Price"  IsReadOnly="True" MinWidth="40" SortMemberPath="Price"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate >
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Price}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Created"  IsReadOnly="True" Width="80*" SortMemberPath="TrackID"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                <DataGridTemplateColumn.CellTemplate >
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <DockPanel Background="Transparent">
+                                    <DataGrid HorizontalAlignment="Center" x:Name="gridTracks" Grid.Row="0" MinWidth="400" BorderBrush="Transparent" Grid.Column="0" Style="{StaticResource DefaultDataGrid50hStyle}" 
+                                AutoGenerateColumns="False" RowHeight="50" MinColumnWidth="50" GridLinesVisibility="Horizontal" 
+                                SelectionMode="Extended" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Layouts}" SelectionChanged="dataGrid_SelectionChanged"
+                                PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn IsReadOnly="True" Header="Track" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                                <DataGridTemplateColumn.CellTemplate >
+                                                    <DataTemplate>
+                                                        <Image Source="{Binding TrackImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Layout name" IsReadOnly="True" MinWidth="150" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Layoutname}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Category" IsReadOnly="True" MinWidth="80" Width="Auto" SortMemberPath="Category"  CanUserSort="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Category}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Series" IsReadOnly="True" Width="100*" SortMemberPath="Participations"  CanUserSort="True">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Participations}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </DockPanel>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+                    </DataGrid>
                 </Grid>
-
-
                 <!-- Datagrid for series visualization -->
-                <DataGrid x:Name="gridSeries" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
-                MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
+                <DataGrid x:Name="gridSeries" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" 
+                          AutoGenerateColumns="False" MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
+                          ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="15"  Width="15" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -262,7 +458,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="400" Width="Auto" SortMemberPath="SeriesName" CanUserSort="True">
+                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="350" Width="Auto" SortMemberPath="SeriesName" CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding SeriesName}" TextTrimming="WordEllipsis"/>
@@ -340,9 +536,69 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Eligible" MinWidth="50" Width="Auto" IsReadOnly="True" SortMemberPath="Eligible"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
+                                    <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Eligible}" Value="🗸">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Eligible}" HorizontalAlignment="Center" FontSize="20"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Official" MinWidth="40" IsReadOnly="True" SortMemberPath="Official"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
+                                    <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Official}" Value="🗸">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
+                            <DataGridTemplateColumn.CellTemplate >
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Official}" HorizontalAlignment="Center" FontSize="20"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Fixed" MinWidth="40" IsReadOnly="True" SortMemberPath="Fixed"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
+                                    <Setter Property="Foreground" Value="{StaticResource BrushRed}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Fixed}" Value="🗸">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
+                            <DataGridTemplateColumn.CellTemplate >
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Fixed}" HorizontalAlignment="Center" FontSize="20"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Race times"  IsReadOnly="True" SortMemberPath="RaceTimes"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource DefaultDataGridCell50hStyle}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RaceTimes}" Value="Set times">
+                                            <Setter Property="ToolTip" Value="{Binding SessionTimes}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
+                            <DataGridTemplateColumn.CellTemplate >
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding RaceTimes}" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -514,194 +770,6 @@
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>
                 </DataGrid>
-
-                <!-- Datagrid for car visualization -->
-                <DataGrid x:Name="gridCars" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"  Style="{StaticResource DefaultDataGrid50hStyle}" 
-                     AutoGenerateColumns="False" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False"
-                     SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" HorizontalAlignment="Stretch">
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate >
-                                <DataTemplate>
-                                    <Image Source="{Binding CarLogo}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridCarsFavorite_MouseDown" FontSize="25"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="200" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding CarName}" TextTrimming="WordEllipsis"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCell50hStyle }">
-                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Owned}" Value="🗸">
-                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" SortMemberPath="Series_Participations" MinWidth="40" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Series_Participations}" HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" SortMemberPath="Price" MinWidth="40"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate >
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" SortMemberPath="CarId"  MinWidth="80" Width="80*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate >
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-
-
-                <!-- Datagrid for track visualization -->
-                <DataGrid x:Name="gridTracksLayout" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
-                GridLinesVisibility="Horizontal" Visibility="Hidden" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True" MaxWidth="5"  Width="5" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Favorite" IsReadOnly="false" MinWidth="55" HeaderStyle="{StaticResource DataGridHeaderCenter}" Width="Auto" SortMemberPath="Favorite"  CanUserSort="True" CellStyle="{StaticResource SelectionDataGridCellStyle}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Favorite}" HorizontalAlignment="Center" MouseDown="gridTracksFavorite_MouseDown" FontSize="25"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Track name" IsReadOnly="True" MinWidth="200" Width="Auto" SortMemberPath="Name"  CanUserSort="True">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
-                                    <Setter Property="Height" Value="35"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Owned}" Value="🗸">
-                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Layouts" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Layouts_count"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Layouts_count}" HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" MinWidth="40" SortMemberPath="Participations"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Participations}" HorizontalAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" MinWidth="40" SortMemberPath="Price"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate >
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Price}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" Width="80*" SortMemberPath="TrackID"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellTemplate >
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                    <DataGrid.RowDetailsTemplate>
-                        <DataTemplate>
-                            <DockPanel Background="Transparent">
-                                <DataGrid HorizontalAlignment="Center" x:Name="gridTracks" Grid.Row="0" MinWidth="400" BorderBrush="Transparent" Grid.Column="0" Style="{StaticResource DefaultDataGrid50hStyle}" 
-                                  AutoGenerateColumns="False" RowHeight="50" MinColumnWidth="50" GridLinesVisibility="Horizontal" 
-                                  SelectionMode="Extended" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Layouts}" SelectionChanged="dataGrid_SelectionChanged"
-                                  PreviewMouseWheel="DataGrid_PreviewMouseWheel">
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    <DataGrid.Columns>
-                                        <DataGridTemplateColumn IsReadOnly="True" Header="Track" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                            <DataGridTemplateColumn.CellTemplate >
-                                                <DataTemplate>
-                                                    <Image Source="{Binding TrackImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="100"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Layout name" IsReadOnly="True" MinWidth="150" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Layoutname}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Category" IsReadOnly="True" MinWidth="80" Width="Auto" SortMemberPath="Category"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Category}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Series" IsReadOnly="True" Width="100*" SortMemberPath="Participations"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Participations}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </DockPanel>
-                        </DataTemplate>
-                    </DataGrid.RowDetailsTemplate>
-                </DataGrid>
-
                 <!-- Raceweeks overview -->
                 <DataGrid x:Name="gridRaces" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" 
                           BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="30" 

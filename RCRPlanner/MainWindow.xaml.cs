@@ -973,7 +973,7 @@ namespace RCRPlanner
                                     Category = series.category,
                                     Class = series.allowed_licenses[0].min_license_level >= series.allowed_licenses[0].max_license_level ? (series.allowed_licenses[1].group_name).Replace("Class ", "").Replace("ookie", "") : (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", ""),
                                     License = (series.allowed_licenses[0].group_name).Replace("Class ", "").Replace("ookie", "") + " " + (series.allowed_licenses[0].min_license_level - (series.allowed_licenses[0].license_group - 1) * 4).ToString("0.00"),
-                                    Eligible = series.eligible == true ? checksymbol : "",
+                                    Eligible = series.eligible == true ? checksymbol : unchecksymbol,
                                     Favorite = allseries?.series_id != null ? favsymbolSelected : favsymbolUnselected,
                                     Official = alls?.official == true ? checksymbol : unchecksymbol,
                                     Fixed = alls?.fixed_setup == true ? checksymbol : unchecksymbol,
@@ -1008,6 +1008,22 @@ namespace RCRPlanner
                         tracks.Add(_trackobj);
                     }
                     tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
+                    int repeattimes = ((serie.Season.schedules[0]).race_time_descriptors[0]).repeat_minutes;
+                    if (repeattimes > 0)
+                    {
+                        if (repeattimes >= 60)
+                        {
+                            serie.RaceTimes = repeattimes >= 60 ? "Every " + repeattimes / 60 + " hours" : "Every " + repeattimes / 60 + " hour";
+                        }
+                        else
+                        {
+                            serie.RaceTimes = "Every " + repeattimes + " minutes";
+                        }
+                    }
+                    else
+                    {
+                        serie.RaceTimes = "Set times";
+                    }
                     serie.Weeks = tracks.Where(t => t.Owned == checksymbol).Count() + "/" + tracks.Count();
                     serie.Tracks = tracks;
                 }
@@ -2545,7 +2561,10 @@ namespace RCRPlanner
                 favoriteSeries.Remove(fav);
             }
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
-                CollectionViewSource.GetDefaultView(gridSeries.ItemsSource).Refresh();
+                if (gridSeries.ItemsSource != null)
+                {
+                    CollectionViewSource.GetDefaultView(gridSeries.ItemsSource).Refresh();
+                }
             }));
         }
         private void gridCarsFavorite_MouseDown(object sender, MouseButtonEventArgs e)
