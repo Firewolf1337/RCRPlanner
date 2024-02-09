@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="256.png" />
+    <None Remove="Fonts\Montserrat-Light.otf" />
+    <None Remove="Fonts\Montserrat-Regular.otf" />
+    <None Remove="Fonts\SUIGENER.TTF" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RCRPlanner\RCRPlanner.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="256.png" />
+    <Resource Include="Fonts\Montserrat-Light.otf" />
+    <Resource Include="Fonts\Montserrat-Regular.otf" />
+    <Resource Include="Fonts\SUIGENER.TTF" />
+  </ItemGroup>
+
+</Project>
