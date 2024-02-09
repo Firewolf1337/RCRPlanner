@@ -163,7 +163,7 @@ namespace RCRPlanner
         public int SerieId { get; set; }
         public DateTime AlarmTime { get; set; }
     }
-    class helper
+    public class helper
     {
         //static Assembly _assembly = Assembly.GetExecutingAssembly();
         //static string resourceName = "RCRPlanner.salt.txt";
@@ -294,6 +294,7 @@ namespace RCRPlanner
             }
             catch
             {
+
             }
 
             return objectOut;
@@ -368,6 +369,32 @@ namespace RCRPlanner
             }
             return thickness;
         }
-
+        public static int getNextFreeCustomSeriesID(int startid, List<series.Root> existingSeries)
+        {
+            List<int> ids = existingSeries.Select(i => i.series_id).ToList();
+            int firstAvailable = Enumerable.Range(startid, 20000).Except(ids).First();
+            return firstAvailable;
+        }
+        public static List<series.AllowedLicense> getAllowedLicenses(string SeriesClass, int SR)
+        {
+            List<series.AllowedLicense> allowedLicense = new List<series.AllowedLicense>();
+            var ClassIDs = new (int, string, string)[]
+              {
+                  (1, "R", "Rookie"),
+                  (2, "D", "Class D"),
+                  (3, "C", "Class C"),
+                  (4, "B", "Class B"),
+                  (5, "A", "Class A"),
+                  (6, "Pro", "Pro"),
+                  (7, "Pro/WC", "Pro/WC")
+              };
+            int startClass = ClassIDs.First(x => x.Item2 == SeriesClass).Item1;
+            for(int i = startClass; i<= 7; i++)
+            {
+                int MinSR = i == startClass ? SR + (i - 1) * 4: (i - 1)*4 + 1 ;
+                allowedLicense.Add(new series.AllowedLicense() { group_name = ClassIDs[i-1].Item3, license_group = i, min_license_level = MinSR , max_license_level = (i *4) });  
+            }
+            return allowedLicense;
+        }
     }
 }

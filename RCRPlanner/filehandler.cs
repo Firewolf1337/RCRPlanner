@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace RCRPlanner
 {
-    class filehandler
+    public class filehandler
     {
         //MainWindow mw = new MainWindow();
         readonly string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
@@ -46,7 +46,14 @@ namespace RCRPlanner
             foreach (var logo in seriesAssetsList)
             {
                 counter++;
-                MainWindow.main.Status = "Loading serie logo " + counter + " / " + seriesAssetsList.Count();
+                try
+                {
+                    if (MainWindow.main != null)
+                    {
+                        MainWindow.main.Status = "Loading serie logo " + counter + " / " + seriesAssetsList.Count();
+                    }
+                }
+                catch { }
                 file = exePath + logofolder + logo.logo;
                 if (!File.Exists(file))
                 {
@@ -58,6 +65,18 @@ namespace RCRPlanner
                 }
             }
             return seriesAssetsList;
+        }
+        public async Task<List<string>> getCustomSeriesFiles(string filepattern)
+        {
+            List<string> Files = new List<string>();
+            DirectoryInfo searchBase = new DirectoryInfo(exePath + @"\static\");
+            FileInfo[] filesInDir = searchBase.GetFiles(filepattern + "*.xml");
+
+            foreach (FileInfo foundFile in filesInDir)
+            {
+                Files.Add(@"\static\" + foundFile.Name);
+            }
+            return Files;
         }
         public async Task<List<seriesSeason.Root>> getSeriesSeason(string filestring, bool reload)
         {
@@ -167,7 +186,10 @@ namespace RCRPlanner
             foreach (var logo in carsAssetsList)
             {
                 counter++;
-                MainWindow.main.Status = "Loading car pictures " + counter + " / " + carsAssetsList.Count();
+                if (MainWindow.main != null)
+                {
+                    MainWindow.main.Status = "Loading car pictures " + counter + " / " + carsAssetsList.Count();
+                }
                 file = exePath + imagefolder + logo.car_id + ".png";
                 if (!File.Exists(file))
                 {
@@ -284,7 +306,7 @@ namespace RCRPlanner
         public void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
         {
             int counter = 0;
-            if(!File.Exists(targetfolder + "track.css"))
+            if (!File.Exists(targetfolder + "track.css"))
             {
                 File.Copy(exePath + "\\track.css", targetfolder + "track.css");
             }
@@ -293,7 +315,10 @@ namespace RCRPlanner
                 counter++;
                 string trackfile = track.track_id + ".html";
                 string trackpic = track.track_id + ".png";
-                MainWindow.main.Status = "Loading track pictures " + counter + " / " + tracks.Count();
+                if (MainWindow.main != null)
+                {
+                    MainWindow.main.Status = "Loading track pictures " + counter + " / " + tracks.Count();
+                }
                 if (!File.Exists(targetfolder+trackfile))
                 {
                     string htmlcontent = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><meta http-equiv=\"Content-Type\" content = \"text/html; charset=utf-8\" /><link type=\"text/css\" rel=\"stylesheet\" href=\"track.css\" /></head><body><div id=\"svgMap\">";

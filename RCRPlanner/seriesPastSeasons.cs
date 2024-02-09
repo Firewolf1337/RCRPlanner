@@ -3,7 +3,7 @@
 
 namespace RCRPlanner
 {
-    class seriesPastSeasons
+    public class seriesPastSeasons
     {
         public class AllowedLicense
         {
