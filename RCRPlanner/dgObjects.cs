@@ -177,5 +177,13 @@ namespace RCRPlanner
             public bool WeekActive { get; set; }
 
         }
+
+        public class carClassDataGrid
+        {
+            public int carclassid { get; set; }
+            public string classname { get; set; }
+            public int carscount { get; set; }
+            public List<dgObjects.carsDataGrid> carsinclass { get; set; }
+        }
     }
 }

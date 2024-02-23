@@ -40,7 +40,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="btnMenu1" Grid.Row="0" Height="30" Width="80" HorizontalAlignment="Center" Click="btnMenu1_Click" Margin="0,2,0,694" Grid.RowSpan="2"/>
@@ -395,6 +395,7 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="170"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30*"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="1" Content="Custom series ID:" Style="{StaticResource DefaultLabelStyle}"/>
                     <DockPanel Grid.Row="0" Grid.Column="2">
@@ -458,7 +459,7 @@
                     </DockPanel>
                     <Label Grid.Row="4" Grid.Column="1" Content="Maximum starters:" Style="{StaticResource DefaultLabelStyle}"/>
                     <TextBox x:Name="tbSeriesMaxStart" Grid.Row="4" Grid.Column="2" PreviewTextInput="TextBox_PreviewTextInput"  Style="{StaticResource DefaultTextBoxStyle}"/>
-                    <Button x:Name="btnSeriesAddSerie" Grid.Row="6" Grid.Column="5" Content="Add Series" Click="btnSeriesAddSerie_Click" />
+                    <Button x:Name="btnSeriesAddSerie" Grid.Row="9" Grid.Column="5" Content="Add Series" Click="btnSeriesAddSerie_Click" />
                 </Grid>
                 <!-- Grid for adding details to serie-->
                 <Grid x:Name="gridAddSeriesDetails" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7">
@@ -479,6 +480,10 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="170"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30*"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="1" Content="Custom Series ID:" Style="{StaticResource DefaultLabelStyle}"/>
                     <ComboBox x:Name="cbCustomSeriesIDs" Grid.Row="0" Grid.Column="2">
@@ -499,6 +504,30 @@
                     </DockPanel>
                     <Label Grid.Row="1" Grid.Column="1" Content="Season name:" Style="{StaticResource DefaultLabelStyle}"/>
                     <TextBox Grid.Row="1" Grid.Column="2" Style="{StaticResource DefaultTextBoxStyle}" />
+                    <Label Grid.Row="1" Grid.Column="4" Content="Minimum SR:" Style="{StaticResource DefaultLabelStyle}"/>
+                    <ComboBox x:Name="cbSeasonClass" Grid.Row="1" Grid.Column="5" Width="50" HorizontalAlignment="Left">
+                        <ComboBoxItem IsSelected="True">
+                            <TextBlock Background="{StaticResource ClassRed}" Foreground="Black">R</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Background="{StaticResource ClassOrange}" Foreground="Black">D</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Background="{StaticResource ClassYellow}" Foreground="Black">C</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Background="{StaticResource ClassGreen}" Foreground="Black">B</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Background="{StaticResource ClassBlue}" Foreground="Black">A</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Background="{StaticResource BrushTextBlack}">Pro</TextBlock>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <TextBlock Background="{StaticResource BrushTextBlack}">Pro/WC</TextBlock>
+                        </ComboBoxItem>
+                    </ComboBox>
                     <Label Grid.Row="2" Grid.Column="1" Content="Fixed Setup:" Style="{StaticResource DefaultLabelStyle}"/>
                     <CheckBox Grid.Row="2" Grid.Column="2"></CheckBox>
                     <Label Grid.Row="2" Grid.Column="4" Content="Official:" Style="{StaticResource DefaultLabelStyle}"/>
@@ -509,7 +538,7 @@
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding Picture}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" Margin="-10,0,-3,0"/>
+                                        <Image Source="{Binding Picture}" RenderOptions.BitmapScalingMode="HighQuality" Height="30" MinWidth="100" Margin="-10,0,0,0"/>
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </DataTemplate>
@@ -517,7 +546,7 @@
                         </ComboBox>
                         <Button x:Name="btnaddcarstoseries" Width="27" Content="+" HorizontalContentAlignment="Left" Padding="-50,0,0,0" Click="btnaddcarstoseries_Click"/>
                     </DockPanel>
-                    <Button Grid.Row="3" Grid.Column="5" Content="Add Schedule"/>
+                    <Button x:Name="btnSeasonSchedule" Grid.Row="3" Grid.Column="5" Content="Add Schedule" Click="btnSeasonSchedule_Click"/>
                     <Label Grid.Row="4" Grid.Column="1" Content="Selected cars:" Style="{StaticResource DefaultLabelStyle}" VerticalAlignment="Top"/>
                     <DataGrid x:Name="gridSeriesCarClasses" Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="1" Grid.RowSpan="2" HeadersVisibility="None" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
                         MinColumnWidth="10" GridLinesVisibility="Horizontal" ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
@@ -546,10 +575,12 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <Label Grid.Row="4" Grid.Column="4" Content="Schedule:" Style="{StaticResource DefaultLabelStyle}"/>
+                    <Button x:Name="btnSeasonAddSeason" Grid.Row="9" Grid.Column="5" Content="Add Season" Click="btnSeasonAddSeason_Click" />
                 </Grid>
                 <!-- Car class list view -->
-                <DataGrid x:Name="gridCarClasses" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" 
-                MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
+                <DataGrid x:Name="gridCarClasses" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGrid50hStyle}" BorderBrush="Transparent" 
+                          AutoGenerateColumns="False" MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
+                          ScrollViewer.CanContentScroll="False" SelectionChanged="dataGrid_SelectionChanged" MouseLeftButtonDown="dataGrid_ExtendCollapseDetails">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="15"  Width="15" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
@@ -558,17 +589,31 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Class" IsReadOnly="True" MinWidth="400" Width="Auto" SortMemberPath="ClassName" CanUserSort="True">
+                        <DataGridTemplateColumn Header="Class Name" IsReadOnly="True" MinWidth="350" Width="Auto" SortMemberPath="classname" CanUserSort="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding ClassName}" TextTrimming="WordEllipsis"/>
+                                    <TextBlock Text="{Binding classname}" TextTrimming="WordEllipsis"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Cars" MinWidth="100" Width="Auto"  IsReadOnly="True" SortMemberPath="Cars"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Class ID" IsReadOnly="True" MinWidth="70" Width="Auto" SortMemberPath="carclassid" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding carclassid}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Cars" MinWidth="100" Width="Auto"  IsReadOnly="True" SortMemberPath="carscount"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Weeks}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding carscount}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="100*"  IsReadOnly="True" CanUserSort="false">
+                            <DataGridTemplateColumn.CellTemplate >
+                                <DataTemplate>
+                                    <TextBlock />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -576,18 +621,14 @@
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
                             <DockPanel Background="{StaticResource DefaultBackgroundBrush}" HorizontalAlignment="Stretch">
-                                <DataGrid x:Name="gridSeriesTrack" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Style="{StaticResource SubDataGridStyle}" 
+                                <DataGrid x:Name="gridCarsInClass" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Style="{StaticResource SubDataGridStyle}" 
                                           AutoGenerateColumns="False"
                                           SelectionChanged="dataGrid_SelectionChanged"
-                                          SelectionMode="Extended" IsReadOnly="True" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Tracks}"
+                                          SelectionMode="Extended" IsReadOnly="True" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding carsinclass}"
                                           PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding WeekActive}" Value="true">
-                                                    <Setter Property="FontWeight" Value="ExtraBold"/>
-                                                    <Setter Property="Background" Value="{StaticResource BrushGridHighlightWhite}"/>
-                                                </DataTrigger>
                                                 <Trigger Property="IsSelected" Value="True">
                                                     <Setter Property="Background" Value="{StaticResource BrushGridHighlightYellow }" />
                                                 </Trigger>
@@ -595,147 +636,90 @@
                                         </Style>
                                     </DataGrid.RowStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="Week" IsReadOnly="True" MinWidth="40" Width="Auto" SortMemberPath="Week"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Week}" HorizontalAlignment="Center"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Week start" IsReadOnly="True" MinWidth="70" Width="Auto" SortMemberPath="Weekdate"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Weekdate}" HorizontalAlignment="Center"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Name" IsReadOnly="True" MinWidth="200" Width="200*" SortMemberPath="Name"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Name}" TextTrimming="WordEllipsis"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                            <DataGridTemplateColumn.CellStyle>
-                                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Owned}" Value="🗸">
-                                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </DataGridTemplateColumn.CellStyle>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Layout name" IsReadOnly="True" MinWidth="100" Width="Auto" SortMemberPath="Layoutname"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Layoutname}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                            <DataGridTemplateColumn.CellStyle>
-                                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle }">
-                                                    <Setter Property="Foreground" Value="{StaticResource BrushTextWhite}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Owned}" Value="🗸">
-                                                            <Setter Property="Foreground" Value="{StaticResource BrushMiddleGreen}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </DataGridTemplateColumn.CellStyle>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Category" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Category"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Category}" HorizontalAlignment="Center" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Length"  IsReadOnly="True" SortMemberPath="Length" MinWidth="70" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn IsReadOnly="True" Header="Logo" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Length}" HorizontalAlignment="Center"/>
+                                                    <Image Source="{Binding CarImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="100" Height="30"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Corners" HeaderStyle="{StaticResource DataGridHeaderCenter}" IsReadOnly="True" MinWidth="50" Width="Auto" SortMemberPath="Corners"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate >
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Corners}" HorizontalAlignment="Center"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Race length" HeaderStyle="{StaticResource DataGridHeaderCenter}" MinWidth="75" Width="Auto" IsReadOnly="True" SortMemberPath="Racelength"  CanUserSort="True">
-                                            <DataGridTemplateColumn.CellTemplate >
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Racelength}" HorizontalAlignment="Center"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Price" IsReadOnly="True" SortMemberPath="Price" MinWidth="50" Width="Auto" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="200" Width="*"  SortMemberPath="CarName"  CanUserSort="True">
                                             <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding CarName}" TextTrimming="WordEllipsis"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Weight"  IsReadOnly="True" SortMemberPath="Weight" MinWidth="80"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                            <DataGridTemplateColumn.CellTemplate >
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Weight}" HorizontalAlignment="Center"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Horsepower"  IsReadOnly="True" SortMemberPath="Horsepower" MinWidth="100"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                            <DataGridTemplateColumn.CellTemplate >
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Horsepower}" HorizontalAlignment="Center"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Price"  IsReadOnly="True" SortMemberPath="Price" MinWidth="40"  Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                            <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Owned"  IsReadOnly="True" SortMemberPath="Owned" MinWidth="70" Width="Auto"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                                        <DataGridTemplateColumn Header="Created"  IsReadOnly="True" SortMemberPath="CarId"  MinWidth="80" Width="80*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                                             <DataGridTemplateColumn.CellTemplate >
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Owned}" HorizontalAlignment="Center" FontSize="20"/>
+                                                    <TextBlock Text="{Binding Created}" HorizontalAlignment="Center"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}">Forum link:
-                                        <Hyperlink NavigateUri="{Binding ForumLink}" Click="link_Click" MouseRightButtonDown="link_Copy"><TextBlock ToolTip="{Binding ForumLink}" Text="Left click open / Right click copy" Style="{StaticResource DefaultTextBlockStyle}"/></Hyperlink>
-                                    </TextBlock>
-                                    <Image x:Name="imRaceTrack" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" Height="150"/>
-                                    <DataGrid HorizontalAlignment="Left" Style="{StaticResource SubDataGridStyle}" 
-                                          AutoGenerateColumns="False"
-                                          SelectionChanged="dataGrid_SelectionChanged"
-                                          SelectionMode="Extended" IsReadOnly="True" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Cars}"
-                                          PreviewMouseWheel="DataGrid_PreviewMouseWheel" >
-                                        <DataGrid.Columns>
-                                            <DataGridTemplateColumn IsReadOnly="True" MinWidth="100">
-                                                <DataGridTemplateColumn.CellTemplate >
-                                                    <DataTemplate>
-                                                        <Image Source="{Binding CarImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="Auto" Height="25"/>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="Car name" IsReadOnly="True" MinWidth="150" Width="100" SortMemberPath="CarName"  CanUserSort="True">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding CarName}" TextTrimming="WordEllipsis"/>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="Price"  IsReadOnly="True" SortMemberPath="Price" MinWidth="50" Width="Auto" CanUserSort="True"  HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                                <DataGridTemplateColumn.CellTemplate >
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Price}" HorizontalAlignment="Center"/>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="Owned"  IsReadOnly="True" SortMemberPath="Owned" MinWidth="50" Width="50*" CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                                                <DataGridTemplateColumn.CellTemplate >
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding Owned}" HorizontalAlignment="Center" FontSize="20"/>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </StackPanel>
                             </DockPanel>
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>
                 </DataGrid>
             </Grid>
 
-
+            <Grid Grid.Row="1" Grid.Column="0" Panel.ZIndex="100" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,-1350, 0, 0" x:Name="gridSchedule" Width="900" Height="500">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="97*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="101*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="170*"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <Border Grid.ColumnSpan="7" Grid.RowSpan="10" BorderBrush="{DynamicResource DefaultBorderBrush}" BorderThickness="1">
+                    <Border.Background>
+                        <SolidColorBrush Color="{StaticResource ColorBlack}" Opacity="0.9"/>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="{StaticResource ColorBlack}" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
+                    </Border.Effect>
+                </Border>
+                <StackPanel x:Name="stackPanelLoginClose" Grid.Column="7" Grid.Row="0" HorizontalAlignment="right" Height="35" VerticalAlignment="Center" Width="30" MouseDown="ScheduleClose_MouseDown" >
+                    <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
+                </StackPanel>
+            </Grid>
 
 
             <Grid x:Name="headerMenuGrid" Grid.ColumnSpan="2" Background="Transparent">
@@ -880,7 +864,7 @@
                 </DockPanel>
                 <Button x:Name="btnLoadSeries" Grid.Row="2" Grid.Column="0" Content="Series" Click="btnLoadSeries_Click" ToolTip="View upcoming races"/>
                 <Button x:Name="btnAddSerie" Grid.Row="3" Grid.Column="0" Content="Add Series" Click="btnAddSeries_Click" ToolTip="Create a custom Serie."/>
-                <Button x:Name="btnAddDetails" Grid.Row="4" Grid.Column="0" Content="Add Series Details" Click="btnAddDetails_Click" ToolTip="Add details like schedule, tracks etc. to a custom serie."/>
+                <Button x:Name="btnAddDetails" Grid.Row="4" Grid.Column="0" Content="Add Season to Series" Click="btnAddDetails_Click" ToolTip="Add season like schedule, tracks etc. to a custom serie."/>
                 <Button x:Name="btnCarClasses" Grid.Row="5" Grid.Column="0" Content="Car classes" Click="btnCarClasses_Click"  ToolTip="View of car classes and cars in the class."/>
             </Grid>
             <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource BrushBlack}" Opacity="0.5" Visibility="Hidden"/>

@@ -25,6 +25,7 @@ using System.Windows.Controls.Primitives;
 using System.Text.RegularExpressions;
 using static RCRPlanner.memberInfo;
 using RCRPlanner;
+using System.Runtime.ConstrainedExecution;
 
 namespace RCRCustomSeries
 {
@@ -103,6 +104,8 @@ namespace RCRCustomSeries
         private readonly string tracksLogo = @"\static\tracks\";
         int selectedTrack = -1;
 
+        private List<dgObjects.carClassDataGrid> dgcarClasses = new List<dgObjects.carClassDataGrid>();
+
         private seriesPastSeasons.Root pastSeasons = new seriesPastSeasons.Root();
         private List<comboBox> cbSeries = new List<comboBox>();
 
@@ -116,6 +119,7 @@ namespace RCRCustomSeries
             public int ClassID { get; set; }
         }
         List<CbfromCodeBehind> cbCarsItems = new List<CbfromCodeBehind>();
+        List<CbfromCodeBehind> cbClassItems = new List<CbfromCodeBehind>();
         List<CbfromCodeBehind> dgSeriesCarClasses = new List<CbfromCodeBehind>();
         public MainWindow()
         {
@@ -226,10 +230,7 @@ namespace RCRCustomSeries
 
             generateCarView();
             generateTrackView();
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                cbCars.ItemsSource = cbCarsItems;
-            }));
+            generateCarClassView();
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 gridLoading.Visibility = Visibility.Hidden;
@@ -252,7 +253,30 @@ namespace RCRCustomSeries
         }
 
 
+        private void move_grid(Grid grid, string direction, int position, double duration)
+        {
+            grid.Dispatcher.Invoke(new Action(() => {
+                Thickness margin = grid.Margin;
+                switch (direction)
+                {
+                    case "left":
+                        margin.Left = position;
+                        break;
+                    case "right":
+                        margin.Right = position;
+                        break;
+                    case "top":
+                        margin.Top = position;
+                        break;
+                    case "bottom":
+                        margin.Bottom = position;
+                        break;
 
+                }
+                ThicknessAnimation PositionAnimation = new ThicknessAnimation(margin, new Duration(TimeSpan.FromSeconds(duration)));
+                grid.BeginAnimation(MarginProperty, PositionAnimation);
+            }));
+        }
 
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -357,7 +381,22 @@ namespace RCRCustomSeries
 
         private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-
+            if (e.Handled)
+            {
+                return;
+            }
+            if (!(sender is Control control))
+            {
+                return;
+            }
+            e.Handled = true;
+            var wheelArgs = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+            {
+                RoutedEvent = MouseWheelEvent,
+                Source = control
+            };
+            var parent = control.Parent as UIElement;
+            parent?.RaiseEvent(wheelArgs);
         }
 
         private void ddMenu3_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -472,6 +511,7 @@ namespace RCRCustomSeries
             tbMenu6.Visibility = Visibility.Hidden;
             dpMenu6.Visibility = Visibility.Hidden;
             stackPanelMenuClose_MouseDown(null, null);
+            generateCarClassView();
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridCarClasses });
             
         }
@@ -495,6 +535,9 @@ namespace RCRCustomSeries
             tbMenu6.Visibility = Visibility.Hidden;
             dpMenu6.Visibility = Visibility.Hidden;
             cbCustomSeriesIDs.ItemsSource = seriesList.Where(x => customSeriesIDs.Contains(x.series_id)).ToList();
+            List<CbfromCodeBehind> classesList = cbClassItems;
+            classesList.AddRange(cbCarsItems);
+            cbCars.ItemsSource = classesList;
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { null });
         }
@@ -559,6 +602,39 @@ namespace RCRCustomSeries
                     gridSeries.UpdateLayout();
                 }));
             }
+        }
+
+        private void generateCarClassView()
+        {
+            try 
+            {
+                dgcarClasses.Clear();
+                cbClassItems.Clear();
+                foreach(var carclass in carClassList)
+                {
+                    List<dgObjects.carsDataGrid> cars = new List<dgObjects.carsDataGrid> ();
+                    foreach(var carids in carclass.cars_in_class)
+                    {
+                        cars.Add(dgCarsList.Find(x => x.CarId == carids.car_id));
+                    }
+                    dgcarClasses.Add(new dgObjects.carClassDataGrid { 
+                        carclassid = carclass.car_class_id,
+                        classname = carclass.name,
+                        carscount = cars.Count(),
+                        carsinclass = cars
+                    });
+                    if (cbCarsItems.Where(x => x.ClassID == carclass.car_class_id).Count() == 0 && cbClassItems.Where(x => x.ClassID == carclass.car_class_id).Count() == 0) 
+                    { 
+                    cbClassItems.Add(new CbfromCodeBehind { ID = 9999, Name = carclass.name, Picture = new Uri("file:///" + exePath + carLogos + "class.png"), ClassID = carclass.car_class_id });
+                    }
+                }
+                cbClassItems.Sort((x, y) => x.Name.CompareTo(y.Name));
+                dgcarClasses.Sort((x, y) => x.classname.CompareTo(y.classname));
+                gridCarClasses.ItemsSource = null;
+                gridCarClasses.ItemsSource = dgcarClasses;
+                gridCarClasses.UpdateLayout();
+            }
+            catch { }
         }
         private void generateCarView()
         {
@@ -844,6 +920,41 @@ namespace RCRCustomSeries
             seriesList.Add(newSeries);
             customSeriesIDs.Add(Convert.ToInt32(tbSeriesID.Text.ToString()));
 
+        }
+
+        private void btnSeasonAddSeason_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnSeasonSchedule_Click(object sender, RoutedEventArgs e)
+        {
+            Thickness margin = gridSchedule.Margin;
+            int position;
+            if (margin.Top != -200)
+            {
+                position = -200;
+            }
+            else
+            {
+                position = -1350;
+            }
+            move_grid(gridSchedule, "top", position, moveAnimationDuration);
+        }
+
+        private void ScheduleClose_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Thickness margin = gridSchedule.Margin;
+            int position;
+            if (margin.Top != -200)
+            {
+                position = -200;
+            }
+            else
+            {
+                position = -1350;
+            }
+            move_grid(gridSchedule, "top", position, moveAnimationDuration);
         }
     }
 }
