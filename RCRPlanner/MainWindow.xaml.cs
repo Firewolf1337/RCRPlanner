@@ -147,7 +147,7 @@ namespace RCRPlanner
 
         private readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
-        private readonly string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterRoad;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
+        private readonly string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterFormula;cbFilterSports;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
 
         public MainWindow()
         {
@@ -676,21 +676,29 @@ namespace RCRPlanner
                 }
                 try
                 {
-                    string roadClass = User.licenses.road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    string formulaClass = User.licenses.formula_car.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    string sportClass = User.licenses.sports_car.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
                     string ovalClass = User.licenses.oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
                     string dirtovalClass = User.licenses.dirt_oval.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
                     string dirtroadClass = User.licenses.dirt_road.group_name.ToString().Replace("Class ", "").Replace("Rookie", "R").Replace("Pro", "P");
+                    
                     progressOval.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.oval.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
                     progressOval.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.oval.color);
                     textProgressOval.Text = ovalClass + User.licenses.oval.safety_rating.ToString();
                     lbliRatingOval.Content = User.licenses.oval.irating.ToString() + " iR";
                     lblCpiOval.Content = Math.Round(User.licenses.oval.cpi, 2).ToString() + " CPI";
 
-                    progressRoad.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.road.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
-                    progressRoad.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.road.color);
-                    textProgressRoad.Text = roadClass + User.licenses.road.safety_rating.ToString();
-                    lbliRatingRoad.Content = User.licenses.road.irating.ToString() + " iR";
-                    lblCpiRoad.Content = Math.Round(User.licenses.road.cpi, 2).ToString() + " CPI";
+                    progressSport.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.sports_car.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
+                    progressSport.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.sports_car.color);
+                    textProgressSport.Text = formulaClass + User.licenses.sports_car.safety_rating.ToString();
+                    lbliRatingSport.Content = User.licenses.sports_car.irating.ToString() + " iR";
+                    lblCpiSport.Content = Math.Round(User.licenses.sports_car.cpi, 2).ToString() + " CPI";
+
+                    progressFormula.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.formula_car.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
+                    progressFormula.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.formula_car.color);
+                    textProgressFormula.Text = formulaClass + User.licenses.formula_car.safety_rating.ToString();
+                    lbliRatingFormula.Content = User.licenses.formula_car.irating.ToString() + " iR";
+                    lblCpiFormula.Content = Math.Round(User.licenses.formula_car.cpi, 2).ToString() + " CPI";
 
                     progressDirtOval.Value = Convert.ToDouble(helper.Mapdec(Convert.ToDecimal(User.licenses.dirt_oval.safety_rating / (4.99 / 100)), 0, 100, 0, 75));
                     progressDirtOval.Foreground = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#" + User.licenses.dirt_oval.color);
@@ -1008,7 +1016,7 @@ namespace RCRPlanner
                         tracks.Add(_trackobj);
                     }
                     tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
-                    int repeattimes = ((serie.Season.schedules[0]).race_time_descriptors[0]).repeat_minutes;
+                    int repeattimes = serie.Season.schedules != null ? ((serie.Season.schedules[0]).race_time_descriptors[0]).repeat_minutes : -1;
                     if (repeattimes > 0)
                     {
                         if (repeattimes >= 60)
@@ -1022,7 +1030,14 @@ namespace RCRPlanner
                     }
                     else
                     {
-                        serie.RaceTimes = "Set times";
+                        if (repeattimes == -1)
+                        {
+                            serie.RaceTimes = "No schedule";
+                        }
+                        else
+                        {
+                            serie.RaceTimes = "Set times";
+                        }
                     }
                     serie.Weeks = tracks.Where(t => t.Owned == checksymbol).Count() + "/" + tracks.Count();
                     serie.Tracks = tracks;
@@ -1532,7 +1547,8 @@ namespace RCRPlanner
                         }
                         if ((cbFilterDirtOval.IsChecked == true && race.Serie.Category == "dirtoval") ||
                             (cbFilterOval.IsChecked == true && race.Serie.Category == "oval") ||
-                            (cbFilterRoad.IsChecked == true && race.Serie.Category == "road") ||
+                            (cbFilterFormula.IsChecked == true && race.Serie.Category == "formula_car") ||
+                            (cbFilterSports.IsChecked == true && race.Serie.Category == "sports_car") ||
                             (cbFilterDirt.IsChecked == true && race.Serie.Category == "dirt"))
                         {
                             category = true;
@@ -2202,6 +2218,9 @@ namespace RCRPlanner
                             }
                             catch { Trackimage.Source = null;}
                         }
+                        break;
+                    case "gridRaces":
+                        scrollDataGridIntoView(sender);
                         break;
 
                 }
@@ -2913,7 +2932,7 @@ namespace RCRPlanner
                     }
                     break;
                 case "gridRaces":
-                    resize_Grid(gridFilter, "height", 285, moveAnimationDuration);
+                    resize_Grid(gridFilter, "height", 300, moveAnimationDuration);
                     break;
                 case "gridSeries":
                     filterSeries();
@@ -3157,8 +3176,11 @@ namespace RCRPlanner
                                 pastSeasons = await fData.getSeriesPastSeasons(selectedValue.ToString());
                                 switch (pastSeasons.series.category)
                                 {
-                                    case "road":
-                                        iRatingStatUserIrating = User.licenses.road.irating;
+                                    case "formula_car":
+                                        iRatingStatUserIrating = User.licenses.formula_car.irating;
+                                        break;
+                                    case "sports_car":
+                                        iRatingStatUserIrating = User.licenses.sports_car.irating;
                                         break;
                                     case "oval":
                                         iRatingStatUserIrating = User.licenses.oval.irating;
