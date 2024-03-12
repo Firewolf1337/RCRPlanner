@@ -2176,6 +2176,9 @@ namespace RCRPlanner
                     case "gridSeries":
                         scrollDataGridIntoView(sender);
                         break;
+                    case "gridRaces":
+                        scrollDataGridIntoView(sender);
+                        break;
                     case "gridTracks":
                         tbDetail3.Text = ((dgObjects.tracksDataGrid)((DataGrid)sender).SelectedItem).Corners.ToString();
                         lblDetails3.Content = "Corners:";
@@ -2219,10 +2222,6 @@ namespace RCRPlanner
                             catch { Trackimage.Source = null;}
                         }
                         break;
-                    case "gridRaces":
-                        scrollDataGridIntoView(sender);
-                        break;
-
                 }
             }
         }
@@ -2387,6 +2386,7 @@ namespace RCRPlanner
 
         private void btnLoadRaces_Click(object sender, RoutedEventArgs e)
         {
+            generateRaceView();
             activeGrid = "gridRaces";
             gridSeasonOverview.Visibility = Visibility.Hidden;
             scrollSeasonOverview.Visibility = Visibility.Hidden;
@@ -2412,7 +2412,7 @@ namespace RCRPlanner
             lbMenu2.Content = "Alarm offset:";
 
             stackPanelMenuClose_MouseDown(null, null);
-            generateRaceView();
+
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridRaces }, false);
         }
         private void btnPartStats_Click(object sender, RoutedEventArgs e)
@@ -3423,6 +3423,23 @@ namespace RCRPlanner
                 position = -250;
             }
             move_grid(gridLogin, "bottom", position, moveAnimationDuration);
+        }
+
+        private void ScrollWeekIntoView(object sender, RoutedEventArgs e)
+        {
+            DataGrid dataGrid = new DataGrid();
+            dataGrid = sender as DataGrid;
+            foreach(var row in dataGrid.Items)
+             {
+                if (((RCRPlanner.dgObjects.tracksDataGrid)row).WeekActive == true)
+                {
+                    dataGrid.ScrollIntoView(dataGrid.Items[dataGrid.Items.Count - 1]);
+                    dataGrid.UpdateLayout();
+                    dataGrid.ScrollIntoView(row);
+                    dataGrid.UpdateLayout();
+                    break;
+                }
+            }
         }
     }
 }

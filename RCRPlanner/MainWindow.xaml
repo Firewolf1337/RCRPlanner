@@ -593,15 +593,6 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Race times"  IsReadOnly="True" SortMemberPath="RaceTimes"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
-                            <DataGridTemplateColumn.CellStyle>
-                                <Style TargetType="DataGridCell" BasedOn="{StaticResource DefaultDataGridCell50hStyle}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RaceTimes}" Value="Set times">
-                                            <Setter Property="ToolTip" Value="{Binding SessionTimes}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTemplateColumn.CellStyle>
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding RaceTimes}" HorizontalAlignment="Center"/>
@@ -619,11 +610,12 @@
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
                             <DockPanel Background="{StaticResource DefaultBackgroundBrush}" HorizontalAlignment="Stretch">
-                                <DataGrid x:Name="gridSeriesTrack" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Style="{StaticResource SubDataGridStyle}" 
+                                <DataGrid x:Name="gridSeriesTrack" Grid.Row="0" Grid.Column="0" Height="390" Style="{StaticResource SubDataGridStyle}" 
+                                          HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                           AutoGenerateColumns="False"
                                           SelectionChanged="dataGrid_SelectionChanged"
-                                          SelectionMode="Extended" IsReadOnly="True" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Tracks}"
-                                          PreviewMouseWheel="DataGrid_PreviewMouseWheel">
+                                          SelectionMode="Extended" IsReadOnly="True" ItemsSource="{Binding Tracks}"
+                                          Loaded="ScrollWeekIntoView">
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
                                             <Style.Triggers>
@@ -1007,12 +999,13 @@
                     </DataGrid.Columns>
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
-                            <DockPanel Background="{StaticResource DefaultBackgroundBrush}">
-                                <DataGrid HorizontalAlignment="Center" x:Name="gridTracksinSerie" Grid.Row="0" Height="390" Grid.Column="0" Style="{StaticResource SubDataGridStyle}" 
-                                  AutoGenerateColumns="False" MinColumnWidth="50" GridLinesVisibility="None" 
-                                  SelectionMode="Extended" IsReadOnly="True" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding Tracks}"
-                                  SelectionChanged="dataGrid_SelectionChanged"
-                                  VerticalAlignment="Top">
+                            <DockPanel Background="{StaticResource DefaultBackgroundBrush}" HorizontalAlignment="Stretch">
+                                <DataGrid x:Name="gridTracksinSerie" Grid.Row="0" Grid.Column="0" Height="390" Style="{StaticResource SubDataGridStyle}" 
+                                          HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+                                          AutoGenerateColumns="False" MinColumnWidth="50"
+                                          SelectionChanged="dataGrid_SelectionChanged"
+                                          SelectionMode="Extended" IsReadOnly="True" ItemsSource="{Binding Tracks}"
+                                          Loaded="ScrollWeekIntoView">
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow" BasedOn="{StaticResource DefaultDataGridRowStyle}">
                                             <Style.Triggers>
