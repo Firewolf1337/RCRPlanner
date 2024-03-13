@@ -1842,7 +1842,7 @@ namespace RCRPlanner
                 dataTable.Rows[2][ser.SeriesName] = pC;
             }
 
-            List<DateTime> Weektimes = dgSeasonOverview.Select(d => d.StartTime).Distinct().ToList();
+            List<int> Weektimes = dgSeasonOverview.Select(d => d.Week).Distinct().ToList();
             Weektimes.Sort((x, y) => x.CompareTo(y));
             var activeweeks = new List<(int series,int week)>();
             foreach(var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
@@ -1856,8 +1856,8 @@ namespace RCRPlanner
             {
 
                 row = dataTable.NewRow();
-                row[0] = week.Date.ToShortDateString();
-                foreach(var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
+                row[0] = "W" + week.ToString();
+                foreach(var seasonweek in dgSeasonOverview.Where(w => w.Week == week).ToList())
                 {
                     var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
                     string pref = "";
@@ -1868,13 +1868,49 @@ namespace RCRPlanner
                     if(seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol) {
                         pref = unchecksymbol;
                     }
-                    row[seasonweek.SeriesName] = pref + seasonweek.Week.ToString().PadLeft(2, '0') +": " + seasonweek.Track;
+                    row[seasonweek.SeriesName] = pref + "00: " + seasonweek.Track;
                     row["WeekActive"] = seasonweek.WeekActive;
                 }
-                
+
                 dataTable.Rows.Add(row);
             }
             return dataTable;
+
+            // ######################## List with Dates #############################
+
+            //List<DateTime> Weektimes = dgSeasonOverview.Select(d => d.StartTime).Distinct().ToList();
+            //Weektimes.Sort((x, y) => x.CompareTo(y));
+            //var activeweeks = new List<(int series,int week)>();
+            //foreach(var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
+            //{
+            //    if(!activeweeks.Any(s => s.series == ser.SerieId))
+            //    {
+            //        activeweeks.Add((ser.SerieId,  ser.Week));
+            //    }
+            //}
+            //foreach (var week in (Weektimes))
+            //{
+
+            //    row = dataTable.NewRow();
+            //    row[0] = week.Date.ToShortDateString();
+            //    foreach(var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
+            //    {
+            //        var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
+            //        string pref = "";
+            //        if(seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
+            //        {
+            //            pref = checksymbol;
+            //        }
+            //        if(seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol) {
+            //            pref = unchecksymbol;
+            //        }
+            //        row[seasonweek.SeriesName] = pref + seasonweek.Week.ToString().PadLeft(2, '0') +": " + seasonweek.Track;
+            //        row["WeekActive"] = seasonweek.WeekActive;
+            //    }
+
+            //    dataTable.Rows.Add(row);
+            //}
+            //return dataTable;
         }
         private async void generateSeasonOverviewGrid(bool reload)
         {
@@ -1938,7 +1974,7 @@ namespace RCRPlanner
                                 }
                                 if (colcount < cols - 1)
                                 {
-                                    cell1.Text = cell.ToString().Replace(checksymbol, "").Replace(unchecksymbol, "");
+                                    cell1.Text = cell.ToString().Replace(checksymbol, "").Replace(unchecksymbol, "").Replace("00: ", "");
                                 }
                                 cell1.TextTrimming = TextTrimming.WordEllipsis;
                                 cell1.Margin = new Thickness(3, 0, 5, 0);
