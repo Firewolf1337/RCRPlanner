@@ -929,6 +929,8 @@ namespace RCRCustomSeries
 
         private void btnSeasonSchedule_Click(object sender, RoutedEventArgs e)
         {
+            generateTrackView();
+            cbScheduleTrack.ItemsSource = dgTrackLayoutList ;
             Thickness margin = gridSchedule.Margin;
             int position;
             if (margin.Top != -200)
@@ -955,6 +957,15 @@ namespace RCRCustomSeries
                 position = -1350;
             }
             move_grid(gridSchedule, "top", position, moveAnimationDuration);
+        }
+
+        private void cbScheduleTrack_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(cbScheduleTrack.SelectedItem != null && cbScheduleTrack.SelectedIndex > -1) 
+            {
+                var seltrack = ((dgObjects.tracksLayoutsDataGrid)cbScheduleTrack.SelectedItem).PackageID;
+                cbScheduleLayout.ItemsSource = dgTracksList.Where(t => t.PackageID == seltrack).ToList();
+            }
         }
     }
 }
