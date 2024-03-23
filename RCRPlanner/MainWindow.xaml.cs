@@ -1379,7 +1379,7 @@ namespace RCRPlanner
                     }
                     else
                     {
-                        if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) >= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
+                        if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
                         {
                             actualweekofserie = lastseason;
                         }
@@ -1786,16 +1786,16 @@ namespace RCRPlanner
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add("Day");
             List<string> links = new List<string>();
-            var YearQuater = new List<(int year,int quarter)>();
+            var YearQuater = new List<(int year, int quarter)>();
             var YearQuaterSeries = new List<(int year, int quarter, int serie)>();
             foreach (var ser in dgSeriesL)
             {
                 dataTable.Columns.Add(ser.SeriesName);
                 foreach (var tr in ser.Tracks)
                 {
-                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate),TrackId = tr.TrackID, Track = tr.Name, TrackOwned = tr.Owned , Week = tr.Week, WeekActive = tr.WeekActive });
+                    dgSeasonOverview.Add(new dgObjects.seasonOverviewDataGrid { SerieId = ser.SerieId, Seriesimage = ser.Seriesimage, SeriesName = ser.SeriesName, StartTime = Convert.ToDateTime(tr.Weekdate), TrackId = tr.TrackID, Track = tr.Name, TrackOwned = tr.Owned, Week = tr.Week, WeekActive = tr.WeekActive });
                 }
-                if(!YearQuaterSeries.Contains((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId)))
+                if (!YearQuaterSeries.Contains((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId)))
                 {
                     YearQuater.Add((ser.Season.season_year, ser.Season.season_quarter));
                     YearQuaterSeries.Add((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId));
@@ -1841,76 +1841,85 @@ namespace RCRPlanner
                 dataTable.Rows[1][ser.SeriesName] = ser.SeriesName;
                 dataTable.Rows[2][ser.SeriesName] = pC;
             }
-
-            List<int> Weektimes = dgSeasonOverview.Select(d => d.Week).Distinct().ToList();
-            Weektimes.Sort((x, y) => x.CompareTo(y));
-            var activeweeks = new List<(int series,int week)>();
-            foreach(var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
+            if (!cbMenu2.IsChecked.Value)
             {
-                if(!activeweeks.Any(s => s.series == ser.SerieId))
+                List<int> Weektimes = dgSeasonOverview.Select(d => d.Week).Distinct().ToList();
+                Weektimes.Sort((x, y) => x.CompareTo(y));
+                var activeweeks = new List<(int series, int week)>();
+                foreach (var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
                 {
-                    activeweeks.Add((ser.SerieId,  ser.Week));
-                }
-            }
-            foreach (var week in (Weektimes))
-            {
-
-                row = dataTable.NewRow();
-                row[0] = "W" + week.ToString();
-                foreach(var seasonweek in dgSeasonOverview.Where(w => w.Week == week).ToList())
-                {
-                    var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
-                    string pref = "";
-                    if(seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
+                    if (!activeweeks.Any(s => s.series == ser.SerieId))
                     {
-                        pref = checksymbol;
+                        activeweeks.Add((ser.SerieId, ser.Week));
                     }
-                    if(seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol) {
-                        pref = unchecksymbol;
-                    }
-                    row[seasonweek.SeriesName] = pref + "00: " + seasonweek.Track;
-                    row["WeekActive"] = seasonweek.WeekActive;
                 }
+                foreach (var week in (Weektimes))
+                {
 
-                dataTable.Rows.Add(row);
+                    row = dataTable.NewRow();
+                    row[0] = "W" + week.ToString();
+                    foreach (var seasonweek in dgSeasonOverview.Where(w => w.Week == week).ToList())
+                    {
+                        var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
+                        string pref = neutral;
+                        string active = seasonweek.WeekActive ? checksymbol : unchecksymbol;
+                        if (seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
+                        {
+                            pref = checksymbol;
+                        }
+                        if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                        {
+                            pref = unchecksymbol;
+                        }
+
+                        row[seasonweek.SeriesName] = pref + active + "00: " + seasonweek.Track;
+                        row["WeekActive"] = seasonweek.WeekActive;
+                    }
+
+                    dataTable.Rows.Add(row);
+                }
+                return dataTable;
             }
-            return dataTable;
+            else
+            {
+                // ######################## List with Dates #############################
 
-            // ######################## List with Dates #############################
+                List<DateTime> Weektimes = dgSeasonOverview.Select(d => d.StartTime).Distinct().ToList();
+                Weektimes.Sort((x, y) => x.CompareTo(y));
+                var activeweeks = new List<(int series, int week)>();
+                foreach (var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
+                {
+                    if (!activeweeks.Any(s => s.series == ser.SerieId))
+                    {
+                        activeweeks.Add((ser.SerieId, ser.Week));
+                    }
+                }
+                foreach (var week in (Weektimes))
+                {
 
-            //List<DateTime> Weektimes = dgSeasonOverview.Select(d => d.StartTime).Distinct().ToList();
-            //Weektimes.Sort((x, y) => x.CompareTo(y));
-            //var activeweeks = new List<(int series,int week)>();
-            //foreach(var ser in dgSeasonOverview.Where(a => a.WeekActive == true).ToList())
-            //{
-            //    if(!activeweeks.Any(s => s.series == ser.SerieId))
-            //    {
-            //        activeweeks.Add((ser.SerieId,  ser.Week));
-            //    }
-            //}
-            //foreach (var week in (Weektimes))
-            //{
+                    row = dataTable.NewRow();
+                    row[0] = week.Date.ToShortDateString();
+                    foreach (var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
+                    {
+                        var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
+                        string pref = neutral;
+                        string active = seasonweek.WeekActive ? checksymbol : unchecksymbol;
+                        if (seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
+                        {
+                            pref = checksymbol;
+                        }
+                        if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                        {
+                            pref = unchecksymbol;
+                        }
+                        row[seasonweek.SeriesName] = pref + seasonweek.Week.ToString().PadLeft(2, '0') + ": " + seasonweek.Track;
+                        row["WeekActive"] = seasonweek.WeekActive;
+                    }
 
-            //    row = dataTable.NewRow();
-            //    row[0] = week.Date.ToShortDateString();
-            //    foreach(var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
-            //    {
-            //        var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
-            //        string pref = "";
-            //        if(seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
-            //        {
-            //            pref = checksymbol;
-            //        }
-            //        if(seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol) {
-            //            pref = unchecksymbol;
-            //        }
-            //        row[seasonweek.SeriesName] = pref + seasonweek.Week.ToString().PadLeft(2, '0') +": " + seasonweek.Track;
-            //        row["WeekActive"] = seasonweek.WeekActive;
-            //    }
-
-            //    dataTable.Rows.Add(row);
-            //}
-            //return dataTable;
+                    dataTable.Rows.Add(row);
+                }
+                return dataTable;
+            }
         }
         private async void generateSeasonOverviewGrid(bool reload)
         {
@@ -1974,11 +1983,11 @@ namespace RCRPlanner
                                 }
                                 if (colcount < cols - 1)
                                 {
-                                    cell1.Text = cell.ToString().Replace(checksymbol, "").Replace(unchecksymbol, "").Replace("00: ", "");
+                                    cell1.Text = cell.ToString().Replace(neutral, "").Replace(checksymbol, "").Replace(unchecksymbol, "").Replace("00: ", "");
                                 }
                                 cell1.TextTrimming = TextTrimming.WordEllipsis;
                                 cell1.Margin = new Thickness(3, 0, 5, 0);
-                                if (Regex.Match(cell.ToString(), @"^[" + checksymbol+unchecksymbol + @"]*\d*?[:]\W").Success)
+                                if (Regex.Match(cell.ToString(), @"^[" + checksymbol + unchecksymbol + neutral + @"]*\d*?[:]\W").Success)
                                 {
                                     cell1.TextAlignment = TextAlignment.Left;
                                 }
@@ -2001,10 +2010,11 @@ namespace RCRPlanner
                                     border.BorderThickness = new Thickness(0, 0, 0, 1);
                                 }
                                 border.Height = 30;
-                                if (tracklist.Any(t => t.Name.Equals(Regex.Replace(cell.ToString(), @"^[" + checksymbol+unchecksymbol + @"]*\d*?[:]\W", ""))))
+                                if (tracklist.Any(t => t.Name.Equals(Regex.Replace(cell.ToString(), @"^[" + checksymbol + unchecksymbol + neutral + @"]*\d*?[:]\W", ""))))
                                 {
                                     cell1.Foreground = Application.Current.Resources["BrushMiddleGreen"] as SolidColorBrush;
-                                    if (cell.ToString().StartsWith(unchecksymbol)) {
+                                    if (cell.ToString().StartsWith(unchecksymbol))
+                                    {
                                         cell1.Foreground = Application.Current.Resources["BrushDarkerGreen"] as SolidColorBrush;
                                     }
                                 }
@@ -2020,11 +2030,22 @@ namespace RCRPlanner
                                 {
                                     border.Background = Application.Current.Resources["BrushOddBackground"] as SolidColorBrush;
                                 }
-                                if (((System.Data.DataRow)line).ItemArray[cols - 1] != null && ((System.Data.DataRow)line).ItemArray[cols - 1] != DBNull.Value && Convert.ToBoolean(((System.Data.DataRow)line).ItemArray[cols - 1]))
+                                if (cbMenu2.IsChecked == true)
                                 {
-                                    border.Background = Application.Current.Resources["BrushGridHighlightWhite"] as SolidColorBrush;
-                                    cell1.FontWeight = FontWeights.ExtraBold;
+                                    if (((System.Data.DataRow)line).ItemArray[cols - 1] != null && ((System.Data.DataRow)line).ItemArray[cols - 1] != DBNull.Value && Convert.ToBoolean(((System.Data.DataRow)line).ItemArray[cols - 1]))
+                                    {
+                                        border.Background = Application.Current.Resources["BrushGridHighlightWhite"] as SolidColorBrush;
+                                        cell1.FontWeight = FontWeights.ExtraBold;
 
+                                    }
+                                }
+                                else
+                                {
+                                    if (cell.ToString().Length > 2 && cell.ToString().Substring(1).StartsWith(checksymbol))
+                                    {
+                                        border.Background = Application.Current.Resources["BrushGridHighlightWhite"] as SolidColorBrush;
+                                        cell1.FontWeight = FontWeights.ExtraBold;
+                                    }
                                 }
                                 if (cell1.TextDecorations == TextDecorations.Strikethrough)
                                 {
@@ -2569,7 +2590,7 @@ namespace RCRPlanner
         {
             activeGrid = "gridSeasonOverview";
             btnMenu1.Visibility = Visibility.Hidden;
-            cbMenu2.Visibility = Visibility.Hidden;
+            cbMenu2.Visibility = Visibility.Visible;
             tbMenu2.Visibility = Visibility.Hidden;
             dpMenu2.Visibility = Visibility.Hidden;
             lbMenu2.Visibility = Visibility.Hidden;
@@ -2582,6 +2603,8 @@ namespace RCRPlanner
             cbMenu6.Visibility = Visibility.Hidden;
             dpMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Visible;
+            cbMenu2.Content = "Sort by date?";
+            cbMenu2.IsChecked = Properties.Settings.Default.SortDate;
             generateSeasonOverviewGrid(false);
             stackPanelMenuClose_MouseDown(null, null);
             //generateSeasonOverview(false);
@@ -3093,9 +3116,15 @@ namespace RCRPlanner
                     {
                         autoStartApps.Active = false;
                     }
+                    helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+                    break;
+                case "gridSeasonOverview":
+                    Properties.Settings.Default.SortDate = cbMenu2.IsChecked.Value;
+                    Properties.Settings.Default.Save();
+                    generateSeasonOverviewGrid(false);
                     break;
             }
-            helper.SerializeObject<autoStart.Root>(autoStartApps, exePath + autostartfile);
+            
         }
         private void cbMenu3_Click(object sender, RoutedEventArgs e)
         {
