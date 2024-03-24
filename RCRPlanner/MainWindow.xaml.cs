@@ -23,6 +23,7 @@ using Microsoft.Win32;
 using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Text.RegularExpressions;
+using System.Media;
 
 
 namespace RCRPlanner
@@ -139,16 +140,18 @@ namespace RCRPlanner
             new comboBox() { Name = "No Offset", Value = "i0" },
             new comboBox() { Name = "1 Minute", Value = "i1" },
             new comboBox() { Name = "2 Minutes", Value = "i2" },
+            new comboBox() { Name = "3 Minutes", Value = "i3" },
             new comboBox() { Name = "5 Minutes", Value = "i5" },
             new comboBox() { Name = "10 Minutes", Value = "i10" },
-            new comboBox() { Name = "15 Minutes", Value = "i15" }
+            new comboBox() { Name = "15 Minutes", Value = "i15" },
+            new comboBox() { Name = "30 Minutes", Value = "i30" }
         };
-        private readonly MediaPlayer mediaPlayer = new MediaPlayer();
 
-        private readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+        private static readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
         private readonly string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterFormula;cbFilterSports;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
 
+        private readonly SoundPlayer soundPlayer = new SoundPlayer(exePath + "\\alarm.wav");
         public MainWindow()
         {
             try
@@ -194,9 +197,7 @@ namespace RCRPlanner
                 {
                     if (DateTime.Now >= alarm.AlarmTime)
                     {
-
-                        mediaPlayer.Open(new Uri(exePath + "\\alarm.wav"));
-                        mediaPlayer.Play();
+                        soundPlayer.Play();
                         toRemove.Add(alarm);
                     }
                 }
