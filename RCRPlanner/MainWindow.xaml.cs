@@ -1379,7 +1379,7 @@ namespace RCRPlanner
                     }
                     else
                     {
-                        if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime.Date)
+                        if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime)
                         {
                             actualweekofserie = lastseason;
                         }
