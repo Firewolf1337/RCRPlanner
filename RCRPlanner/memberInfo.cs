@@ -56,7 +56,7 @@ namespace RCRPlanner
 
         public class DirtRoad
         {
-            public int category_id { get; set; }
+            public int category_id { get; set; } 
             public string category { get; set; }
             public int license_level { get; set; }
             public double safety_rating { get; set; }
@@ -83,10 +83,12 @@ namespace RCRPlanner
 
         public class Licenses
         {
-            public Oval oval { get; set; }
+            public Oval oval { get; set; } = new Oval() { category_id = 0, category = "", license_level = 0, safety_rating = 0.0, cpi = 0.0, irating = 0, tt_rating = 0, mpr_num_races = 0, color = "000000", group_name = "Rookie", group_id = 0, pro_promotable = false, mpr_num_tts = 0 };
+            public SportsCar sports_car { get; set; } = new SportsCar() { category_id = 0, category = "", license_level = 0, safety_rating = 0.0, cpi = 0.0, irating = 0, tt_rating = 0, mpr_num_races = 0, color = "000000", group_name = "Rookie", group_id = 0, pro_promotable = false, mpr_num_tts = 0 };
+            public FormulaCar formula_car { get; set; } = new FormulaCar() { category_id = 0, category = "", license_level = 0, safety_rating = 0.0, cpi = 0.0, irating = 0, tt_rating = 0, mpr_num_races = 0, color = "000000", group_name = "Rookie", group_id = 0, pro_promotable = false, mpr_num_tts = 0 };
             public Road road { get; set; }
-            public DirtOval dirt_oval { get; set; }
-            public DirtRoad dirt_road { get; set; }
+            public DirtOval dirt_oval { get; set; } = new DirtOval() { category_id = 0, category = "", license_level = 0, safety_rating = 0.0, cpi = 0.0, irating = 0, tt_rating = 0, mpr_num_races = 0, color = "000000", group_name = "Rookie", group_id = 0, pro_promotable = false, mpr_num_tts = 0 };
+            public DirtRoad dirt_road { get; set; } = new DirtRoad() { category_id = 0, category = "", license_level = 0, safety_rating = 0.0, cpi = 0.0, irating = 0, tt_rating = 0, mpr_num_races = 0, color = "000000", group_name = "Rookie", group_id = 0, pro_promotable = false, mpr_num_tts = 0 };
         }
 
         public class Oval
@@ -111,6 +113,39 @@ namespace RCRPlanner
         }
 
         public class Road
+        {
+            public int category_id { get; set; }
+            public string category { get; set; }
+            public int license_level { get; set; }
+            public double safety_rating { get; set; }
+            public double cpi { get; set; }
+            public int irating { get; set; }
+            public int tt_rating { get; set; }
+            public int mpr_num_races { get; set; }
+            public string color { get; set; }
+            public string group_name { get; set; }
+            public int group_id { get; set; }
+            public bool pro_promotable { get; set; }
+            public int mpr_num_tts { get; set; }
+        }
+
+        public class SportsCar
+        {
+            public int category_id { get; set; }
+            public string category { get; set; }
+            public int license_level { get; set; }
+            public double safety_rating { get; set; }
+            public double cpi { get; set; }
+            public int irating { get; set; }
+            public int tt_rating { get; set; }
+            public int mpr_num_races { get; set; }
+            public string color { get; set; }
+            public string group_name { get; set; }
+            public int group_id { get; set; }
+            public bool pro_promotable { get; set; }
+            public int mpr_num_tts { get; set; }
+        }
+        public class FormulaCar
         {
             public int category_id { get; set; }
             public string category { get; set; }

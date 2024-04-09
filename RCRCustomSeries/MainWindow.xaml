@@ -374,7 +374,7 @@
                 </DataGrid>
 
                 <!-- Grid for adding series-->
-                <Grid x:Name="gridAddSeries" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" >
+                <Grid x:Name="gridAddSeries" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="7" Visibility="Hidden">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="200"/>
@@ -716,9 +716,36 @@
                         <DropShadowEffect BlurRadius="20" ShadowDepth="2" Color="{StaticResource ColorBlack}" Direction="-90" Opacity="0.9" RenderingBias="Performance" ></DropShadowEffect>
                     </Border.Effect>
                 </Border>
-                <StackPanel x:Name="stackPanelLoginClose" Grid.Column="7" Grid.Row="0" HorizontalAlignment="right" Height="35" VerticalAlignment="Center" Width="30" MouseDown="ScheduleClose_MouseDown" >
+                <StackPanel x:Name="stackPanelScheduleClose" Grid.Column="7" Grid.Row="0" HorizontalAlignment="right" Height="35" VerticalAlignment="Center" Width="30" MouseDown="ScheduleClose_MouseDown" >
                     <TextBlock Style="{StaticResource DefaultTextBlockStyle}" Text="×" FontSize="30"/>
                 </StackPanel>
+                <Label Content="Week:" Grid.Column="1" Grid.Row="1" Style="{StaticResource DefaultLabelStyle}"/>
+                <TextBox x:Name="tbScheduleWeek" Grid.Column="2" Grid.Row="1" PreviewTextInput="TextBox_PreviewTextInput"  Style="{StaticResource DefaultTextBoxStyle}"/>
+                <Label Content="Track:" Grid.Column="1" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
+                <ComboBox x:Name="cbScheduleTrack" Grid.Column="2" Grid.Row="2" SelectionChanged="cbScheduleTrack_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Label Content="Layout:" Grid.Column="4" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
+                <ComboBox x:Name="cbScheduleLayout" Grid.Column="5" Grid.Row="2">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Layoutname}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Label Content="Time/Laps:"  Grid.Column="1" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}"/>
+                <ComboBox x:Name="cbScheduleTimeLaps" Grid.Column="2" Grid.Row="4" >
+                    <ComboBoxItem Content="Time"/>
+                    <ComboBoxItem Content="Laps"/>
+                </ComboBox>
+                <Label x:Name="lbScheduleTimeLaps" Content="Session Minutes:" Grid.Column="4" Grid.Row="4" Style="{StaticResource DefaultLabelStyle}"/>
+                <TextBox x:Name="tbScheduleTimeLaps" Grid.Column="5" Grid.Row="4" PreviewTextInput="TextBox_PreviewTextInput"  Style="{StaticResource DefaultTextBoxStyle}" />
+
+
             </Grid>
 
 

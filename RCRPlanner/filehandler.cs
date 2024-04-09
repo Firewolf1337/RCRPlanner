@@ -330,17 +330,29 @@ namespace RCRPlanner
                         string name = item.Name;
                         if (item.GetValue(track.track_map_layers) != null)
                         {
+
                             string url = svgpath + item.GetValue(track.track_map_layers);
-                            string content = Regex.Replace((fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
-                            content = Regex.Replace(content, @"<!--.*?-->", "");
-                            string createDiv = "<div id=\"track-" + name + "\">";
-                            htmlcontent += createDiv + content + "</div>";
+                            try
+                            {
+                                string content = Regex.Replace((fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
+                                content = Regex.Replace(content, @"<!--.*?-->", "");
+                                string createDiv = "<div id=\"track-" + name + "\">";
+                                htmlcontent += createDiv + content + "</div>";
+                            }
+                            catch 
+                            {
+                                htmlcontent = "";
+                                break;
+                            }
                         }
                     }
-                    htmlcontent += "</div></body></html>";
-                    File.WriteAllText(targetfolder + trackfile, htmlcontent);
+                    if (htmlcontent.Length > 0)
+                    {
+                        htmlcontent += "</div></body></html>";
+                        File.WriteAllText(targetfolder + trackfile, htmlcontent);
+                    }
                 }
-                if(!File.Exists(targetfolder + trackpic))
+                if(!File.Exists(targetfolder + trackpic) && File.Exists(targetfolder + trackfile))
                 {
                     convertHTMLtoPNG(targetfolder + trackfile, targetfolder + trackpic);
                 }
@@ -395,6 +407,8 @@ namespace RCRPlanner
             {
                 foreach (var serie in series)
                 {
+                    if(serie.schedules == null)
+                        continue;
                     foreach (var schedule in serie.schedules)
                     {
                         if (track.track_id == schedule.track.track_id)
