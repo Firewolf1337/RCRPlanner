@@ -159,6 +159,7 @@
     <Compile Include="jpegResizing.cs" />
     <Compile Include="oddCarImages.cs" />
     <Compile Include="participationCredits.cs" />
+    <Compile Include="partner.cs" />
     <Compile Include="pngResizing.cs" />
     <Compile Include="ProcessWatcher.cs" />
     <Compile Include="searchSerieResults.cs" />

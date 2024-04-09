@@ -342,6 +342,11 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
 
         </Style>
+        <Style x:Key="DefaultLinkStyle" TargetType="Hyperlink">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Montserrat-Regular" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
         <Style TargetType="{x:Type CheckBox}">
             <Setter Property="Background" Value="{StaticResource BrushBlack}" />
             <Setter Property="BorderBrush" Value="{StaticResource BrushDarkGray}"/>
