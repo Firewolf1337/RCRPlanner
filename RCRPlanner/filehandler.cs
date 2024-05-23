@@ -50,7 +50,7 @@ namespace RCRPlanner
                 {
                     if (MainWindow.main != null)
                     {
-                        MainWindow.main.Status = "Loading serie logo " + counter + " / " + seriesAssetsList.Count();
+                        MainWindow.main.Status = "Loading series logo " + counter + " / " + seriesAssetsList.Count();
                     }
                 }
                 catch { }
