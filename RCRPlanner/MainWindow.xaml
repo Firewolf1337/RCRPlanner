@@ -18,17 +18,17 @@
         SizeChanged="Window_SizeChanged"
         Background="Transparent">
     <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" SnapsToDevicePixels="True" Visibility="Visible" BorderThickness="1" Background="{StaticResource BrushDefaultWindowBackground}">
-    <Grid x:Name="gridMainwindow">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="42"/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-            <Grid x:Name="MainGrid" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Visibility="Visible"  >
+        <Grid x:Name="gridMainwindow">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="42"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="MainGrid" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="Visible"  >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition MaxWidth="200"/>
@@ -40,7 +40,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition/>
-                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="btnMenu1" Grid.Column="0" Grid.Row="0" Height="30" Width="80" HorizontalAlignment="Center" Click="btnMenu1_Click"/>
                 <CheckBox x:Name="cbMenu2" Grid.Column="1" Grid.Row="0" Height="30" Click="cbMenu2_Click"/>
@@ -1380,9 +1379,8 @@
                         </DataGrid.ColumnHeaderStyle>
                     </DataGrid>
                 </UserControl>
-                
-                <!-- iRating statistic view-->
 
+                <!-- iRating statistic view-->
                 <DataGrid x:Name="gridiRatingStat" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="False" RowHeight="23" MinColumnWidth="45" GridLinesVisibility="Horizontal" Visibility="Hidden">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" MaxWidth="10"  Width="10" CanUserResize="False" CanUserSort="False" CanUserReorder="False">
@@ -1422,19 +1420,43 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                
+
                 <!-- Season overview-->
                 <ScrollViewer x:Name="scrollSeasonOverview" BorderThickness="0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Visibility="Hidden">
                     <Grid x:Name="gridSeasonOverview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     </Grid>
                 </ScrollViewer>
-                <!--<DataGrid x:Name="gridSeasonOverview" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGridStyle}" BorderBrush="Transparent" AutoGenerateColumns="True" GridLinesVisibility="Horizontal" IsReadOnly="true" Visibility="Hidden">
 
-                    </DataGrid> -->
             </Grid>
-
-
-
+            <!-- Parner slider animation -->
+            <StackPanel x:Name="spPartner" Grid.Column="0" Grid.ColumnSpan="6" Grid.Row="3" Orientation="Horizontal" Margin="-1,0,-1,0" SizeChanged="spPartner_SizeChanged" MouseEnter="spPartner_MouseEnter" MouseLeave="spPartner_MouseLeave">
+                <StackPanel.Resources>
+                    <Storyboard x:Key="slide">
+                        <DoubleAnimation x:Name="daSlider" From="{DynamicResource CanvasRightCalc}" To="0" Duration="{DynamicResource AnimationTime}"
+                                  Storyboard.TargetProperty="X"
+                                  Storyboard.TargetName="transferCurreny"
+                                  RepeatBehavior="Forever"/>
+                    </Storyboard>
+                </StackPanel.Resources>
+                <StackPanel.RenderTransform>
+                    <TranslateTransform x:Name="transferCurreny" X="0"/>
+                </StackPanel.RenderTransform>
+                <StackPanel.Triggers>
+                    <EventTrigger RoutedEvent="StackPanel.Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource slide}" x:Name="sbslidebeg"/>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="StackPanel.MouseEnter">
+                        <PauseStoryboard BeginStoryboardName="sbslidebeg"/>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="StackPanel.MouseLeave">
+                        <ResumeStoryboard BeginStoryboardName="sbslidebeg"/>
+                    </EventTrigger>
+                </StackPanel.Triggers>
+                <Canvas x:Name="canvas" Width="{Binding ActualWidth, ElementName=stack}">
+                    <StackPanel x:Name="spPartners" Canvas.Left="0" Orientation="Horizontal">
+                    </StackPanel>
+                </Canvas>
+            </StackPanel>
 
 
             <Grid x:Name="headerMenuGrid" Grid.ColumnSpan="2" Background="Transparent">
@@ -1540,7 +1562,8 @@
                     <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="1" Style="{StaticResource MenuIconStyle}" VerticalAlignment="Top">
                         <Rectangle.Effect>
                             <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="1" />
-                        </Rectangle.Effect></Rectangle>
+                        </Rectangle.Effect>
+                    </Rectangle>
                     <Rectangle Grid.ColumnSpan="1" Grid.Column="0" Panel.ZIndex="1" Style="{StaticResource MenuIconStyle}" VerticalAlignment="Center">
                         <Rectangle.Effect>
                             <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="1" />
@@ -1558,7 +1581,6 @@
                         <DropShadowEffect Color="Black" Direction="-90" RenderingBias="Quality" ShadowDepth="3" />
                     </Ellipse.Effect>
                 </Ellipse>
-
             </Grid>
 
 
@@ -1662,26 +1684,46 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="35"/> <!-- Row 0 -->
-                    <RowDefinition Height="16"/> <!-- Row 1 -->
-                    <RowDefinition Height="50"/> <!-- Row 2 -->
-                    <RowDefinition Height="50"/> <!-- Row 3 -->
-                    <RowDefinition Height="50"/> <!-- Row 4 -->
-                    <RowDefinition Height="50"/> <!-- Row 5 -->
-                    <RowDefinition Height="50"/> <!-- Row 6 -->
-                    <RowDefinition Height="50"/> <!-- Row 7 -->
-                    <RowDefinition Height="16"/> <!-- Row 8 -->
-                    <RowDefinition Height="50"/> <!-- Row 9 -->
-                    <RowDefinition Height="50"/> <!-- Row 10 -->
-                    <RowDefinition Height="50"/> <!-- Row 11 -->
-                    <RowDefinition Height="50"/> <!-- Row 12 -->
-                    <RowDefinition Height="50"/> <!-- Row 13 -->
-                    <RowDefinition />            <!--Row 14 - Placeholder -->
-                    <RowDefinition Height="16"/> <!-- Row 15 -->
-                    <RowDefinition Height="50"/> <!-- Row 16 -->
-                    <RowDefinition Height="35"/> <!-- Row 17 -->
-                    <RowDefinition Height="35"/> <!-- Row 18 -->
-                    <RowDefinition Height="20"/> <!-- Row 19 -->
+                    <RowDefinition Height="35"/>
+                    <!-- Row 0 -->
+                    <RowDefinition Height="16"/>
+                    <!-- Row 1 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 2 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 3 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 4 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 5 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 6 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 7 -->
+                    <RowDefinition Height="16"/>
+                    <!-- Row 8 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 9 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 10 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 11 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 12 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 13 -->
+                    <RowDefinition />
+                    <!--Row 14 - Placeholder -->
+                    <RowDefinition Height="16"/>
+                    <!-- Row 15 -->
+                    <RowDefinition Height="50"/>
+                    <!-- Row 16 -->
+                    <RowDefinition Height="35"/>
+                    <!-- Row 17 -->
+                    <RowDefinition Height="35"/>
+                    <!-- Row 18 -->
+                    <RowDefinition Height="20"/>
+                    <!-- Row 19 -->
                 </Grid.RowDefinitions>
                 <Border Grid.Row="0" Grid.RowSpan="20" CornerRadius="0">
                     <Border.Background>
@@ -1734,14 +1776,14 @@
                                     <ScaleTransform ScaleX=".35" ScaleY=".7" CenterX="8"  CenterY="13"  />
                                 </TextBlock.RenderTransform>
                             </TextBlock>
-                        </Viewbox> 
+                        </Viewbox>
                     </Button>
                     <Button x:Name="btnLoadAutoStart"  Content="Configure Programs" DockPanel.Dock="Left" Click="btnLoadAutoStart_Click" ToolTip="Configure autostart programs" />
                 </DockPanel>
                 <DockPanel Grid.Row="17" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch" >
                     <Button x:Name="btnProfileUpdate" DockPanel.Dock="Left" Width="125" Content="App Update" Click="btnProfileUpdate_Click" ToolTip="Indicates an app update."/>
                     <Button x:Name="btnLogin" DockPanel.Dock="Right" Content="Login" Click="btnLogin_Click" ToolTip="Enter iRacing credentials" />
-                </DockPanel> 
+                </DockPanel>
                 <CheckBox x:Name="cbStartMinimized" Grid.Row="18" Grid.Column="0" Content="Start minimized" Width="Auto" Margin="10,0,0,0" Click="cbStartMinimized_Click" ToolTip="Select whether the planner starts in background or not." />
                 <DockPanel Grid.Row="19" Grid.Column="0" Width="Auto" HorizontalAlignment="Stretch">
                     <TextBlock Style="{StaticResource DefaultTextBlockStyle}">
@@ -1806,8 +1848,8 @@
                             <SolidColorBrush Color="Black"></SolidColorBrush>
                         </ProgressBar.Background>
                     </ProgressBar>
-                    <DockPanel Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="3" LastChildFill="true">
-                        <TextBlock x:Name="tbItems"  Text="10/40" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-5,0,0" Foreground="{StaticResource BrushTextWhite}" ToolTip="Progress to the 40+ Pieces Club."/>
+                    <DockPanel Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="3" LastChildFill="true">
+                        <TextBlock x:Name="tbItems"  Text="10/40" TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-5,0,0" Width="400" Foreground="{StaticResource BrushTextWhite}" ToolTip="Progress to the 40+ Pieces Club."/>
                     </DockPanel>
                     <StackPanel Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="4" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left">
                         <Label Content="*Numbers in (#) will most likely not count towards the '40+ Pieces Club' discount due to the reduced price." FontSize="8.5" Padding="0" HorizontalAlignment="Left" VerticalAlignment="top" VerticalContentAlignment="Top" Foreground="{StaticResource BrushTextWhite}"  Style="{StaticResource DefaultLabelStyle}" />
@@ -1893,7 +1935,7 @@
                         <Label x:Name="lbliRatingDirtRoad" Grid.Row="2" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                         <Label x:Name="lblCpiDirtRoad" Grid.Row="3" FontSize="12" HorizontalAlignment="Center"  VerticalAlignment="Top" VerticalContentAlignment="Top" FontFamily="{StaticResource Montserrat Light}" Margin="0,-10,0,0" Foreground="{StaticResource BrushTextWhite}"/>
                     </Grid>
-                    
+
                 </Grid>
                 <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Height="35" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" >
                     <Button x:Name="btnProfileReload" Content="Reload data" Height="35" Width="100" Click="btnProfileReload_Click" />
@@ -1946,27 +1988,27 @@
                 <Label x:Name="lblLogin" Content="" Grid.Column="1" Grid.Row="5" FontFamily="{StaticResource Montserrat Light}" Foreground="{StaticResource BrushTextWhite}"/>
             </Grid>
             <Grid x:Name="gridLoadingBG" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Background="{StaticResource BrushBlack}" Opacity="0.5" Visibility="Hidden"/>
-        <Grid x:Name="gridLoading" Background="{StaticResource BrushBlack}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="50,50" Visibility="Hidden">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="300"/>
-                <RowDefinition/>
-                <RowDefinition Height="50"/>
-            </Grid.RowDefinitions>
-            <Border Grid.Row="0" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{StaticResource BrushBlack}">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="150" ShadowDepth="0" Color="{StaticResource ColorYellow}" Direction="0" Opacity="0.5" RenderingBias="Quality" ></DropShadowEffect>
-                </Border.Effect>
-            </Border>
+            <Grid x:Name="gridLoading" Background="{StaticResource BrushBlack}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="50,50" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="300"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Grid.RowSpan="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{StaticResource BrushBlack}">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="150" ShadowDepth="0" Color="{StaticResource ColorYellow}" Direction="0" Opacity="0.5" RenderingBias="Quality" ></DropShadowEffect>
+                    </Border.Effect>
+                </Border>
                 <Image Source="/256.png" Grid.Column="1" Grid.Row="1" Width="256" Height="256" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Label x:Name="lblLoadingText" Content="" Style="{StaticResource DefaultLabelStyle}"  Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
-            <Border Style="{StaticResource DefaultBorderStyle}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="4"/>
+                <Label x:Name="lblLoadingText" Content="" Style="{StaticResource DefaultLabelStyle}"  Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Style="{StaticResource DefaultBorderStyle}" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="4"/>
+            </Grid>
         </Grid>
-    </Grid>
     </Border>
 </Window>

@@ -41,6 +41,8 @@ namespace RCRPlanner
 
         //string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
 
+        readonly string partnerLink = "https://api.npoint.io/6cef9bfd30441a01c8c9";
+
         private CookieContainer cookie = new CookieContainer();
         public HttpClientHandler handler = new HttpClientHandler();
         public static HttpClient client = new HttpClient();
@@ -63,9 +65,15 @@ namespace RCRPlanner
         {
             HttpResponseMessage response;
 
+            List<Cookie> cookies = new List<Cookie>();
             foreach (Cookie cookie in cookie.GetCookies(new Uri("https://iracing.com")))
             {
-                if (cookie.Name == "authtoken_members" && cookie.Expires > DateTime.Now.AddMinutes(10) && forcelogin == false)
+                cookies.Add(cookie);
+            }
+            int theCookie = cookies.FindIndex(c => c.Name == "authtoken_members");
+            if (theCookie != -1)
+            {
+                if (cookies[theCookie].Expires > (DateTime.Now.AddMinutes(10)) && forcelogin == false)
                 {
                     try
                     {
@@ -82,34 +90,37 @@ namespace RCRPlanner
                     }
                 }
             }
-            if (handler.CookieContainer.Count == 0 || forcelogin)
+            else
             {
-                try
-                {
-                    handler = new HttpClientHandler
+//                if (handler.CookieContainer.Count == 0 || forcelogin)
+//                {
+                    try
                     {
-                        CookieContainer = cookie
-                    };
-                    client = new HttpClient(handler);
-                    string loginHash = EncryptPW(Email, Password);
-                    string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
-                    var content = new StringContent(postBody, Encoding.UTF8, "application/json");
+                        handler = new HttpClientHandler
+                        {
+                            CookieContainer = cookie
+                        };
+                        client = new HttpClient(handler);
+                        string loginHash = EncryptPW(Email, Password);
+                        string postBody = "{\"email\": \"" + Encoding.Default.GetString(Email) + "\",\"password\": \"" + loginHash + "\"}";
+                        var content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
-                    response = await client.PostAsync(iracingAuthUrl, content);
-                    response = await client.GetAsync(iracingDataDoc);
-                    return Convert.ToInt32(response.StatusCode);
-                }
-                catch (Exception ex)
-                {
-                    if (ex.InnerException != null)
+                        response = await client.PostAsync(iracingAuthUrl, content);
+                        response = await client.GetAsync(iracingDataDoc);
+                        return Convert.ToInt32(response.StatusCode);
+                    }
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Connection:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        if (ex.InnerException != null)
+                        {
+                            MessageBox.Show("Connection:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
-            }
+//            }
             return 0;
-
         }
+
         public async Task<string> getLink(string url)
         {
             var response = await client.GetAsync(url);
@@ -468,6 +479,31 @@ namespace RCRPlanner
             response.EnsureSuccessStatusCode();
             var contents = await response.Content.ReadAsStringAsync();
             var responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<githubLatestRelease.Root>(contents, settings);
+            return responseObject;
+        }
+
+        public async Task<List<partner>> getPartner()
+        {
+            var response = await client.GetAsync(partnerLink);
+
+            response.EnsureSuccessStatusCode();
+            var contents = await response.Content.ReadAsStringAsync();
+            var responseObject = new List<partner>();
+            try
+            {
+                responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<partner>>(contents, settings);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    MessageBox.Show("Partner download:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Partner download:" + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
             return responseObject;
         }
     }

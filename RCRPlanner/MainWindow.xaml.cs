@@ -149,6 +149,8 @@ namespace RCRPlanner
 
         private static readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
+        private List<partner> partners = new List<partner>();
+
         private readonly string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterFormula;cbFilterSports;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
 
         private readonly SoundPlayer soundPlayer = new SoundPlayer(exePath + "\\alarm.wav");
@@ -157,6 +159,10 @@ namespace RCRPlanner
             try
             {
                 main = this;
+                this.Resources["CanvasRightCalc"] = (double)50;
+                this.Resources["CanvasLeftCalc"] = (double)0;
+                int duration = (int)Math.Round(Application.Current.MainWindow.ActualWidth * 0.024);
+                this.Resources["AnimationTime"] = (Duration)new TimeSpan(0, 0, duration);
                 this.InitializeComponent();
                 this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight - 2;
                 if (Properties.Settings.Default.UpdateSettings)
@@ -246,7 +252,7 @@ namespace RCRPlanner
             {
                 Directory.CreateDirectory(exePath+seriesLogos);
             }
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => {
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(async () => {
                 fData.EnsureVersionCompatibility();
                 lblLoadingText.Content = "Loading user information.";
                 if (Properties.Settings.Default.username != string.Empty)
@@ -288,6 +294,11 @@ namespace RCRPlanner
                             cb.IsChecked = true;
                         }
                     }
+                }
+                catch { }
+                try
+                {
+                    generatePartnerSlider();
                 }
                 catch { }
                 if (File.Exists(userfile) && !reloadData)
@@ -539,6 +550,7 @@ namespace RCRPlanner
                 {
                     Style_ProfileIcon(User);
                     checkNewRelease();
+                    spPartner_SizeChanged(null, null);
                 }
                 catch (Exception ex)
                 {
@@ -968,6 +980,7 @@ namespace RCRPlanner
             {
                 //Generate series information
                 dgSeriesList.Clear();
+                cbSeries.Clear();
                 dgSeriesList = (from series in seriesList
                                 join asset in seriesAssetsList on series.series_id equals asset.series_id
                                 join season in seriesSeasonList on series.series_id equals season.series_id into _ssL
@@ -1017,12 +1030,20 @@ namespace RCRPlanner
                         tracks.Add(_trackobj);
                     }
                     tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
-                    int repeattimes = serie.Season.schedules != null ? ((serie.Season.schedules[0]).race_time_descriptors[0]).repeat_minutes : -1;
+                    int repeattimes = -1;
+                    string evenOdd = "even ";
+                    if (serie.Season.schedules != null) {
+                        repeattimes  = ((serie.Season.schedules[0]).race_time_descriptors[0]).repeat_minutes;
+                        if (((serie.Season.schedules[0]).race_time_descriptors[0]).first_session_time != null)
+                        {
+                            evenOdd = (DateTime.SpecifyKind(DateTime.Parse(((serie.Season.schedules[0]).race_time_descriptors[0]).first_session_time), DateTimeKind.Utc).ToLocalTime()).Hour % 2 == 0 ? "even " : "odd ";
+                        }
+                    }
                     if (repeattimes > 0)
                     {
                         if (repeattimes >= 60)
                         {
-                            serie.RaceTimes = repeattimes >= 60 ? "Every " + repeattimes / 60 + " hours" : "Every " + repeattimes / 60 + " hour";
+                            serie.RaceTimes = repeattimes >= 60 ? "Every " + evenOdd + repeattimes / 60 + " hours" : "Every " + evenOdd + repeattimes / 60 + " hour";
                         }
                         else
                         {
@@ -2072,6 +2093,41 @@ namespace RCRPlanner
             }
             catch (Exception ex) { }
         }
+        private async void generatePartnerSlider()
+        {
+            partners = await fData.getPartner();
+            Style s = (Style)this.FindResource("DefaultTextBlockStyle");
+            spPartners.Children.Clear();
+            foreach (partner part in partners)
+            {
+                if (part.date > DateTime.Now)
+                {
+                    if (!String.IsNullOrEmpty(part.picture.ToString()))
+                    {
+                        Image partnerImage = new Image();
+                        partnerImage.Source = new BitmapImage(new Uri(part.picture.ToString()));
+                        partnerImage.Height = 40;
+                        partnerImage.MaxWidth = 100;
+                        spPartners.Children.Add(partnerImage);
+                    }
+                    if (!String.IsNullOrEmpty(part.name.ToString()) && !String.IsNullOrEmpty(part.url.ToString()))
+                    {
+                        TextBlock partnerText = new TextBlock();
+                        partnerText.Style = s;
+                        Hyperlink partnerLink = new Hyperlink();
+                        partnerLink.NavigateUri = new Uri(part.url);
+                        partnerLink.Inlines.Add(part.name + "        ");
+                        partnerLink.RequestNavigate += link_Click;
+                        partnerLink.Style = (Style)this.FindResource("DefaultLinkStyle");
+                        partnerText.Inlines.Add(partnerLink);
+                        spPartners.Children.Add(partnerText);
+                    }
+                }
+            }
+
+            this.Resources["AnimationTime"] = (Duration)new TimeSpan(0, 0, 30 + (partners.Count() * 3));
+        }
+        
         private List<int> getPurchasedItems()
         {
             var tracks = User.track_packages.Select(t => t.package_id);
@@ -3506,6 +3562,32 @@ namespace RCRPlanner
                     break;
                 }
             }
+        }
+        private void spPartner_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.Resources["CanvasRightCalc"] = (double)helper.MeasureString(spPartners).Width + Application.Current.MainWindow.ActualWidth;
+            int duration = (int)Math.Round(Application.Current.MainWindow.ActualWidth * 0.024);
+            this.Resources["AnimationTime"] = (Duration)new TimeSpan(0, 0, duration);
+            Canvas.SetLeft(spPartners, 0 - (double)helper.MeasureString(spPartners).Width);
+            try
+            {
+                BeginStoryboard storyboardbegin = (BeginStoryboard)(this).sbslidebeg;
+                
+                storyboardbegin.Storyboard.Begin();
+            }
+            catch { }
+        }
+
+        private void spPartner_MouseEnter(object sender, MouseEventArgs e)
+        {
+            BeginStoryboard storyboardbegin = (BeginStoryboard)(this).sbslidebeg;
+            storyboardbegin.Storyboard.Pause();
+        }
+
+        private void spPartner_MouseLeave(object sender, MouseEventArgs e)
+        {
+            BeginStoryboard storyboardbegin = (BeginStoryboard)(this).sbslidebeg;
+            storyboardbegin.Storyboard.Resume();
         }
     }
 }

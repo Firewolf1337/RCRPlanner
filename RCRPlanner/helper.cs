@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using System.Windows;
 using System.Reflection;
 using System.Windows.Data;
+using System.Windows.Controls;
 
 namespace RCRPlanner
 {
@@ -395,6 +396,27 @@ namespace RCRPlanner
                 allowedLicense.Add(new series.AllowedLicense() { group_name = ClassIDs[i-1].Item3, license_group = i, min_license_level = MinSR , max_license_level = (i *4) });  
             }
             return allowedLicense;
+        }
+
+        public static Size MeasureString(StackPanel stackPanel)
+        {
+            var size = new Size(0, 0);
+            foreach (var child in stackPanel.Children)
+            {
+                if (child is TextBlock)
+                {
+                    size.Width += ((TextBlock)child).ActualWidth;
+                    size.Height += ((TextBlock)child).ActualHeight;
+                }
+                if (child is Image)
+                {
+                    size.Width += ((Image)child).ActualWidth;
+                    size.Height += ((Image)child).ActualHeight;
+                }
+            }
+
+
+            return size;
         }
     }
 }
