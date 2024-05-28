@@ -17,7 +17,6 @@
         ResizeMode="CanResizeWithGrip" 
         SizeChanged="Window_SizeChanged"
         Background="Transparent">
-
     <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" SnapsToDevicePixels="True" Visibility="Visible" BorderThickness="1" Background="{StaticResource BrushDefaultWindowBackground}">
         <Grid x:Name="gridMainwindow">
             <Grid.RowDefinitions>

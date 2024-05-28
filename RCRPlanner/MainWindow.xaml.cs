@@ -1899,7 +1899,7 @@ namespace RCRPlanner
                         }
                         try
                         {
-                            if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                            if (seasonweek.Week < activeweeks.FirstOrDefault(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
                             {
                                 pref = unchecksymbol;
                             }
@@ -1938,13 +1938,15 @@ namespace RCRPlanner
                         var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
                         string pref = neutral;
                         string active = seasonweek.WeekActive ? checksymbol : unchecksymbol;
+                        string test = seasonweek.WeekActive.ToString();
+                        string test2 = seasonweek.Week.ToString() + seasonweek.SeriesName + seasonweek.SerieId;
                         if (seasonRaces.Where(r => r.track.track_id == seasonweek.TrackId && r.series_id == seasonweek.SerieId && r.season_year == yearquar.year && r.season_quarter == yearquar.quarter).Count() > 0)
                         {
                             pref = checksymbol;
                         }
                         try
                         {
-                            if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                            if (seasonweek.Week < activeweeks.FirstOrDefault(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
                             {
                                 pref = unchecksymbol;
                             }
