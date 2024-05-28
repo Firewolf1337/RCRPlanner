@@ -176,6 +176,7 @@ namespace RCRPlanner
                     this.WindowState = WindowState.Minimized;
                     this.cbStartMinimized.IsChecked = true;
                 }
+                dpMenu3date.SelectedDate = DateTime.Now;
                 gridLoading.Visibility = Visibility.Visible;
                 gridLoadingBG.Visibility = Visibility.Visible;
                 bwPresetLoader.DoWork += worker_DoWork;
@@ -1348,12 +1349,19 @@ namespace RCRPlanner
             try
             {
                 dgRaceOverviewList.Clear();
+                DateTime actualtime = DateTime.Now.ToUniversalTime(); ;
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    if (((DateTime)dpMenu3date.SelectedDate).Date != DateTime.Now.Date)
+                    {
+                        actualtime = ((DateTime)dpMenu3date.SelectedDate).AddHours(12).ToUniversalTime();
+                    }
+                }));
                 foreach (var serie in dgSeriesList)
                 {
                     List<tracks.TracksInSeries> tracksinserie = new List<tracks.TracksInSeries>();
                     tracksinserie = tracksInSeries.Where(t => t.series_id == serie.SerieId).ToList<tracks.TracksInSeries>();
                     //tracksinserie = (tracksInSeries.FindAll(t => t.series_id == serie.SerieId)).ToList<tracks.TracksInSeries>();
-                    DateTime actualtime = DateTime.Now.ToUniversalTime();
                     DateTime firstracetime;
                     int daysoffset = 0;
                     int repeattimes;
@@ -1889,12 +1897,16 @@ namespace RCRPlanner
                         {
                             pref = checksymbol;
                         }
-                        if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                        try
                         {
-                            pref = unchecksymbol;
+                            if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                            {
+                                pref = unchecksymbol;
+                            }
                         }
+                        catch (Exception ex) { }
 
-                        row[seasonweek.SeriesName] = pref + active + "00: " + seasonweek.Track;
+                    row[seasonweek.SeriesName] = pref + active + "00: " + seasonweek.Track;
                         row["WeekActive"] = seasonweek.WeekActive;
                     }
 
@@ -1921,7 +1933,7 @@ namespace RCRPlanner
 
                     row = dataTable.NewRow();
                     row[0] = week.Date.ToShortDateString();
-                    foreach (var seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
+                    foreach (dgObjects.seasonOverviewDataGrid seasonweek in dgSeasonOverview.Where(w => w.StartTime == week).ToList())
                     {
                         var yearquar = YearQuaterSeries.FirstOrDefault(s => s.serie == seasonweek.SerieId);
                         string pref = neutral;
@@ -1930,10 +1942,14 @@ namespace RCRPlanner
                         {
                             pref = checksymbol;
                         }
-                        if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                        try
                         {
-                            pref = unchecksymbol;
+                            if (seasonweek.Week < activeweeks.First(s => s.series == seasonweek.SerieId).week && pref != checksymbol)
+                            {
+                                pref = unchecksymbol;
+                            }
                         }
+                        catch (Exception ex) { }
                         row[seasonweek.SeriesName] = pref + seasonweek.Week.ToString().PadLeft(2, '0') + ": " + seasonweek.Track;
                         row["WeekActive"] = seasonweek.WeekActive;
                     }
@@ -2510,7 +2526,9 @@ namespace RCRPlanner
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             cbMenu3.Visibility = Visibility.Hidden;
-            dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3.Visibility = Visibility.Visible;
+            dpDPMenu3.Visibility = Visibility.Visible;
+            ddMenu3.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
             dpMenu4.Visibility = Visibility.Hidden;
@@ -2524,6 +2542,7 @@ namespace RCRPlanner
             ddMenu2.ItemsSource = cbAlarms;
             ddMenu2.SelectedIndex = Properties.Settings.Default.defaultTimer;
             lbMenu2.Content = "Alarm offset:";
+            lbMenu3.Content = "Date:";
 
             stackPanelMenuClose_MouseDown(null, null);
 
@@ -2538,6 +2557,8 @@ namespace RCRPlanner
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Visible;
+            dpDPMenu3.Visibility = Visibility.Hidden;
+            ddMenu3.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Visible;
             btnMenu1.Visibility = Visibility.Visible;
@@ -2575,6 +2596,8 @@ namespace RCRPlanner
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Visible;
+            dpDPMenu3.Visibility = Visibility.Hidden;
+            ddMenu3.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
             btnMenu1.Visibility = Visibility.Visible;
@@ -3444,6 +3467,7 @@ namespace RCRPlanner
             switch (activeGrid)
             {
                 case "gridRaces":
+                    dpMenu3date.SelectedDate = DateTime.Now;
                     generateRaceView();
                     break;
                 case "gridSeasonOverview":
@@ -3588,6 +3612,21 @@ namespace RCRPlanner
         {
             BeginStoryboard storyboardbegin = (BeginStoryboard)(this).sbslidebeg;
             storyboardbegin.Storyboard.Resume();
+        }
+
+        private void btnDateLower_Click(object sender, RoutedEventArgs e)
+        {
+            dpMenu3date.SelectedDate = ((DateTime)(dpMenu3date.SelectedDate)).AddDays(-1);
+        }
+
+        private void btnDateHigher_Click(object sender, RoutedEventArgs e)
+        {
+            dpMenu3date.SelectedDate = ((DateTime)(dpMenu3date.SelectedDate)).AddDays(1);
+        }
+
+        private void dpMenu3date_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            generateRaceView();
         }
     }
 }

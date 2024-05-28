@@ -17,6 +17,7 @@
         ResizeMode="CanResizeWithGrip" 
         SizeChanged="Window_SizeChanged"
         Background="Transparent">
+
     <Border CornerRadius="0" BorderBrush="{StaticResource DefaultBorderBrush}" SnapsToDevicePixels="True" Visibility="Visible" BorderThickness="1" Background="{StaticResource BrushDefaultWindowBackground}">
         <Grid x:Name="gridMainwindow">
             <Grid.RowDefinitions>
@@ -57,9 +58,14 @@
                         </ComboBox.ItemsPanel>
                     </ComboBox>
                 </DockPanel>
-                <CheckBox x:Name="cbMenu3" Grid.Column="2" Grid.Row="0" Height="30" Click="cbMenu3_Click"/>
+                <CheckBox x:Name="cbMenu3" Grid.Column="2" Grid.Row="0" Height="30" Click="cbMenu3_Click" />
                 <DockPanel x:Name="dpMenu3" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu3"  Style="{StaticResource DefaultLabelStyle}"/>
+                    <DockPanel x:Name="dpDPMenu3" Width="Auto" HorizontalAlignment="Left">
+                        <DatePicker Template="{DynamicResource DatePickerTemplate1}" x:Name="dpMenu3date" VerticalAlignment="Center" Text="Date" BorderThickness="0" Style="{StaticResource DateTimeCalendar}" SelectedDateFormat="Short" SelectedDateChanged="dpMenu3date_SelectedDateChanged"/>
+                        <Button x:Name="btnDateLower" Content="⯇" Click="btnDateLower_Click"/>
+                        <Button x:Name="btnDateHigher" Content="⯈" Click="btnDateHigher_Click"/>
+                    </DockPanel>
                     <ComboBox x:Name="ddMenu3" Height="25" Width="100" SelectionChanged="ddMenu3_SelectionChanged">
                         <ComboBox.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -929,7 +935,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Race times"  IsReadOnly="True" SortMemberPath="Repeating"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Race times" MinWidth="75"  IsReadOnly="True" SortMemberPath="Repeating"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellStyle>
                                 <Style TargetType="DataGridCell" BasedOn="{StaticResource DefaultDataGridCellStyle}">
                                     <Style.Triggers>
@@ -945,7 +951,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Next race"  IsReadOnly="True" SortMemberPath="NextRace"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
+                        <DataGridTemplateColumn Header="Next race" MinWidth="105"  IsReadOnly="True" SortMemberPath="NextRace"  CanUserSort="True" HeaderStyle="{StaticResource DataGridHeaderCenter}">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
                                     <TextBlock Text="{Binding NextRaceTime}" HorizontalAlignment="Center" Margin="0,0,5,0"/>
