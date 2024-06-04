@@ -1282,7 +1282,11 @@
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>
                 </DataGrid>
-
+                <DataGrid x:Name="gridPartner" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGrid50hStyle}" 
+                     AutoGenerateColumns="False" RowHeight="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
+                     SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" ScrollViewer.CanContentScroll="False">
+                    
+                </DataGrid>
                 <!-- Autostart applications view-->
                 <DataGrid x:Name="gridAutoStart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGrid50hStyle}" 
                      AutoGenerateColumns="False" MinColumnWidth="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
@@ -1440,7 +1444,7 @@
                         <DoubleAnimation x:Name="daSlider" From="{DynamicResource CanvasRightCalc}" To="0" Duration="{DynamicResource AnimationTime}"
                                   Storyboard.TargetProperty="X"
                                   Storyboard.TargetName="transferCurreny"
-                                  RepeatBehavior="Forever"/>
+                                  RepeatBehavior="{DynamicResource RepeatBehavior}" Completed="daSlider_Completed"/>
                     </Storyboard>
                 </StackPanel.Resources>
                 <StackPanel.RenderTransform>
@@ -1759,6 +1763,7 @@
                 </DockPanel>
                 <Button x:Name="btnPartStats" Grid.Row="9" Grid.Column="0" Content="Participation Statistics" Click="btnPartStats_Click" ToolTip="Create view of participation in a series."/>
                 <Button x:Name="btniRatingStats" Grid.Row="10" Grid.Column="0" Content="iRating Statistics" Click="btniRatingStats_Click" ToolTip="Create view of iratings in a series."/>
+                <Button x:Name="btnParnter" Grid.Row="11" Grid.Column="0" Content="Partner" ToolTip="View Partner" Click="btnParnter_Click"/>
                 <DockPanel Grid.Row="15" Grid.Column="0"  Width="Auto" HorizontalAlignment="Stretch" LastChildFill="true">
                     <Line X1="0" Y1="7" X2="50" Y2="7" Width="100" Stretch="Fill" Stroke="{StaticResource BrushDarkGray}" StrokeThickness="1" />
                     <Label Content="Settings" Width="50" Margin="0,-3,0,-3" HorizontalAlignment="Center" FontSize="10" Style="{StaticResource DefaultLabelStyle}"/>

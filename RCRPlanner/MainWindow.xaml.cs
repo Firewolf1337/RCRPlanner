@@ -150,6 +150,7 @@ namespace RCRPlanner
         private static readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
         private List<partner> partners = new List<partner>();
+        private bool partnerSliderHide = false;
 
         private readonly string defaultfilter = "cbFilterInOfficial;cbFilterOfficial;cbFilterOpenSetup;cbFilterFixedSetup;cbFilterFormula;cbFilterSports;cbFilterOval;cbFilterDirt;cbFilterDirtOval;cbFilterR;cbFilterD;cbFilterC;cbFilterB;cbFilterA;cbFilterP";
 
@@ -925,7 +926,7 @@ namespace RCRPlanner
 
         private void switchMainGridVisibility(List<System.Windows.Controls.DataGrid> gridToShow, bool Details)
         {
-            List<System.Windows.Controls.DataGrid> allGrids = new List<System.Windows.Controls.DataGrid> { gridSeries, gridCars, gridTracksLayout, gridPurchaseGuide, gridRaces, gridCarDetail, gridTrackDetail, gridAutoStart, gridPartStat, gridiRatingStat };
+            List<System.Windows.Controls.DataGrid> allGrids = new List<System.Windows.Controls.DataGrid> { gridSeries, gridCars, gridTracksLayout, gridPurchaseGuide, gridRaces, gridCarDetail, gridTrackDetail, gridAutoStart, gridPartStat, gridiRatingStat, gridPartner };
 
             if (Details)
             {
@@ -2142,8 +2143,19 @@ namespace RCRPlanner
                     }
                 }
             }
+            int sliderTimer = 30 + (partners.Count() * 3);
+            this.Resources["AnimationTime"] = (Duration)new TimeSpan(0, 0, sliderTimer);
+            if (Properties.Settings.Default.PartnerSlider)
+            {
+                this.Resources["RepeatBehavior"] = RepeatBehavior.Forever;
+                partnerSliderHide = false;
+                spPartners.Visibility = Visibility.Visible;
 
-            this.Resources["AnimationTime"] = (Duration)new TimeSpan(0, 0, 30 + (partners.Count() * 3));
+            }
+            else
+            {
+                this.Resources["RepeatBehavior"] = (RepeatBehavior)new RepeatBehavior(2);
+            }
         }
         
         private List<int> getPurchasedItems()
@@ -2694,7 +2706,29 @@ namespace RCRPlanner
             gridSeasonOverview.Visibility = Visibility.Visible;
             scrollSeasonOverview.Visibility = Visibility.Visible;
         }
-
+        private void btnParnter_Click(object sender, RoutedEventArgs e)
+        {
+            activeGrid = "gridPartner";
+            btnMenu1.Visibility = Visibility.Hidden;
+            cbMenu2.Visibility = Visibility.Visible;
+            tbMenu2.Visibility = Visibility.Hidden;
+            dpMenu2.Visibility = Visibility.Hidden;
+            lbMenu2.Visibility = Visibility.Hidden;
+            cbMenu3.Visibility = Visibility.Hidden;
+            dpMenu3.Visibility = Visibility.Hidden;
+            cbMenu4.Visibility = Visibility.Hidden;
+            cbMenu5.Visibility = Visibility.Hidden;
+            dpMenu4.Visibility = Visibility.Hidden;
+            dpMenu5.Visibility = Visibility.Hidden;
+            cbMenu6.Visibility = Visibility.Hidden;
+            dpMenu6.Visibility = Visibility.Hidden;
+            tbMenu6.Visibility = Visibility.Hidden;
+            cbMenu2.Content = "Run partner slider";
+            cbMenu2.IsChecked = Properties.Settings.Default.PartnerSlider;
+            stackPanelMenuClose_MouseDown(null, null);
+            switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridPartner }, false);
+            
+        }
         private void btnstartPrograms_Click(object sender, RoutedEventArgs e)
         {
             startPrograms();
@@ -3205,6 +3239,18 @@ namespace RCRPlanner
                     Properties.Settings.Default.Save();
                     generateSeasonOverviewGrid(false);
                     break;
+                case "gridPartner":
+                    Properties.Settings.Default.PartnerSlider = cbMenu2.IsChecked.Value;
+                    Properties.Settings.Default.Save();
+                    generatePartnerSlider();
+                    try
+                    {
+                        BeginStoryboard storyboardbegin = (BeginStoryboard)(this).sbslidebeg;
+                        storyboardbegin.Storyboard.RepeatBehavior = (RepeatBehavior)this.Resources["RepeatBehavior"];
+                        storyboardbegin.Storyboard.Begin();
+                    }
+                    catch { }
+                    break;
             }
             
         }
@@ -3629,6 +3675,15 @@ namespace RCRPlanner
         private void dpMenu3date_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             generateRaceView();
+        }
+
+        private void daSlider_Completed(object sender, EventArgs e)
+        {
+            if (this.Resources["RepeatBehavior"].ToString() != "Forever")
+            {
+                spPartners.Visibility = Visibility.Hidden;
+                partnerSliderHide = true;
+            }
         }
     }
 }

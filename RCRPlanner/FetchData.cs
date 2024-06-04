@@ -71,9 +71,9 @@ namespace RCRPlanner
                 cookies.Add(cookie);
             }
             int theCookie = cookies.FindIndex(c => c.Name == "authtoken_members");
-            if (theCookie != -1)
+            if (theCookie != -1 && forcelogin == false)
             {
-                if (cookies[theCookie].Expires > (DateTime.Now.AddMinutes(10)) && forcelogin == false)
+                if (cookies[theCookie].Expires > (DateTime.Now.AddMinutes(10)))
                 {
                     try
                     {
@@ -92,8 +92,8 @@ namespace RCRPlanner
             }
             else
             {
-//                if (handler.CookieContainer.Count == 0 || forcelogin)
-//                {
+                if (handler.CookieContainer.Count == 0 || forcelogin)
+                {
                     try
                     {
                         handler = new HttpClientHandler
@@ -117,7 +117,7 @@ namespace RCRPlanner
                         }
                     }
                 }
-//            }
+            }
             return 0;
         }
 

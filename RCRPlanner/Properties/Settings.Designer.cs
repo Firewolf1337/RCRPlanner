@@ -130,5 +130,17 @@ namespace RCRPlanner.Properties {
                 this["SortDate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PartnerSlider {
+            get {
+                return ((bool)(this["PartnerSlider"]));
+            }
+            set {
+                this["PartnerSlider"] = value;
+            }
+        }
     }
 }
