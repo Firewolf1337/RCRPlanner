@@ -1282,10 +1282,14 @@
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>
                 </DataGrid>
+                
+                <!-- Partner View-->
                 <DataGrid x:Name="gridPartner" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGrid50hStyle}" 
                      AutoGenerateColumns="False" RowHeight="50" GridLinesVisibility="Horizontal" Visibility="Hidden" 
                      SelectionChanged="dataGrid_SelectionChanged" SelectionMode="Single" ScrollViewer.CanContentScroll="False">
-                    
+                    <DataGrid.Columns>
+                        
+                    </DataGrid.Columns>
                 </DataGrid>
                 <!-- Autostart applications view-->
                 <DataGrid x:Name="gridAutoStart" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="6"  Style="{StaticResource DefaultDataGrid50hStyle}" 

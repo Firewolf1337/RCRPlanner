@@ -2723,7 +2723,7 @@ namespace RCRPlanner
             cbMenu6.Visibility = Visibility.Hidden;
             dpMenu6.Visibility = Visibility.Hidden;
             tbMenu6.Visibility = Visibility.Hidden;
-            cbMenu2.Content = "Run partner slider";
+            cbMenu2.Content = "Run partner slider (App restart required)";
             cbMenu2.IsChecked = Properties.Settings.Default.PartnerSlider;
             stackPanelMenuClose_MouseDown(null, null);
             switchMainGridVisibility(new List<System.Windows.Controls.DataGrid> { gridPartner }, false);
