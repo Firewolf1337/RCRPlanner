@@ -1576,11 +1576,11 @@ namespace RCRPlanner
                         {
                             over = true;
                         }
-                        if ((cbFilterDirtOval.IsChecked == true && race.Serie.Category == "dirtoval") ||
+                        if ((cbFilterDirtOval.IsChecked == true && race.Serie.Category == "dirt_oval") ||
                             (cbFilterOval.IsChecked == true && race.Serie.Category == "oval") ||
                             (cbFilterFormula.IsChecked == true && race.Serie.Category == "formula_car") ||
                             (cbFilterSports.IsChecked == true && race.Serie.Category == "sports_car") ||
-                            (cbFilterDirt.IsChecked == true && race.Serie.Category == "dirt"))
+                            (cbFilterDirt.IsChecked == true && race.Serie.Category == "dirt_road"))
                         {
                             category = true;
                         }
