@@ -60,11 +60,6 @@
                 <CheckBox x:Name="cbMenu3" Grid.Column="2" Grid.Row="0" Height="30" Click="cbMenu3_Click" />
                 <DockPanel x:Name="dpMenu3" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
                     <Label x:Name="lbMenu3"  Style="{StaticResource DefaultLabelStyle}"/>
-                    <DockPanel x:Name="dpDPMenu3" Width="Auto" HorizontalAlignment="Left">
-                        <DatePicker Template="{DynamicResource DatePickerTemplate1}" x:Name="dpMenu3date" VerticalAlignment="Center" Text="Date" BorderThickness="0" Style="{StaticResource DateTimeCalendar}" SelectedDateFormat="Short" SelectedDateChanged="dpMenu3date_SelectedDateChanged"/>
-                        <Button x:Name="btnDateLower" Content="⯇" Click="btnDateLower_Click"/>
-                        <Button x:Name="btnDateHigher" Content="⯈" Click="btnDateHigher_Click"/>
-                    </DockPanel>
                     <ComboBox x:Name="ddMenu3" Height="25" Width="100" SelectionChanged="ddMenu3_SelectionChanged">
                         <ComboBox.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -72,6 +67,14 @@
                             </ItemsPanelTemplate>
                         </ComboBox.ItemsPanel>
                     </ComboBox>
+                </DockPanel>
+                <DockPanel x:Name="dpMenu3Date" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">
+                    <Label x:Name="lbMenu3Date"  Style="{StaticResource DefaultLabelStyle}"/>
+                    <DockPanel x:Name="dpDPMenu3" Width="Auto" HorizontalAlignment="Left">
+                        <DatePicker Template="{DynamicResource DatePickerTemplate1}" x:Name="dpMenu3date" VerticalAlignment="Center" Text="Date" BorderThickness="0" Style="{StaticResource DateTimeCalendar}" SelectedDateFormat="Short" SelectedDateChanged="dpMenu3date_SelectedDateChanged"/>
+                        <Button x:Name="btnDateLower" Content="⯇" Click="btnDateLower_Click"/>
+                        <Button x:Name="btnDateHigher" Content="⯈" Click="btnDateHigher_Click"/>
+                    </DockPanel>
                 </DockPanel>
                 <CheckBox x:Name="cbMenu4" Grid.Column="3" Grid.Row="0" Height="30" Click="cbMenu4_Click"/>
                 <DockPanel x:Name="dpMenu4" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="2" Background="Transparent" Width="Auto" HorizontalAlignment="Left">

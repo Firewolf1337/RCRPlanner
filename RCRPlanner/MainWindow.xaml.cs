@@ -2406,6 +2406,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
@@ -2442,6 +2443,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
@@ -2477,6 +2479,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
@@ -2506,6 +2509,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
@@ -2540,8 +2544,8 @@ namespace RCRPlanner
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             cbMenu3.Visibility = Visibility.Hidden;
-            dpMenu3.Visibility = Visibility.Visible;
-            dpDPMenu3.Visibility = Visibility.Visible;
+            dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Visible;
             ddMenu3.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
@@ -2556,7 +2560,7 @@ namespace RCRPlanner
             ddMenu2.ItemsSource = cbAlarms;
             ddMenu2.SelectedIndex = Properties.Settings.Default.defaultTimer;
             lbMenu2.Content = "Alarm offset:";
-            lbMenu3.Content = "Date:";
+            lbMenu3Date.Content = "Date:";
 
             stackPanelMenuClose_MouseDown(null, null);
 
@@ -2571,7 +2575,7 @@ namespace RCRPlanner
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Visible;
-            dpDPMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             ddMenu3.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Visible;
@@ -2610,7 +2614,7 @@ namespace RCRPlanner
             dpMenu2.Visibility = Visibility.Visible;
             lbMenu2.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Visible;
-            dpDPMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             ddMenu3.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Visible;
             dpMenu5.Visibility = Visibility.Hidden;
@@ -2651,6 +2655,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Visible;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Visible;
             dpMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Visible;
@@ -2690,6 +2695,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
             dpMenu4.Visibility = Visibility.Hidden;
@@ -2716,6 +2722,7 @@ namespace RCRPlanner
             lbMenu2.Visibility = Visibility.Hidden;
             cbMenu3.Visibility = Visibility.Hidden;
             dpMenu3.Visibility = Visibility.Hidden;
+            dpMenu3Date.Visibility = Visibility.Hidden;
             cbMenu4.Visibility = Visibility.Hidden;
             cbMenu5.Visibility = Visibility.Hidden;
             dpMenu4.Visibility = Visibility.Hidden;
