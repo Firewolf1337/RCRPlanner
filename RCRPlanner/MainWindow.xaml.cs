@@ -1003,6 +1003,9 @@ namespace RCRPlanner
                                     Fixed = alls?.fixed_setup == true ? checksymbol : unchecksymbol,
                                     Season = alls != null ? alls : new seriesSeason.Root(),
                                     ForumLink = series.forum_url,
+                                    RaceLength = alls == null ? "no Race" : alls?.schedules[0].race_lap_limit != null
+                                 ? alls.schedules.Aggregate(0, (sum, schedule) => sum + (schedule.race_lap_limit == null ? 0 : schedule.race_lap_limit.Value))/alls.schedules.Count + " Laps"
+                                 : (alls.schedules[0].race_time_limit >= 60 ? alls.schedules[0].race_time_limit / 60 + " h" : alls.schedules[0].race_time_limit + " Min" ),
                                 }).ToList<dgObjects.seriesDataGrid>();
                 foreach (var serie in dgSeriesList)
                 {
@@ -1028,7 +1031,9 @@ namespace RCRPlanner
                         _trackobj.TrackImage = new Uri("file:///" + exePath + tracksLogo + tr.track_id + ".png");
                         _trackobj.Week = track.SeasonSchedule.race_week_num + 1;
                         _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date, Thread.CurrentThread.CurrentUICulture).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
-                        _trackobj.Racelength = track.SeasonSchedule.race_lap_limit != null ? track.SeasonSchedule.race_lap_limit.ToString() + " Laps" : track.SeasonSchedule.race_time_limit.ToString() + " Min";
+                        _trackobj.Racelength = track.SeasonSchedule.race_lap_limit != null
+                            ? track.SeasonSchedule.race_lap_limit.ToString() + " Laps"
+                            : (track.SeasonSchedule.race_time_limit >= 60 ? track.SeasonSchedule.race_time_limit / 60 + " h" : track.SeasonSchedule.race_time_limit + " Min");
                         tracks.Add(_trackobj);
                     }
                     tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
@@ -1410,7 +1415,7 @@ namespace RCRPlanner
                     }
                     else
                     {
-                        if (lastseason.SeasonSchedule != null && Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime)
+                        if (lastseason.SeasonSchedule != null && (Convert.ToDateTime(lastseason.SeasonSchedule.start_date) <= actualtime.Date || lastseason.SeasonSchedule.race_week_num == 0) && Convert.ToDateTime(lastseason.SeasonSchedule.race_time_descriptors[0].session_times[lastseason.SeasonSchedule.race_time_descriptors[0].session_times.Count - 1]) >= actualtime)
                         {
                             actualweekofserie = lastseason;
                         }
@@ -1477,7 +1482,9 @@ namespace RCRPlanner
                         _raceobj.Tracks = serie.Tracks;
                         _raceobj.SerieId = serie.SerieId;
                         _raceobj.Seriesimage = serie.Seriesimage;
-                        _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" : actualweekofserie.SeasonSchedule.race_time_limit.ToString() + " Min";
+                        _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null 
+                            ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" 
+                            : (actualweekofserie.SeasonSchedule.race_time_limit >= 60 ? actualweekofserie.SeasonSchedule.race_time_limit / 60 + " h" : actualweekofserie.SeasonSchedule.race_time_limit + " Min");
                         _raceobj.SeriesName = serie.SeriesName;
                         _raceobj.TrackName = tr.track_name;
                         _raceobj.Serie = serie;
@@ -2265,7 +2272,7 @@ namespace RCRPlanner
                         tbDetail7.Visibility = Visibility.Visible;
                         if (((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarId != null)
                         {
-                            string url = "https://members.iracing.com/membersite/member/CarDetail.do?carid=" + ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarId;
+                            string url = "https://members-ng.iracing.com/shop/cars?carId=" + ((RCRPlanner.dgObjects.carsDataGrid)((DataGrid)sender).SelectedItem).CarId;
                             tbDetail7Link.NavigateUri = new Uri(url);
                             tbDetail7Link.ToolTip = url;
                         }
