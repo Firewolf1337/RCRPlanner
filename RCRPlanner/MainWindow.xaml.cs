@@ -1878,6 +1878,10 @@ namespace RCRPlanner
                 {
                     pC = partCr.weeks + @"/" + partCr.min_weeks + " for $" + partCr.participation_credits;
                 }
+                else
+                {
+                    pC = @"0/" + (ser.Season.max_weeks - ser.Season.drops);
+                }
                 dataTable.Rows[0][ser.SeriesName] = new BitmapImage(new Uri(ser.Seriesimage.AbsoluteUri));
                 dataTable.Rows[1][ser.SeriesName] = ser.SeriesName;
                 dataTable.Rows[2][ser.SeriesName] = pC;
