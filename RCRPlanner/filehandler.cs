@@ -190,6 +190,15 @@ namespace RCRPlanner
                 {
                     MainWindow.main.Status = "Loading car pictures " + counter + " / " + carsAssetsList.Count();
                 }
+                file = exePath + imagefolder + logo.car_id + "_logo.png";
+                if (!File.Exists(file))
+                {
+                    try
+                    {
+                        await fData.getImage(iracingCarImages[2] + logo.folder + "/" + logo.small_image, file, true, 50);
+                    }
+                    catch (Exception ex) { }
+                }
                 file = exePath + imagefolder + logo.car_id + ".png";
                 if (!File.Exists(file))
                 {
@@ -206,15 +215,7 @@ namespace RCRPlanner
                     }
                     catch { }
                 }
-                file = exePath + imagefolder + logo.car_id + "_logo.png";
-                if (!File.Exists(file))
-                {
-                    try
-                    {
-                        await fData.getImage(iracingCarImages[2] + logo.folder + "/" + logo.small_image, file, true, 50);
-                    }
-                    catch (Exception ex) { }
-                }
+
             }
             return carsAssetsList;
         }

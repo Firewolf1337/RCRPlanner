@@ -1835,8 +1835,11 @@ namespace RCRPlanner
                 }
                 if (!YearQuaterSeries.Contains((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId)))
                 {
-                    YearQuater.Add((ser.Season.season_year, ser.Season.season_quarter));
-                    YearQuaterSeries.Add((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId));
+                    if (ser.Season.season_year != 0 && ser.Season.season_quarter != 0)
+                    {
+                        YearQuater.Add((ser.Season.season_year, ser.Season.season_quarter));
+                        YearQuaterSeries.Add((ser.Season.season_year, ser.Season.season_quarter, ser.SerieId));
+                    }
                 }
             }
             if (seasonRaces.Count == 0 || reload)
