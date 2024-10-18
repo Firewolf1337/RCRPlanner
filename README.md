@@ -1,4 +1,5 @@
 # ❗❗ 16. Oct. 2024: iRacing has changed thir Login system. They have enabled OAUTH which at the moment won't allow 3rd party applications to login by default. To get 3rd party applications like this back to work you have to enable "legacy authentication".❗❗
+[iRacing OAuth Portal](https://oauth.iracing.com/accountmanagement)
 ![legacy login](/doc/images/legacylogin.png)
 
 # Ravencreekracing Planner (RCRPlanner) for iRacing
