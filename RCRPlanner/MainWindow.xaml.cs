@@ -1484,7 +1484,7 @@ namespace RCRPlanner
                         _raceobj.Seriesimage = serie.Seriesimage;
                         _raceobj.SerieRaceLength = actualweekofserie.SeasonSchedule.race_lap_limit != null 
                             ? actualweekofserie.SeasonSchedule.race_lap_limit.ToString() + " Laps" 
-                            : (actualweekofserie.SeasonSchedule.race_time_limit >= 60 ? actualweekofserie.SeasonSchedule.race_time_limit / 60 + " h" : actualweekofserie.SeasonSchedule.race_time_limit + " Min");
+                            : (actualweekofserie.SeasonSchedule.race_time_limit >= 60 ? actualweekofserie.SeasonSchedule.race_time_limit / 60 + " h " + (actualweekofserie.SeasonSchedule.race_time_limit - ((actualweekofserie.SeasonSchedule.race_time_limit / 60 ) * 60)) + " min" : actualweekofserie.SeasonSchedule.race_time_limit + " Min");
                         _raceobj.SeriesName = serie.SeriesName;
                         _raceobj.TrackName = tr.track_name;
                         _raceobj.Serie = serie;
