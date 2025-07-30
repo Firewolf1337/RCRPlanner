@@ -311,53 +311,57 @@ namespace RCRPlanner
             {
                 File.Copy(exePath + "\\track.css", targetfolder + "track.css");
             }
-            foreach (var track in tracks)
+            try
             {
-                counter++;
-                string trackfile = track.track_id + ".html";
-                string trackpic = track.track_id + ".png";
-                if (MainWindow.main != null)
+                foreach (var track in tracks)
                 {
-                    MainWindow.main.Status = "Loading track pictures " + counter + " / " + tracks.Count();
-                }
-                if (!File.Exists(targetfolder+trackfile))
-                {
-                    string htmlcontent = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><meta http-equiv=\"Content-Type\" content = \"text/html; charset=utf-8\" /><link type=\"text/css\" rel=\"stylesheet\" href=\"track.css\" /></head><body><div id=\"svgMap\">";
-                    string svgpath = track.track_map;
-                    FieldInfo[] fields = typeof(trackAssets.TrackMapLayers).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
-                    foreach (var item in track.track_map_layers.GetType().GetProperties())
+                    counter++;
+                    string trackfile = track.track_id + ".html";
+                    string trackpic = track.track_id + ".png";
+                    if (MainWindow.main != null)
                     {
-
-                        string name = item.Name;
-                        if (item.GetValue(track.track_map_layers) != null)
+                        MainWindow.main.Status = "Loading track pictures " + counter + " / " + tracks.Count();
+                    }
+                    if (!File.Exists(targetfolder + trackfile))
+                    {
+                        string htmlcontent = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><meta http-equiv=\"Content-Type\" content = \"text/html; charset=utf-8\" /><link type=\"text/css\" rel=\"stylesheet\" href=\"track.css\" /></head><body><div id=\"svgMap\">";
+                        string svgpath = track.track_map;
+                        FieldInfo[] fields = typeof(trackAssets.TrackMapLayers).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+                        foreach (var item in track.track_map_layers.GetType().GetProperties())
                         {
 
-                            string url = svgpath + item.GetValue(track.track_map_layers);
-                            try
+                            string name = item.Name;
+                            if (item.GetValue(track.track_map_layers) != null)
                             {
-                                string content = Regex.Replace((fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
-                                content = Regex.Replace(content, @"<!--.*?-->", "");
-                                string createDiv = "<div id=\"track-" + name + "\">";
-                                htmlcontent += createDiv + content + "</div>";
-                            }
-                            catch 
-                            {
-                                htmlcontent = "";
-                                break;
+
+                                string url = svgpath + item.GetValue(track.track_map_layers);
+                                try
+                                {
+                                    string content = Regex.Replace((fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
+                                    content = Regex.Replace(content, @"<!--.*?-->", "");
+                                    string createDiv = "<div id=\"track-" + name + "\">";
+                                    htmlcontent += createDiv + content + "</div>";
+                                }
+                                catch
+                                {
+                                    htmlcontent = "";
+                                    break;
+                                }
                             }
                         }
+                        if (htmlcontent.Length > 0)
+                        {
+                            htmlcontent += "</div></body></html>";
+                            File.WriteAllText(targetfolder + trackfile, htmlcontent);
+                        }
                     }
-                    if (htmlcontent.Length > 0)
+                    if (!File.Exists(targetfolder + trackpic) && File.Exists(targetfolder + trackfile))
                     {
-                        htmlcontent += "</div></body></html>";
-                        File.WriteAllText(targetfolder + trackfile, htmlcontent);
+                        convertHTMLtoPNG(targetfolder + trackfile, targetfolder + trackpic);
                     }
-                }
-                if(!File.Exists(targetfolder + trackpic) && File.Exists(targetfolder + trackfile))
-                {
-                    convertHTMLtoPNG(targetfolder + trackfile, targetfolder + trackpic);
                 }
             }
+            catch { }
         }
 
         private static void convertHTMLtoPNG(string source, string target)

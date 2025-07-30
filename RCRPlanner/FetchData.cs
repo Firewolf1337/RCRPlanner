@@ -484,17 +484,18 @@ namespace RCRPlanner
 
         public async Task<List<partner>> getPartner()
         {
-            var response = await client.GetAsync(partnerLink);
-
-            response.EnsureSuccessStatusCode();
-            var contents = await response.Content.ReadAsStringAsync();
             var responseObject = new List<partner>();
             try
             {
+                var response = await client.GetAsync(partnerLink);
+                response.EnsureSuccessStatusCode();
+                var contents = await response.Content.ReadAsStringAsync();
+                
                 responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<List<partner>>(contents, settings);
             }
             catch (Exception ex)
             {
+                /*
                 if (ex.InnerException != null)
                 {
                     MessageBox.Show("Partner download:" + ex.InnerException.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -502,7 +503,7 @@ namespace RCRPlanner
                 else
                 {
                     MessageBox.Show("Partner download:" + ex.Message, "Something went wrong.", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                }*/
             }
             return responseObject;
         }
