@@ -1005,7 +1005,7 @@ namespace RCRPlanner
                                     ForumLink = series.forum_url,
                                     RaceLength = alls == null ? "no Race" : alls?.schedules[0].race_lap_limit != null
                                  ? alls.schedules.Aggregate(0, (sum, schedule) => sum + (schedule.race_lap_limit == null ? 0 : schedule.race_lap_limit.Value))/alls.schedules.Count + " Laps"
-                                 : (alls.schedules[0].race_time_limit >= 60 ? alls.schedules[0].race_time_limit / 60 + " h" : alls.schedules[0].race_time_limit + " Min" ),
+                                 : (alls.schedules[0].race_time_limit >= 60 ? alls.schedules[0].race_time_limit / 60 + " h " + (alls.schedules[0].race_time_limit - ((alls.schedules[0].race_time_limit / 60) * 60)) + " min" : alls.schedules[0].race_time_limit + " Min" ),
                                 }).ToList<dgObjects.seriesDataGrid>();
                 foreach (var serie in dgSeriesList)
                 {
@@ -1033,7 +1033,7 @@ namespace RCRPlanner
                         _trackobj.Weekdate = DateTime.Parse(track.SeasonSchedule.start_date, Thread.CurrentThread.CurrentUICulture).ToString(Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern, Thread.CurrentThread.CurrentUICulture);
                         _trackobj.Racelength = track.SeasonSchedule.race_lap_limit != null
                             ? track.SeasonSchedule.race_lap_limit.ToString() + " Laps"
-                            : (track.SeasonSchedule.race_time_limit >= 60 ? track.SeasonSchedule.race_time_limit / 60 + " h" : track.SeasonSchedule.race_time_limit + " Min");
+                            : (track.SeasonSchedule.race_time_limit >= 60 ? track.SeasonSchedule.race_time_limit / 60 + " h " + (track.SeasonSchedule.race_time_limit - ((track.SeasonSchedule.race_time_limit / 60) * 60)) + " min" : track.SeasonSchedule.race_time_limit + " Min");
                         tracks.Add(_trackobj);
                     }
                     tracks.Sort((x, y) => x.Week.CompareTo(y.Week));
