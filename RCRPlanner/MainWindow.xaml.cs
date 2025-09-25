@@ -727,8 +727,8 @@ namespace RCRPlanner
                     lbliRatingDirtRoad.Content = User.licenses.dirt_road.irating.ToString() + " iR";
                     lblCpiDirtRoad.Content = Math.Round(User.licenses.dirt_road.cpi, 2).ToString() + " CPI";
                     List<int> items = getPurchasedItems();
-                    lblTrackItems.Content = "bought Tracks: " + items[0] +"("+items[4] +  ")*" + " / " + items[2];
-                    lblCarItems.Content = "bought Cars: " + items[1] + "(" + items[5] + ")*" + " / " + items[3];
+                    lblTrackItems.Content = "Purchased Tracks: " + items[0] +"("+items[4] +  ")*" + " / " + items[2];
+                    lblCarItems.Content = "Purchased Cars: " + items[1] + "(" + items[5] + ")*" + " / " + items[3];
                     int itemcount = items[0] + items[1];
                     ProgItems.Value = itemcount;
                     tbItems.Width = 40;

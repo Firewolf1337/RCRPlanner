@@ -1856,8 +1856,8 @@
                     </Grid.RowDefinitions>
                     <Label x:Name="lblUsername" Content="" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
                     <Label x:Name="lblCustId" Content="User ID" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" FontSize="15" FontFamily="{StaticResource Montserrat-Regular}" Foreground="{StaticResource BrushTextWhite}"/>
-                    <Label x:Name="lblTrackItems" Content="Bought Tracks:" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Padding="0" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
-                    <Label x:Name="lblCarItems" Content="Bought Cars:" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource DefaultLabelStyle}" />
+                    <Label x:Name="lblTrackItems" Content="Purchased Tracks:" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Padding="0" Grid.Row="2" Style="{StaticResource DefaultLabelStyle}"/>
+                    <Label x:Name="lblCarItems" Content="Purchased Cars:" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource DefaultLabelStyle}" />
                     <ProgressBar x:Name="ProgItems" Maximum="40" Value="25" Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" Padding="0" Margin="0,-5,0,0" VerticalAlignment="Top" Height="17" ToolTip="Progress to the 40+ Pieces Club.">
                         <ProgressBar.Foreground>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
