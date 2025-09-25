@@ -82,7 +82,7 @@ namespace RCRPlanner
                 row[0] = tempgrid[0].DayOfWeek + " " + tempgrid[0].StartTime.Date.ToShortDateString();
                 int rownumber = dataTable.Rows.Count-1;
                 int itemnumber = rownumber >-1 ? dataTable.Rows[rownumber].ItemArray.Count()-1: 0;
-                if (rownumber < 0 || (rownumber > 0 && lasttrack.ToString() != (tempgrid[0].Track).ToString()))
+                if (rownumber <= 0 || (rownumber > 0 && lasttrack.ToString() != (tempgrid[0].Track).ToString()))
                 {
                     row["Track"] = tempgrid[0].Track;
                 }
