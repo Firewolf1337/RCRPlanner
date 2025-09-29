@@ -226,7 +226,7 @@ namespace RCRCustomSeries
             tracksList = await fh.getTracksList(tracksFile, reloadData);
             tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
             tracksInSeries = fh.getTracksInSeries(tracksList, seriesSeasonList);
-            fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
+            fh.getTrackSVGAsync(tracksAssetsList, exePath + tracksLogo);
 
             generateCarView();
             generateTrackView();
@@ -671,7 +671,7 @@ namespace RCRCustomSeries
                         Favorite = favsymbolUnselected,
                         CarId = car.car_id,
                         CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png"),
-                        CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png"),
+                        CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + ".png"),
                         CarName = car.car_name,
                         Category = string.Join(",", car.categories),
                         Horsepower = isMetric ? Convert.ToInt32(car.hp * 1.01387) : car.hp,

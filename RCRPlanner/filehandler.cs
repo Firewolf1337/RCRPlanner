@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Threading;
-using System.Diagnostics;
-using System.Reflection;
-using System.Text.RegularExpressions;
+using static RCRPlanner.memberInfo;
 
 namespace RCRPlanner
 {
@@ -17,6 +22,7 @@ namespace RCRPlanner
         //MainWindow mw = new MainWindow();
         readonly string iracingSeriesImages = "https://images-static.iracing.com/img/logos/series/";
         readonly string[] iracingCarImages = { "https://ir-core-sites.iracing.com/members/member_images/cars/carid_", "/profile.jpg", "https://images-static.iracing.com" };
+        readonly string localIracingWebserver = "http://localhost:32034/pk_car.png";
         readonly RCRPlanner.FetchData fData = new RCRPlanner.FetchData();
         readonly string exePath = System.IO.Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
         public async Task<List<seriesAssets>> getSeriesAssets(string filestring, string logofolder, bool reload)
@@ -170,6 +176,7 @@ namespace RCRPlanner
             //Load asset series information and fetching logos
             string file = exePath + filestring;
             int counter = 0;
+            bool islokalinstalled = false;
             if (File.Exists(file) && !reload)
             {
                 carsAssetsList = helper.DeSerializeObject<List<carAssets>>(file);
@@ -183,6 +190,11 @@ namespace RCRPlanner
                 }
                 catch{ }
             }
+
+            if ((await fData.checkServer(localIracingWebserver)).IsSuccessStatusCode)
+            {
+                islokalinstalled=true;
+            }
             foreach (var logo in carsAssetsList)
             {
                 counter++;
@@ -190,7 +202,7 @@ namespace RCRPlanner
                 {
                     MainWindow.main.Status = "Loading car pictures " + counter + " / " + carsAssetsList.Count();
                 }
-                file = exePath + imagefolder + logo.car_id + "_logo.png";
+                /*file = exePath + imagefolder + logo.car_id + "_logo.png";
                 if (!File.Exists(file))
                 {
                     try
@@ -198,19 +210,29 @@ namespace RCRPlanner
                         await fData.getImage(iracingCarImages[2] + logo.folder + "/" + logo.small_image, file, true, 50);
                     }
                     catch (Exception ex) { }
-                }
+                }*/
                 file = exePath + imagefolder + logo.car_id + ".png";
                 if (!File.Exists(file))
                 {
                     try
                     {
-                        if (oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id) != null)
+                        if (islokalinstalled)
                         {
-                            await fData.getImage(oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id).imageUrl, file, false);
+                            var _car = MainWindow.main.carsList.First(c => c.car_id == logo.car_id);
+                            string _color =  MainWindow.main.User.helmet.color1 + "," + MainWindow.main.User.helmet.color2 + "," + MainWindow.main.User.helmet.color3;
+                            string _url = localIracingWebserver + "?size=2&numShow=0&carPat=3&carPath=" + _car.car_dirpath + "&carCol=" + _color;
+                            await fData.getImage(_url, file, false);
                         }
                         else
                         {
-                            await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file, false);
+                            if (oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id) != null)
+                            {
+                                await fData.getImage(oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id).imageUrl, file, false);
+                            }
+                            else
+                            {
+                                await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file, false);
+                            }
                         }
                     }
                     catch { }
@@ -304,105 +326,166 @@ namespace RCRPlanner
 
             return trackAssetsList;
         }
-        public void getTrackSVG(List<trackAssets.Root> tracks, string targetfolder)
+        public async Task getTrackSVGAsync(List<trackAssets.Root> tracks, string targetfolder)
         {
             int counter = 0;
-            if (!File.Exists(targetfolder + "track.css"))
+            int totalTracks = tracks.Count;
+
+            var styleRegex = new Regex(@"<style.*?>[\s\S]*?</style>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var commentRegex = new Regex(@"<!--.*?-->", RegexOptions.Compiled);
+
+            var httpClient = new HttpClient();
+            var svgCache = new ConcurrentDictionary<string, Task<string>>();
+            var throttler = new SemaphoreSlim(Environment.ProcessorCount * 2);
+
+            long lastUpdateTicks = DateTime.UtcNow.Ticks;
+            long updateIntervalTicks = TimeSpan.FromMilliseconds(500).Ticks;
+
+            async Task<string> LoadAndCleanAsync(string url)
             {
-                File.Copy(exePath + "\\track.css", targetfolder + "track.css");
-            }
-            try
-            {
-                foreach (var track in tracks)
+                try
                 {
-                    counter++;
-                    string trackfile = track.track_id + ".html";
-                    string trackpic = track.track_id + ".png";
-                    if (MainWindow.main != null)
-                    {
-                        MainWindow.main.Status = "Loading track pictures " + counter + " / " + tracks.Count();
-                    }
-                    if (!File.Exists(targetfolder + trackfile))
-                    {
-                        string htmlcontent = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><meta http-equiv=\"Content-Type\" content = \"text/html; charset=utf-8\" /><link type=\"text/css\" rel=\"stylesheet\" href=\"track.css\" /></head><body><div id=\"svgMap\">";
-                        string svgpath = track.track_map;
-                        FieldInfo[] fields = typeof(trackAssets.TrackMapLayers).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
-                        foreach (var item in track.track_map_layers.GetType().GetProperties())
-                        {
-
-                            string name = item.Name;
-                            if (item.GetValue(track.track_map_layers) != null)
-                            {
-
-                                string url = svgpath + item.GetValue(track.track_map_layers);
-                                try
-                                {
-                                    string content = Regex.Replace((fData.getTrackSVG(url)), @"<style.*?>[\s\S]*?.*?[\s\S]*?<\/style>", "");
-                                    content = Regex.Replace(content, @"<!--.*?-->", "");
-                                    string createDiv = "<div id=\"track-" + name + "\">";
-                                    htmlcontent += createDiv + content + "</div>";
-                                }
-                                catch
-                                {
-                                    htmlcontent = "";
-                                    break;
-                                }
-                            }
-                        }
-                        if (htmlcontent.Length > 0)
-                        {
-                            htmlcontent += "</div></body></html>";
-                            File.WriteAllText(targetfolder + trackfile, htmlcontent);
-                        }
-                    }
-                    if (!File.Exists(targetfolder + trackpic) && File.Exists(targetfolder + trackfile))
-                    {
-                        convertHTMLtoPNG(targetfolder + trackfile, targetfolder + trackpic);
-                    }
+                    var data = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+                    data = commentRegex.Replace(data, "");
+                    data = styleRegex.Replace(data, "");
+                    return data;
+                }
+                catch
+                {
+                    return string.Empty;
                 }
             }
-            catch { }
-        }
 
-        private static void convertHTMLtoPNG(string source, string target)
-        {
-            var th = new Thread(() =>
+            async Task WriteTextToFileAsync(string path, string content)
             {
-                var webBrowser = new WebBrowser
+                Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                using (var sw = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    await sw.WriteAsync(content).ConfigureAwait(false);
+                    await sw.FlushAsync().ConfigureAwait(false);
+                }
+            }
+
+            var tasks = tracks.Select(async track =>
+            {
+                await throttler.WaitAsync().ConfigureAwait(false);
+                try
+                {
+                    int current = Interlocked.Increment(ref counter);
+
+                    long prev = Interlocked.Read(ref lastUpdateTicks);
+                    long now = DateTime.UtcNow.Ticks;
+                    if (Interlocked.CompareExchange(ref lastUpdateTicks, now, prev) == prev)
+                    {
+                        var _ = MainWindow.main.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            MainWindow.main.Status = $"Loading track pictures {current} / {totalTracks}";
+                        }));
+                    }
+
+                    string trackpic = Path.Combine(targetfolder, $"{track.track_id}.png");
+                    string trackcss = File.ReadAllText("track.css");
+                    if (!File.Exists(trackpic))
+                    {
+                        var sb = new StringBuilder();
+                        sb.Append("<!DOCTYPE html><html><head>");
+                        sb.Append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
+                        sb.Append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
+                        sb.Append("<style>");
+                        sb.Append(trackcss);
+                        sb.Append("</style></head>");
+                        sb.Append("<body><div id=\"svgMap\">");
+
+                        string svgpath = track.track_map;
+                        var properties = track.track_map_layers.GetType().GetProperties();
+
+                        var layerTasks = properties.Select(async prop =>
+                        {
+                            var value = prop.GetValue(track.track_map_layers);
+                            if (value == null) return null;
+
+                            string name = prop.Name;
+                            string url = svgpath + value;
+
+                            var svgTask = svgCache.GetOrAdd(url, key => LoadAndCleanAsync(key));
+                            var svg = await svgTask.ConfigureAwait(false);
+
+                            if (string.IsNullOrEmpty(svg)) return null;
+                            return $"<div id=\"track-{name}\">{svg}</div>";
+                        });
+
+                        var results = await Task.WhenAll(layerTasks).ConfigureAwait(false);
+                        foreach (var r in results.Where(x => x != null))
+                            sb.Append(r);
+
+                        sb.Append("</div></body></html>");
+                        await Task.Run(() => ConvertHtmlToPngFromString(sb.ToString(), trackpic)).ConfigureAwait(false);
+                    }
+
+
+                }
+                finally
+                {
+                    throttler.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            var __ = MainWindow.main.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainWindow.main.Status = $"Track loading complete ({totalTracks})";
+            }));
+        }
+        private static void ConvertHtmlToPngFromString(string htmlContent, string target)
+        {
+            var thread = new Thread(() =>
+            {
+                var browser = new WebBrowser
                 {
                     ScrollBarsEnabled = false,
-                    IsWebBrowserContextMenuEnabled = true,
-                    AllowNavigation = true
+                    IsWebBrowserContextMenuEnabled = false,
+                    Width = 300,
+                    Height = 150
                 };
-                webBrowser.DocumentCompleted += webBrowser_DocumentCompleted;
-                webBrowser.Url = new Uri(String.Format(source));
-                webBrowser.AccessibleDescription = target;
-                webBrowser.Width = 300;
-                webBrowser.Height = 150;
+
+                browser.DocumentCompleted += (s, e) =>
+                {
+                    try
+                    {
+                        var wb = (WebBrowser)s;
+
+                        string content = wb.Document.Body.InnerHtml;
+                        content = Regex.Replace(content, @"<div id=""track-StartFinish"">[\s\S]*?</div>", "");
+                        content = Regex.Replace(content, @"<div id=""track-background"">[\s\S]*?</div>", "");
+                        content = Regex.Replace(content, @"<div id=""track-inactive"">[\s\S]*?</div>", "");
+                        content = Regex.Replace(content, @"<div id=""track-turns"">[\s\S]*?</div>", "");
+                        wb.Document.Body.InnerHtml = content;
+
+                        var bitmap = new Bitmap(wb.Width, wb.Height, PixelFormat.Format24bppRgb);
+                        wb.DrawToBitmap(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+                        bitmap.Save(target, ImageFormat.Png);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error rendering HTML content: {ex.Message}");
+                    }
+                    finally
+                    {
+                        browser.Dispose();
+                        Application.ExitThread();
+                    }
+                };
+
+                browser.DocumentText = htmlContent;
 
                 Application.Run();
-
             });
-            th.SetApartmentState(ApartmentState.STA);
-            th.Start();
-            th.Join();
-        }
-        static void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
-        {
-            var webBrowser = (WebBrowser)sender;
-            var content = webBrowser.Document.Body.InnerHtml;
-            content = Regex.Replace(content, @"<div id=""track-StartFinish"">[\s\S]*?.*?[\s\S]*?<\/div>", "");
-            content = Regex.Replace(content, @"<div id=""track-background"">[\s\S]*?.*?[\s\S]*?<\/div>", "");
-            content = Regex.Replace(content, @"<div id=""track-inactive"">[\s\S]*?.*?[\s\S]*?<\/div>", "");
-            content = Regex.Replace(content, @"<div id=""track-turns"">[\s\S]*?.*?[\s\S]*?<\/div>", "");
-            webBrowser.Document.Body.InnerHtml = content;
-            using (Bitmap bitmap = new Bitmap(webBrowser.Width, webBrowser.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
-            {
-                webBrowser.DrawToBitmap(bitmap,  new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-                bitmap.Save(((System.Windows.Forms.WebBrowser)sender).AccessibleDescription, System.Drawing.Imaging.ImageFormat.Png);
-            }
-            webBrowser.Dispose();
-            Application.Exit();
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
         }
 
         public List<tracks.TracksInSeries> getTracksInSeries(List<tracks.Root> tracks, List<seriesSeason.Root> series)

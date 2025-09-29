@@ -750,7 +750,7 @@
                                             <DataGridTemplateColumn IsReadOnly="True" MinWidth="100">
                                                 <DataGridTemplateColumn.CellTemplate >
                                                     <DataTemplate>
-                                                        <Image Source="{Binding CarImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="Auto" Height="25"/>
+                                                        <Image Source="{Binding CarImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="Auto" Height="40"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
@@ -1014,7 +1014,7 @@
                     <DataGrid.RowDetailsTemplate>
                         <DataTemplate>
                             <DockPanel Background="{StaticResource DefaultBackgroundBrush}" HorizontalAlignment="Stretch">
-                                <DataGrid x:Name="gridTracksinSerie" Grid.Row="0" Grid.Column="0" Height="390" Style="{StaticResource SubDataGridStyle}" 
+                                <DataGrid x:Name="gridTracksinSerie" Grid.Row="0" Grid.Column="0" Height="Auto" Style="{StaticResource SubDataGridStyle}" 
                                           HorizontalAlignment="Stretch" VerticalAlignment="Top" 
                                           AutoGenerateColumns="False" MinColumnWidth="50"
                                           SelectionChanged="dataGrid_SelectionChanged"
@@ -1146,7 +1146,7 @@
                                             <DataGridTemplateColumn IsReadOnly="True" MinWidth="100">
                                                 <DataGridTemplateColumn.CellTemplate >
                                                     <DataTemplate>
-                                                        <Image Source="{Binding CarImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="Auto" Height="25"/>
+                                                        <Image Source="{Binding CarImage}" RenderOptions.BitmapScalingMode="HighQuality" Width="Auto" Height="40"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>

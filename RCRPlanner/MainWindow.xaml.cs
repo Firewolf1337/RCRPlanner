@@ -48,7 +48,7 @@ namespace RCRPlanner
         private readonly statistics statistics = new statistics();
         ProcessWatcher processWatcher = new ProcessWatcher("iRacingSim64DX11");
         //private static readonly HttpClient client = new HttpClient();
-        memberInfo.Root User = new memberInfo.Root();
+        public memberInfo.Root User = new memberInfo.Root();
         string username;
         SecureString password;
         readonly string userfile = @"user.xml";
@@ -109,7 +109,7 @@ namespace RCRPlanner
         private readonly string seriesAssetsFile = @"\static\seriesAssets.xml";
         private readonly string seriesLogos = @"\static\series\";
 
-        private List<cars.Root> carsList = new List<cars.Root>();
+        public List<cars.Root> carsList = new List<cars.Root>();
         private List<carAssets> carsAssetsList = new List<carAssets>();
         private List<carClass.Root> carClassList = new List<carClass.Root>();
         private List<carClass.CarInClassId> carClassesList = new List<carClass.CarInClassId>();
@@ -518,7 +518,7 @@ namespace RCRPlanner
                         tracksList = await fh.getTracksList(tracksFile, reloadData);
                         tracksAssetsList = await fh.getTracksAssets(tracksAssetsFile, reloadData);
                         tracksInSeries = fh.getTracksInSeries(tracksList, seriesSeasonList);
-                        fh.getTrackSVG(tracksAssetsList, exePath + tracksLogo);
+                        await fh.getTrackSVGAsync(tracksAssetsList, exePath + tracksLogo);
                     }
                     catch (Exception ex)
                     {
@@ -1121,7 +1121,7 @@ namespace RCRPlanner
                         Favorite = favoriteCars.Any(x => x.car_id == car.car_id) ? favsymbolSelected : favsymbolUnselected,
                         CarId = car.car_id,
                         CarImage = new Uri("file:///" + exePath + carLogos + car.car_id + ".png"),
-                        CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + "_logo.png"),
+                        CarLogo = new Uri("file:///" + exePath + carLogos + car.car_id + ".png"),
                         CarName = car.car_name,
                         Category = string.Join(",", car.categories),
                         Horsepower = isMetric ? Convert.ToInt32(car.hp * 1.01387) : car.hp,

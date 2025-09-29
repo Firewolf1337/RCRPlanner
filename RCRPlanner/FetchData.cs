@@ -61,6 +61,12 @@ namespace RCRPlanner
             public string link { get; set; }
             public DateTime expires { get; set; }
         }
+        public async Task<HttpResponseMessage> checkServer(string URL)
+        {
+            HttpResponseMessage response;
+            response = await client.GetAsync(URL);
+            return response;
+        }
         public async Task<int> Login_API(byte[] Email, byte[] Password, bool forcelogin)
         {
             HttpResponseMessage response;
@@ -377,14 +383,18 @@ namespace RCRPlanner
 
             return responseObject;
         }
-        public string getTrackSVG(string url)
+        public async Task<string> getTrackSVG(string url)
         {
-            string download = "";
-            using (WebClient downloader = new WebClient())
+            try
             {
-                download = downloader.DownloadString(url);
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
             }
-            return download;
+            catch
+            {
+                return "";
+            }
         }
         public async Task<List<participationCredits.Root>> getparticipationCredits()
         {
