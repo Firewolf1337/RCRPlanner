@@ -1804,11 +1804,28 @@ namespace RCRPlanner
                         Path = prog.Path
                     };
 
-                    var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(prog.Path);
-                    var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(sysicon.Handle, System.Windows.Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                    sysicon.Dispose();
+                    PixelFormat pf = PixelFormats.Bgr32;
+                    int width = 16;
+                    int height = 16;
+                    int rawStride = (width * pf.BitsPerPixel + 7) / 8;
+                    byte[] rawImage = new byte[rawStride * height];
+
+                    // Initialize the image with data.
+                    Random value = new Random();
+                    value.NextBytes(rawImage);
+
+                    var bmpSrc = BitmapSource.Create(width, height,
+                                    16, 16, pf, null,
+                                    rawImage, rawStride);
+                    autoStartData.Name = prog.Path;
+                    if (File.Exists(prog.Path))
+                    {
+                        var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(prog.Path);
+                        bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(sysicon.Handle, System.Windows.Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                        sysicon.Dispose();
+                        autoStartData.Name = FileVersionInfo.GetVersionInfo(prog.Path).ProductName != null ? FileVersionInfo.GetVersionInfo(prog.Path).ProductName : FileVersionInfo.GetVersionInfo(prog.Path.ToString()).FileName;
+                    }
                     autoStartData.Icon = bmpSrc;
-                    autoStartData.Name = FileVersionInfo.GetVersionInfo(prog.Path).ProductName != null ? FileVersionInfo.GetVersionInfo(prog.Path).ProductName : FileVersionInfo.GetVersionInfo(prog.Path.ToString()).FileName;
                     autoStartData.Pause = prog.Paused ? pause : play;
                     autoStartData.withiRacing = prog.withiRacing ? checksymbol : unchecksymbol;
                     dgAutoStartList.Add(autoStartData);
