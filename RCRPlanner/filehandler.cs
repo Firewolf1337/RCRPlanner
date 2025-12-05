@@ -171,8 +171,8 @@ namespace RCRPlanner
         }
         public async Task<List<carAssets>> getCarAssetsList(string filestring, string imagefolder, bool reload) {
             List<carAssets> carsAssetsList = new List<carAssets>();
-            List<oddCarImages> oddCarImgs = new List<oddCarImages>();
-            oddCarImgs = helper.DeSerializeObject<List<oddCarImages>>(@"oddCarImages.xml");
+            //List<oddCarImages> oddCarImgs = new List<oddCarImages>();
+            //oddCarImgs = helper.DeSerializeObject<List<oddCarImages>>(@"oddCarImages.xml");
             //Load asset series information and fetching logos
             string file = exePath + filestring;
             int counter = 0;
@@ -227,7 +227,7 @@ namespace RCRPlanner
                             string _url = localIracingWebserver + "?size=2&numShow=0&carPat=3&carPath=" + _car.car_dirpath + "&carCol=" + _color;
                             await fData.getImage(_url, file, false);
                         }
-                        else
+                        /*else
                         {
                             if (oddCarImgs.FirstOrDefault(c => c.carid == logo.car_id) != null)
                             {
@@ -237,7 +237,7 @@ namespace RCRPlanner
                             {
                                 await fData.getImage(iracingCarImages[0] + logo.car_id + iracingCarImages[1], file, false);
                             }
-                        }
+                        }*/
                     }
                     catch { }
                 }
