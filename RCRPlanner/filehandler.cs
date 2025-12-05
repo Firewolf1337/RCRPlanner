@@ -191,10 +191,14 @@ namespace RCRPlanner
                 catch{ }
             }
 
-            if ((await fData.checkServer(localIracingWebserver)).IsSuccessStatusCode)
+            try
             {
-                islokalinstalled=true;
+                if ((await fData.checkServer(localIracingWebserver)).IsSuccessStatusCode)
+                {
+                    islokalinstalled = true;
+                }
             }
+            catch { }
             foreach (var logo in carsAssetsList)
             {
                 counter++;
